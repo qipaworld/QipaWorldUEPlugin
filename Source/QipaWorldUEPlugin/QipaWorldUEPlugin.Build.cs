@@ -38,6 +38,8 @@ public class QipaWorldUEPlugin : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				//"UnrealYaml",
+                "DeveloperSettings",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
