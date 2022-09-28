@@ -19,7 +19,7 @@ bool UQPWorldObjectManager::ShouldCreateSubsystem(UObject* Outer) const
 void UQPWorldObjectManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	Collection.InitializeDependency(UQPGameInstanceDataManager::StaticClass());
+	//Collection.InitializeDependency(UQPGameInstanceDataManager::StaticClass());
 
 	QP_UQPWorldObjectManager = this;
 	

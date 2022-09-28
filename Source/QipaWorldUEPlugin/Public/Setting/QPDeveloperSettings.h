@@ -32,13 +32,22 @@ public:
 
 public:
 	UPROPERTY(Config,EditAnywhere,BlueprintReadWrite, Category = "QipaWorld")
-	FString DefaultBackgroundAudioPath = "None";
+	FString QP_DefaultBackgroundAudioPath = "None";
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	FString DefaultUIClickAudioPath = "None";
+	FString QP_DefaultUIClickAudioPath = "None";
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	FString DefaultChangeMapLoadingPath = "None";
+	bool QP_BackgroundAudioAutoPlay = true;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	FString QP_DefaultStartMap = "None";
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	FString QP_DefaultLoadingMap = "None";
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	TMap<FString, int32> QP_UUID;
 
 	UQPDeveloperSettings();
 };

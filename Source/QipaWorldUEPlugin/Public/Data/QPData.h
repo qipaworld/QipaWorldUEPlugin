@@ -6,7 +6,7 @@
 
 #include "UObject/NoExportTypes.h"
 #include "QPData.generated.h"
-class UQPGameInstanceDataManager;
+//class UQPGameInstanceDataManager;
 class UQPData;
 DECLARE_MULTICAST_DELEGATE_OneParam(QP_DataDelegate,const UQPData*);
 

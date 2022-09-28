@@ -2,7 +2,7 @@
 
 
 #include "Assets/QPGameInstanceLoadAssetsManager.h"
-#include "Data/QPGameInstanceDataManager.h"
+//#include "Data/QPGameInstanceDataManager.h"
 //#include "Node.h"
 //#include "Parsing.h"
 
@@ -19,7 +19,7 @@ bool UQPGameInstanceLoadAssetsManager::ShouldCreateSubsystem(UObject* Outer) con
 void UQPGameInstanceLoadAssetsManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	Collection.InitializeDependency(UQPGameInstanceDataManager::StaticClass());
+	//Collection.InitializeDependency(UQPGameInstanceDataManager::StaticClass());
 
 	QP_UQPGameInstanceLoadAssetsManager = this;
 	//LoadYaml("");
