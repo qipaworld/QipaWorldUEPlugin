@@ -37,24 +37,32 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool qp_isLoadSubMap = false;
 
-	///** 即将加载或者当前level的名字。*/
+	/** 即将加载的level的名字。*/
+	FString qp_readyOpenMapName;
 
-	//UPROPERTY(BlueprintReadWrite)
-	//FString qp_loadMapName;
+	FString qp_loadingMapName;
 
 	/**加载成功后的回调*/
 	FLatentActionInfo qp_actionInfo;
-	/** 不卸载现在的level，直接加载新的*/
 
+	/** 不卸载现在的level，直接加载新的*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_LoadMap(const FString MapName, const FVector Location, const FRotator Rotation);
 
-	/** 这个会自动跳到loading界面，之后在加载。*/
+	/** 这个直接切换地图。*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_OpenMap(const FString MapName);
 
-	/** loading蓝图里用的，因为你在ChangeLevel的时候传名字了，所以这里不需要传。*/
-	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
+	/** 这个会加载loading场景，之后在切换地图。*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
+	void QP_LoadingAndOpenMap(const FString MapName);
+	/** 设置了qp_readyOpenMapName后，可以用这个切换地图。*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
+	void QP_OpenReadyMap();
+
+
+	/** 加载子地图*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_LoadSubMap(const FString MapName);
 
 	/*UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")*/

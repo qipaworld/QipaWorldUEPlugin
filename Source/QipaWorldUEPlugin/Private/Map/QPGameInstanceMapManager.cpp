@@ -31,7 +31,8 @@ void UQPGameInstanceMapManager::Initialize(FSubsystemCollectionBase& Collection)
 	qp_actionInfo.UUID = UQPDeveloperSettings::QP_GET()->QP_UUID["qp_loadMap"];
 	qp_actionInfo.Linkage = 0;
 
-	//qp_loadMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;
+	qp_loadingMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultLoadingMap;
+	//qp_loadingMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;
 }
 
 void UQPGameInstanceMapManager::Deinitialize()
@@ -50,6 +51,17 @@ void UQPGameInstanceMapManager::QP_OpenMap(const FString LevelName)
 	UGameplayStatics::OpenLevel(GetWorld(), FName(LevelName));
 
 }
+void UQPGameInstanceMapManager::QP_LoadingAndOpenMap(const FString MapName)
+{
+	qp_readyOpenMapName = MapName;
+	QP_LoadMap(qp_loadingMapName, FVector::ZeroVector, FRotator::ZeroRotator);
+}
+
+void UQPGameInstanceMapManager::QP_OpenReadyMap()
+{
+	QP_OpenMap(qp_readyOpenMapName);
+}
+
 void UQPGameInstanceMapManager::QP_LoadSubMap(const FString MapName)
 {
 	qp_isLoadSubMap = false;
