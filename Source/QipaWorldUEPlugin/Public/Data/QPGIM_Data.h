@@ -3,25 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "QPGameInstanceDataManager.generated.h"
+#include "QPGIM_Data.generated.h"
 
 class UQPData;
 /**
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPGameInstanceDataManager : public UGameInstanceSubsystem, public FTickableGameObject
+class QIPAWORLDUEPLUGIN_API UQPGIM_Data : public UGameInstanceSubsystem, public FTickableGameObject
 {
 	GENERATED_BODY()
 
-	UQPData* qp_gameQPdataBase;
+	UQPData* qp_baseData;
 
 	TArray<UQPData*> qp_broadcastArray;
 	TArray<UQPData*> qp_tempBroadcastArray;
 public:
-	static UQPGameInstanceDataManager* QP_UQPGameInstanceDataManager;
+	static UQPGIM_Data* QP_UQPGIM_Data;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/

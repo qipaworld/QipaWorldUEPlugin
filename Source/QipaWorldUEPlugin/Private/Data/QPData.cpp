@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #define QP_ADD_TYPE_FUN(type,...) void UQPData::QP_Add##type(FString key, ##type __VA_ARGS__  v, bool sync) {\
 	qp_##type##Map.Add(key, v); \
@@ -13,12 +13,12 @@ void UQPData::QP_Remove##type(FString key, bool sync) {\
 		qp_##type##Map.Remove(key); \
 		qp_changeMap.Add(key, "remove"); \
 		QP_needSyncBroadcast(sync);} \
-		else{UE_LOG(LogTemp, Warning, TEXT("×ÖµäÀïÃ»ÓÐÕÒµ½%s"),*key);}\
+		else{UE_LOG(LogTemp, Warning, TEXT("å­—å…¸é‡Œæ²¡æœ‰æ‰¾åˆ°%s"),*key);}\
 		}\
 
 #include "Data/QPData.h"
 #include <Kismet/GameplayStatics.h>
-#include "Data/QPGameInstanceDataManager.h"
+#include "Data/QPGIM_Data.h"
 
 void UQPData::QP_Init(FString name)
 {
@@ -42,24 +42,24 @@ void UQPData::QP_BroadcastAll()
 	qp_changeMap.Reset();
 }
 
-//UQPGameInstanceDataManager* UQPData::QP_GetDataManager()
+//UQPGIM_Data* UQPData::QP_GetDataManager()
 //{
 //	if (qp_dataManager == nullptr) {
 //		//UQPGameInstance::qp_gameInstance
 //		
-//		//qp_dataManager = GetWorld()->GetSubsystem<UQPGameInstanceDataManager>();
+//		//qp_dataManager = GetWorld()->GetSubsystem<UQPGIM_Data>();
 //	}
 //	return qp_dataManager;
 //}
 
 void UQPData::QP_AddBroadcastToDataManager()
 {
-	UQPGameInstanceDataManager::QP_UQPGameInstanceDataManager->QP_AddBroadcastUQPData(this);
+	UQPGIM_Data::QP_UQPGIM_Data->QP_AddBroadcastUQPData(this);
 }
 
 void UQPData::QP_RemoveBroadcastToDataManager()
 {
-	UQPGameInstanceDataManager::QP_UQPGameInstanceDataManager->QP_RemoveBroadcastUQPData(this);
+	UQPGIM_Data::QP_UQPGIM_Data->QP_RemoveBroadcastUQPData(this);
 }
 
 void UQPData::QP_needSyncBroadcast(bool sync)
@@ -105,7 +105,7 @@ void UQPData::QP_RemoveUQPData(FString key, bool sync)
 		QP_needSyncBroadcast(sync);
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("×ÖµäÀïÃ»ÓÐÕÒµ½%s"),*key);
+		UE_LOG(LogTemp, Warning, TEXT("å­—å…¸é‡Œæ²¡æœ‰æ‰¾åˆ°%s"),*key);
 	}
 }
 

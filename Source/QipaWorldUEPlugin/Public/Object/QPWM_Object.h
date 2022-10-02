@@ -4,17 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
-#include "QPWorldObjectManager.generated.h"
+#include "QPWM_Object.generated.h"
+
 /**
  * 
  */
+
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPWorldObjectManager : public UWorldSubsystem
+class QIPAWORLDUEPLUGIN_API UQPWM_Object : public UWorldSubsystem
 {
 	GENERATED_BODY()
 
 public:
-	static UQPWorldObjectManager* QP_UQPWorldObjectManager;
+	static UQPWM_Object* QP_UQPWM_Object;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
@@ -30,7 +32,7 @@ public:
 public:
 	TMap<FString,TArray<UObject*>> qp_objData;
 
-	/**°ÑÓÃ²»µ½µÄ¶ÔÏó·Åµ½Õâ¸öÀïÃæ*/
+	/**æŠŠç”¨ä¸åˆ°çš„å¯¹è±¡æ”¾åˆ°è¿™ä¸ªé‡Œé¢*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Object")
 	void QP_CollectObject(FString key, UObject* obj);
 
@@ -38,7 +40,7 @@ public:
 	UObject* QP_GetObject(FString key);
 
 
-	/**Òì²½¼ÓÔØ*/
+	/**å¼‚æ­¥åŠ è½½*/
 	/*UFUNCTION(BlueprintCallable, Category = "QipaWorld|Assets")
 	void QP_RequestAsyncLoad(UClass* InBaseClass,FString key, UQPData* data);
 

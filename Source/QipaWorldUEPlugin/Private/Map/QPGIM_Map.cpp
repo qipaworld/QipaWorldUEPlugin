@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Map/QPGameInstanceMapManager.h"
+#include "Map/QPGIM_Map.h"
+
 #include "Setting/QPDeveloperSettings.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/LevelStreamingDynamic.h"
@@ -10,21 +11,21 @@
 //#include "Data/QPData.h"
 
 
-UQPGameInstanceMapManager* UQPGameInstanceMapManager::QP_UQPGameInstanceMapManager = nullptr;
+UQPGIM_Map* UQPGIM_Map::QP_UQPGIM_Map = nullptr;
 
 
-bool UQPGameInstanceMapManager::ShouldCreateSubsystem(UObject* Outer) const
+bool UQPGIM_Map::ShouldCreateSubsystem(UObject* Outer) const
 {
 	Super::ShouldCreateSubsystem(Outer);
 	return true;
 }
 
-void UQPGameInstanceMapManager::Initialize(FSubsystemCollectionBase& Collection)
+void UQPGIM_Map::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	//Collection.InitializeDependency(UQPGameInstanceDataManager::StaticClass());
 
-	QP_UQPGameInstanceMapManager = this;
+	QP_UQPGIM_Map = this;
 
 	qp_actionInfo.CallbackTarget = this;
 	qp_actionInfo.ExecutionFunction = "QP_LoadMapEnd";
@@ -35,40 +36,39 @@ void UQPGameInstanceMapManager::Initialize(FSubsystemCollectionBase& Collection)
 	//qp_loadingMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;
 }
 
-void UQPGameInstanceMapManager::Deinitialize()
+void UQPGIM_Map::Deinitialize()
 {
 	Super::Deinitialize();
 }
 
-void UQPGameInstanceMapManager::QP_LoadMap(const FString MapName, const FVector Location, const FRotator Rotation)
+void UQPGIM_Map::QP_LoadMap(const FString MapName, const FVector Location, const FRotator Rotation)
 {
 	qp_isLoadMap = false;
 	ULevelStreamingDynamic::LoadLevelInstance(GetWorld(), MapName, Location, Rotation, qp_isLoadMap);
 }
-void UQPGameInstanceMapManager::QP_OpenMap(const FString LevelName)
+void UQPGIM_Map::QP_OpenMap(const FString LevelName)
 {
 	//qp_loadMapName = LevelName;
 	UGameplayStatics::OpenLevel(GetWorld(), FName(LevelName));
 
 }
-void UQPGameInstanceMapManager::QP_LoadingAndOpenMap(const FString MapName)
+void UQPGIM_Map::QP_LoadingAndOpenMap(const FString MapName)
 {
 	qp_readyOpenMapName = MapName;
 	QP_LoadMap(qp_loadingMapName, FVector::ZeroVector, FRotator::ZeroRotator);
 }
 
-void UQPGameInstanceMapManager::QP_OpenReadyMap()
+void UQPGIM_Map::QP_OpenReadyMap()
 {
 	QP_OpenMap(qp_readyOpenMapName);
 }
 
-void UQPGameInstanceMapManager::QP_LoadSubMap(const FString MapName)
+void UQPGIM_Map::QP_LoadSubMap(const FString MapName)
 {
 	qp_isLoadSubMap = false;
 	UGameplayStatics::LoadStreamLevel(GetWorld(), FName(MapName), true, false, qp_actionInfo);
 }
-void UQPGameInstanceMapManager::QP_LoadMapEnd()
+void UQPGIM_Map::QP_LoadMapEnd()
 {
 	qp_isLoadSubMap = true;
 }
-

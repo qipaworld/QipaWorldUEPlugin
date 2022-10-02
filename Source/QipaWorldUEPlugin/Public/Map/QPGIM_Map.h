@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "QPGameInstanceMapManager.generated.h"
+#include "QPGIM_Map.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPGameInstanceMapManager : public UGameInstanceSubsystem
+class QIPAWORLDUEPLUGIN_API UQPGIM_Map : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
 public:
-	static UQPGameInstanceMapManager* QP_UQPGameInstanceMapManager;
+	static UQPGIM_Map* QP_UQPGIM_Map;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
@@ -29,39 +29,39 @@ public:
 	virtual void Deinitialize();
 
 public:
-	/** 独立加入的子关卡是否加载完成*/
+	/** 露脌脕垄录脫脠毛碌脛脳脫鹿脴驴篓脢脟路帽录脫脭脴脥锚鲁脡*/
 	UPROPERTY(BlueprintReadWrite)
 	bool qp_isLoadMap = false;
 
-	/** 独立加入的子关卡是否加载完成*/
+	/** 露脌脕垄录脫脠毛碌脛脳脫鹿脴驴篓脢脟路帽录脫脭脴脥锚鲁脡*/
 	UPROPERTY(BlueprintReadWrite)
 	bool qp_isLoadSubMap = false;
 
-	/** 即将加载的level的名字。*/
+	/** 录麓陆芦录脫脭脴碌脛level碌脛脙没脳脰隆拢*/
 	FString qp_readyOpenMapName;
 
 	FString qp_loadingMapName;
 
-	/**加载成功后的回调*/
+	/**录脫脭脴鲁脡鹿娄潞贸碌脛禄脴碌梅*/
 	FLatentActionInfo qp_actionInfo;
 
-	/** 不卸载现在的level，直接加载新的*/
+	/** 虏禄脨露脭脴脧脰脭脷碌脛level拢卢脰卤陆脫录脫脭脴脨脗碌脛*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_LoadMap(const FString MapName, const FVector Location, const FRotator Rotation);
 
-	/** 这个直接切换地图。*/
+	/** 脮芒赂枚脰卤陆脫脟脨禄禄碌脴脥录隆拢*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_OpenMap(const FString MapName);
 
-	/** 这个会加载loading场景，之后在切换地图。*/
+	/** 脮芒赂枚禄谩录脫脭脴loading鲁隆戮掳拢卢脰庐潞贸脭脷脟脨禄禄碌脴脥录隆拢*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_LoadingAndOpenMap(const FString MapName);
-	/** 设置了qp_readyOpenMapName后，可以用这个切换地图。*/
+	/** 脡猫脰脙脕脣qp_readyOpenMapName潞贸拢卢驴脡脪脭脫脙脮芒赂枚脟脨禄禄碌脴脥录隆拢*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_OpenReadyMap();
 
 
-	/** 加载子地图*/
+	/** 录脫脭脴脳脫碌脴脥录*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_LoadSubMap(const FString MapName);
 

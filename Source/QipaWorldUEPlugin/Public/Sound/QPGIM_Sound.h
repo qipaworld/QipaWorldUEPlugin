@@ -4,21 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "QPGameInstanceSoundManager.generated.h"
+#include "QPGIM_Sound.generated.h"
+
 
 class UQPData;
 /**
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPGameInstanceSoundManager : public UGameInstanceSubsystem
+class QIPAWORLDUEPLUGIN_API UQPGIM_Sound : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
-	/** 用了解除数据绑定用的 */
+	/** 脫脙脕脣陆芒鲁媒脢媒戮脻掳贸露篓脫脙碌脛 */
 	//FDelegateHandle qp_handle;
 public:
-	static UQPGameInstanceSoundManager* QP_UQPGameInstanceSoundManager;
+	static UQPGIM_Sound* QP_UQPGIM_Sound;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
@@ -32,89 +33,90 @@ public:
 	virtual void Deinitialize();
 
 public:
-	/***/
+	/**麓忙路脜脕脣脪么脌脰碌脛脢媒戮脻*/
+	UPROPERTY(BlueprintReadWrite)
 	UQPData* qp_soundData;
 	
 	UAudioComponent* qp_bgSound = nullptr;
 	UAudioComponent* qp_UISound = nullptr;
 
-	float qp_pitch = 1.0f;
-	float qp_volume = 1.0f;
-	/**保存游戏用的key和玩家id*/
+	float qp_musicVolume = 1.0f;
+	float qp_soundVolume = 1.0f;
+	/**卤拢麓忙脫脦脧路脫脙碌脛key潞脥脥忙录脪id*/
 	FString qp_SaveSlotName = TEXT("qp_soundSaveGame");;
 	uint32 qp_UserIndex = 0;
 
-	/** 独立加入的子关卡是否加载完成*/
+	/** 露脌脕垄录脫脠毛碌脛脳脫鹿脴驴篓脢脟路帽录脫脭脴脥锚鲁脡*/
 	//UPROPERTY(BlueprintReadWrite)
 	//	bool qp_isLoadMap = false;
 
-	///** 独立加入的子关卡是否加载完成*/
+	///** 露脌脕垄录脫脠毛碌脛脳脫鹿脴驴篓脢脟路帽录脫脭脴脥锚鲁脡*/
 	//UPROPERTY(BlueprintReadWrite)
 	//	bool qp_isLoadSubMap = false;
 
-	/////** 即将加载或者当前level的名字。*/
+	/////** 录麓陆芦录脫脭脴禄貌脮脽碌卤脟掳level碌脛脙没脳脰隆拢*/
 
 	////UPROPERTY(BlueprintReadWrite)
 	////FString qp_loadMapName;
 
-	/**加载成功后的回调*/
+	/**录脫脭脴鲁脡鹿娄潞贸碌脛禄脴碌梅*/
 	//FLatentActionInfo qp_actionInfo;
-	/** Subsystem 里没有beginplay，只能蓝图里调用*/
+	/** Subsystem 脌茂脙禄脫脨beginplay拢卢脰禄脛脺脌露脥录脌茂碌梅脫脙*/
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_BeginPlayInit();
 
 	
-	/** 用资源路径设置背景音乐*/
+	/** 脫脙脳脢脭麓脗路戮露脡猫脰脙卤鲁戮掳脪么脌脰*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_SetBgMusicByPath(const FString soundPath);
 
-	/** 用SoundBase设置背景音乐*/
+	/** 脫脙SoundBase脡猫脰脙卤鲁戮掳脪么脌脰*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_SetBgMusicBySound(USoundBase* sound);
 
-	/** 用资源路径播放背景音乐*/
+	/** 脫脙脳脢脭麓脗路戮露虏楼路脜卤鲁戮掳脪么脌脰*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayBgMusicByPath(const FString soundPath);
 
-	/** 用SoundBase播放背景音乐*/
+	/** 脫脙SoundBase虏楼路脜卤鲁戮掳脪么脌脰*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayBgMusicBySound(USoundBase* sound);
 
-	/** 播放背景音乐*/
+	/** 虏楼路脜卤鲁戮掳脪么脌脰*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayBgMusic();
 
 
-	/** 用资源路径设置UI点击音效*/
+	/** 脫脙脳脢脭麓脗路戮露脡猫脰脙UI碌茫禄梅脪么脨搂*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_SetClickUISoundByPath(const FString soundPath);
 
-	/** 用SoundBase设置UI点击音效*/
+	/** 脫脙SoundBase脡猫脰脙UI碌茫禄梅脪么脨搂*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_SetClickUISoundBySound(USoundBase* sound);
 
-	/** 用资源路径播放UI点击音效*/
+	/** 脫脙脳脢脭麓脗路戮露虏楼路脜UI碌茫禄梅脪么脨搂*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayClickUISoundByPath(const FString soundPath);
 
-	/** 用SoundBase播放UI点击音效*/
+	/** 脫脙SoundBase虏楼路脜UI碌茫禄梅脪么脨搂*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayClickUISoundBySound(USoundBase* sound);
 
-	/** 播放UI点击音效*/
+	/** 虏楼路脜UI碌茫禄梅脪么脨搂*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayClickUISound();
 
-	/** 用路径播放UI一次性的音效*/
+	/** 脫脙脗路戮露虏楼路脜UI脪禄麓脦脨脭碌脛脪么脨搂*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayDisposablesUISoundByPath(const FString soundPath);
 
-	/** 用Sound播放UI一次性的音效*/
+	/** 脫脙Sound虏楼路脜UI脪禄麓脦脨脭碌脛脪么脨搂*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayDisposablesUISoundBySound(USoundBase* sound);
 
-	void QP_CreateAudioComponent(UAudioComponent*& audio, USoundBase* sound);
+	void QP_CreateAudioComponent(UAudioComponent*& audio,float volume, USoundBase* sound);
 
 	void QP_BindSoundData(const UQPData* data);
 

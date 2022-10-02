@@ -4,18 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "QPGameInstanceLoadAssetsManager.generated.h"
+#include "QPGIM_LoadAssets.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPGameInstanceLoadAssetsManager : public UGameInstanceSubsystem
+class QIPAWORLDUEPLUGIN_API UQPGIM_LoadAssets : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 	
 public:
-	static UQPGameInstanceLoadAssetsManager* QP_UQPGameInstanceLoadAssetsManager;
+	static UQPGIM_LoadAssets* QP_UQPGIM_LoadAssets;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
@@ -34,7 +32,7 @@ public:
 
 	//virtual TStatId GetStatId() const override;
 
-	/**Òì²½¼ÓÔØ*/
+	/**Ã’Ã¬Â²Â½Â¼Ã“Ã”Ã˜*/
 	/*UFUNCTION(BlueprintCallable, Category = "QipaWorld|Assets")
 	UQPData* QP_RequestAsyncLoad(FString key, UQPData* data);*/
 

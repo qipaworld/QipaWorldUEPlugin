@@ -15,7 +15,7 @@ class QIPAWORLDUEPLUGIN_API UQPSoundSaveGame : public USaveGame
 	GENERATED_BODY()
 	
 public:
-    float qp_pitch = 1.0f;
-    float qp_volume = 1.0f;
+    float qp_soundVolume = 1.0f;
+    float qp_musicVolume = 1.0f;
 
 };

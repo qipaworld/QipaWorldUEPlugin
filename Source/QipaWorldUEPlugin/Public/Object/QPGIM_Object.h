@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "QPGameInstanceObjectManager.generated.h"
+#include "QPGIM_Object.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPGameInstanceObjectManager : public UGameInstanceSubsystem
+class QIPAWORLDUEPLUGIN_API UQPGIM_Object : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 	
