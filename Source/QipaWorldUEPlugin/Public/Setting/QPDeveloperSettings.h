@@ -47,6 +47,9 @@ public:
 	FString QP_DefaultLoadingMap = "None";
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	FString QP_DefaultMainUserInterfacePath = "None";
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	TMap<FString, int32> QP_UUID;
 
 	UQPDeveloperSettings();

@@ -40,6 +40,8 @@ public class QipaWorldUEPlugin : ModuleRules
 				"SlateCore",
 				//"UnrealYaml",
                 "DeveloperSettings",
+				"UMG",
+                "UMGEditor",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

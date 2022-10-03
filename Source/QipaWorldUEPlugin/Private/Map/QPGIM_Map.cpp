@@ -6,6 +6,8 @@
 #include "Setting/QPDeveloperSettings.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/LevelStreamingDynamic.h"
+#include "Data/QPGIM_Data.h"
+#include "Data/QPData.h"
 
 //#include <MoviePlayer/Public/MoviePlayer.h>
 //#include "Data/QPData.h"
@@ -23,8 +25,8 @@ bool UQPGIM_Map::ShouldCreateSubsystem(UObject* Outer) const
 void UQPGIM_Map::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	//Collection.InitializeDependency(UQPGameInstanceDataManager::StaticClass());
-
+	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
+	
 	QP_UQPGIM_Map = this;
 
 	qp_actionInfo.CallbackTarget = this;
@@ -50,7 +52,7 @@ void UQPGIM_Map::QP_OpenMap(const FString LevelName)
 {
 	//qp_loadMapName = LevelName;
 	UGameplayStatics::OpenLevel(GetWorld(), FName(LevelName));
-
+	UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("mapData")->QP_AddFString("baseLevelName", LevelName, true);
 }
 void UQPGIM_Map::QP_LoadingAndOpenMap(const FString MapName)
 {

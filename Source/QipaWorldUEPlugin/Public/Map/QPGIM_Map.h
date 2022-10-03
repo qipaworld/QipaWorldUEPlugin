@@ -29,44 +29,46 @@ public:
 	virtual void Deinitialize();
 
 public:
-	/** ¶ÀÁ¢¼ÓÈëµÄ×Ó¹Ø¿¨ÊÇ·ñ¼ÓÔØÍê³É*/
+	/** 是否加载完成*/
 	UPROPERTY(BlueprintReadWrite)
 	bool qp_isLoadMap = false;
 
-	/** ¶ÀÁ¢¼ÓÈëµÄ×Ó¹Ø¿¨ÊÇ·ñ¼ÓÔØÍê³É*/
+	/** 子地图是否加载完成*/
 	UPROPERTY(BlueprintReadWrite)
 	bool qp_isLoadSubMap = false;
 
-	/** ¼´½«¼ÓÔØµÄlevelµÄÃû×Ö¡£*/
+	/** 这个是准备打开的地图名字*/
 	FString qp_readyOpenMapName;
 
 	FString qp_loadingMapName;
 
-	/**¼ÓÔØ³É¹¦ºóµÄ»Øµ÷*/
+	/**子地图加载的action*/
 	FLatentActionInfo qp_actionInfo;
 
-	/** ²»Ð¶ÔØÏÖÔÚµÄlevel£¬Ö±½Ó¼ÓÔØÐÂµÄ*/
+	/** 加载新地图，并且保持原来的地图*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_LoadMap(const FString MapName, const FVector Location, const FRotator Rotation);
 
-	/** Õâ¸öÖ±½ÓÇÐ»»µØÍ¼¡£*/
+	/** 直接切换地图*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_OpenMap(const FString MapName);
 
-	/** Õâ¸ö»á¼ÓÔØloading³¡¾°£¬Ö®ºóÔÚÇÐ»»µØÍ¼¡£*/
+	/** 切换地图的时候加个进度条*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_LoadingAndOpenMap(const FString MapName);
-	/** ÉèÖÃÁËqp_readyOpenMapNameºó£¬¿ÉÒÔÓÃÕâ¸öÇÐ»»µØÍ¼¡£*/
+	/** 打开准备加载的地图*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_OpenReadyMap();
 
 
-	/** ¼ÓÔØ×ÓµØÍ¼*/
+	/** 加载子地图*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")
 	void QP_LoadSubMap(const FString MapName);
 
 	/*UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")*/
 	void QP_LoadMapEnd();
+
+
 private:
 	
 

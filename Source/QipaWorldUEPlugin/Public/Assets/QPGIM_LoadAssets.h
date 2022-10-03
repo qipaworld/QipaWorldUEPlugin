@@ -6,7 +6,9 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "QPGIM_LoadAssets.generated.h"
 
-
+/*
+* 没有使用这个类，目前全部用的ConstructorHelpers::FClassFinder
+*/
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPGIM_LoadAssets : public UGameInstanceSubsystem
 {
@@ -34,7 +36,7 @@ public:
 
 	/**Òì²½¼ÓÔØ*/
 	/*UFUNCTION(BlueprintCallable, Category = "QipaWorld|Assets")
-	UQPData* QP_RequestAsyncLoad(FString key, UQPData* data);*/
+	TSubclassOf<T> Class; QP_RequestAsyncLoad(FString key, UQPData* data);*/
 
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
 	//	UQPData* QP_GetQPData(FString key);

@@ -9,7 +9,7 @@
 #include "Setting/QPDeveloperSettings.h"
 #include "Components/AudioComponent.h"
 #include "Sound/QPSoundSaveGame.h"
-
+//#include "UObject/ConstructorHelpers.h"
 
 UQPGIM_Sound* UQPGIM_Sound::QP_UQPGIM_Sound = nullptr;
 
@@ -203,5 +203,6 @@ void UQPGIM_Sound::QP_LoadSoundData()
 
 USoundBase* UQPGIM_Sound::QP_CreateSoundBase(FString path)
 {
-	return LoadObject<USoundWave>(nullptr, *path);
+	
+	return LoadObject<USoundWave>(nullptr,*path);
 }

@@ -16,8 +16,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Sound : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
-	/** ÓÃÁË½â³ýÊý¾Ý°ó¶¨ÓÃµÄ */
-	//FDelegateHandle qp_handle;
+	
 public:
 	static UQPGIM_Sound* QP_UQPGIM_Sound;
 
@@ -42,77 +41,64 @@ public:
 
 	float qp_musicVolume = 1.0f;
 	float qp_soundVolume = 1.0f;
-	/**±£´æÓÎÏ·ÓÃµÄkeyºÍÍæ¼Òid*/
-	FString qp_SaveSlotName = TEXT("qp_soundSaveGame");;
+	/**保存声音设置的文件名字*/
+	FString qp_SaveSlotName = TEXT("qp_soundSaveGame");
+	/**保存声音设置的玩家id*/
 	uint32 qp_UserIndex = 0;
 
-	/** ¶ÀÁ¢¼ÓÈëµÄ×Ó¹Ø¿¨ÊÇ·ñ¼ÓÔØÍê³É*/
-	//UPROPERTY(BlueprintReadWrite)
-	//	bool qp_isLoadMap = false;
-
-	///** ¶ÀÁ¢¼ÓÈëµÄ×Ó¹Ø¿¨ÊÇ·ñ¼ÓÔØÍê³É*/
-	//UPROPERTY(BlueprintReadWrite)
-	//	bool qp_isLoadSubMap = false;
-
-	/////** ¼´½«¼ÓÔØ»òÕßµ±Ç°levelµÄÃû×Ö¡£*/
-
-	////UPROPERTY(BlueprintReadWrite)
-	////FString qp_loadMapName;
-
-	/**¼ÓÔØ³É¹¦ºóµÄ»Øµ÷*/
-	//FLatentActionInfo qp_actionInfo;
-	/** Subsystem ÀïÃ»ÓÐbeginplay£¬Ö»ÄÜÀ¶Í¼Àïµ÷ÓÃ*/
+	
+	/** Subsystem 没有BeginPlay，这个必须beginplay里调用，没有world，不能播放声音*/
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_BeginPlayInit();
 
 	
-	/** ÓÃ×ÊÔ´Â·¾¶ÉèÖÃ±³¾°ÒôÀÖ*/
+	/** 用路径设置背景音乐*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_SetBgMusicByPath(const FString soundPath);
 
-	/** ÓÃSoundBaseÉèÖÃ±³¾°ÒôÀÖ*/
+	/** 用sound设置背景音乐*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_SetBgMusicBySound(USoundBase* sound);
 
-	/** ÓÃ×ÊÔ´Â·¾¶²¥·Å±³¾°ÒôÀÖ*/
+	/** 用路径播放背景音乐*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayBgMusicByPath(const FString soundPath);
 
-	/** ÓÃSoundBase²¥·Å±³¾°ÒôÀÖ*/
+	/** 用sound播放背景音乐*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayBgMusicBySound(USoundBase* sound);
 
-	/** ²¥·Å±³¾°ÒôÀÖ*/
+	/** 播放背景音乐*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayBgMusic();
 
 
-	/** ÓÃ×ÊÔ´Â·¾¶ÉèÖÃUIµã»÷ÒôÐ§*/
+	/** 用路径设置点击ui的音效*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_SetClickUISoundByPath(const FString soundPath);
 
-	/** ÓÃSoundBaseÉèÖÃUIµã»÷ÒôÐ§*/
+	/** 用sound设置点击ui的音效*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_SetClickUISoundBySound(USoundBase* sound);
 
-	/** ÓÃ×ÊÔ´Â·¾¶²¥·ÅUIµã»÷ÒôÐ§*/
+	/** 用路径播放点击ui的音效*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayClickUISoundByPath(const FString soundPath);
 
-	/** ÓÃSoundBase²¥·ÅUIµã»÷ÒôÐ§*/
+	/** 用sound播放点击ui的音效*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayClickUISoundBySound(USoundBase* sound);
 
-	/** ²¥·ÅUIµã»÷ÒôÐ§*/
+	/** 播放点击ui的音效*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayClickUISound();
 
-	/** ÓÃÂ·¾¶²¥·ÅUIÒ»´ÎÐÔµÄÒôÐ§*/
+	/** 用路径播放一次性音效*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayDisposablesUISoundByPath(const FString soundPath);
 
-	/** ÓÃSound²¥·ÅUIÒ»´ÎÐÔµÄÒôÐ§*/
+	/** 用sound播放一次性音效*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayDisposablesUISoundBySound(USoundBase* sound);
 
