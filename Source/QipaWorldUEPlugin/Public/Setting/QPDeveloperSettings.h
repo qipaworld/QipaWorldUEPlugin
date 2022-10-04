@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -48,6 +48,13 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	FString QP_DefaultMainUserInterfacePath = "None";
+
+	/*这个是默认的看出ui动作的key，你可以在动作管理器里加入这个事件，并且绑定按键。他会自动弹出和关闭ui*/
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	FString QP_DefaultUserInterfaceActionKey = "DefaultUserInterfaceAction";
+	/*如果这个为真，上面的key生效*/
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	bool QP_UserInterfaceAutoPop = true;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	TMap<FString, int32> QP_UUID;

@@ -63,6 +63,7 @@ public:
 
 	void QP_BindMapData(const UQPData* data);
 
+	void QP_UpdateMouse(bool b);
 
-
+	void QP_BindKeyBoard();
 };

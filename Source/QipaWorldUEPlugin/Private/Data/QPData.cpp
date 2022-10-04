@@ -23,6 +23,7 @@ void UQPData::QP_Remove##type(FString key, bool sync) {\
 void UQPData::QP_Init(FString name)
 {
 	qp_dataName = name;
+	AddToRoot();
 }
 
 void UQPData::QP_DelegateBroadcast()
