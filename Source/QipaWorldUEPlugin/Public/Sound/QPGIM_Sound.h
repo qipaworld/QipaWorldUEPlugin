@@ -36,7 +36,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	UQPData* qp_soundData;
 	
+	UPROPERTY()
 	UAudioComponent* qp_bgSound = nullptr;
+	UPROPERTY()
 	UAudioComponent* qp_UISound = nullptr;
 
 	float qp_musicVolume = 1.0f;

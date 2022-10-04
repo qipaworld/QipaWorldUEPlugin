@@ -40,6 +40,7 @@ void UQPGIM_Sound::Deinitialize()
 		qp_bgSound->Stop();
 	}
 	//qp_soundData->qp_dataDelegate.Remove(qp_handle);
+	QP_SaveSoundData();
 	Super::Deinitialize();
 }
 
@@ -143,6 +144,7 @@ void UQPGIM_Sound::QP_PlayDisposablesUISoundBySound(USoundBase* sound)
 
 void UQPGIM_Sound::QP_CreateAudioComponent(UAudioComponent*& audio,float volume,USoundBase* sound) {
 	audio = UGameplayStatics::CreateSound2D(GetWorld(), sound, volume, 1.0f, 0.0f, nullptr, true);
+	//audio->AddToRoot();
 }
 
 void UQPGIM_Sound::QP_BindSoundData(const UQPData* data)
@@ -161,19 +163,22 @@ void UQPGIM_Sound::QP_BindSoundData(const UQPData* data)
 
 void UQPGIM_Sound::QP_SaveSoundData()
 {
+
 	UQPSoundSaveGame* qp_soundSaveGame = Cast<UQPSoundSaveGame>(UGameplayStatics::CreateSaveGameObject(UQPSoundSaveGame::StaticClass()));
 	if (qp_soundSaveGame)
 	{
-		// 设置（可选）委托。
-		FAsyncSaveGameToSlotDelegate qp_SavedDelegate;
-		// USomeUObjectClass::SaveGameDelegateFunction is a void function that takes the following parameters: const FString& SlotName, const int32 UserIndex, bool bSuccess
-		qp_SavedDelegate.BindUObject(this, &UQPGIM_Sound::QP_SavedDelegate);
 
+		// 设置（可选）委托。
+		//FAsyncSaveGameToSlotDelegate qp_SavedDelegate;
+		// USomeUObjectClass::SaveGameDelegateFunction is a void function that takes the following parameters: const FString& SlotName, const int32 UserIndex, bool bSuccess
+		//qp_SavedDelegate.BindUObject(this, &UQPGIM_Sound::QP_SavedDelegate);
+		
 		qp_soundSaveGame->qp_musicVolume = qp_musicVolume;
 		qp_soundSaveGame->qp_soundVolume = qp_soundVolume;
 
+		UGameplayStatics::SaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName, qp_UserIndex);
 		// 启动异步保存进程。
-		UGameplayStatics::AsyncSaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName,qp_UserIndex, qp_SavedDelegate);
+		//UGameplayStatics::AsyncSaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName,qp_UserIndex, qp_SavedDelegate);
 	}
 }
 
@@ -186,6 +191,7 @@ void UQPGIM_Sound::QP_LoadSoundData()
 	UQPSoundSaveGame* qp_LoadSoundData = Cast<UQPSoundSaveGame>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
 	if (qp_LoadSoundData)
 	{
+		
 		qp_musicVolume = qp_LoadSoundData->qp_musicVolume;
 		qp_soundVolume = qp_LoadSoundData->qp_soundVolume;
 	}
@@ -194,6 +200,7 @@ void UQPGIM_Sound::QP_LoadSoundData()
 		qp_musicVolume = 1.0f;
 		qp_soundVolume = 1.0f;
 	}
+	
 	qp_soundData->QP_Addfloat("musicVolume", qp_musicVolume);
 	qp_soundData->QP_Addfloat("soundVolume", qp_soundVolume);
 	//qp_handle = qp_soundData->qp_dataDelegate.AddUObject(this, &UQPGIM_Sound::QP_BindSoundData);

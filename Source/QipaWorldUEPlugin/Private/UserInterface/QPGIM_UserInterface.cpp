@@ -63,7 +63,8 @@ UUserWidget* UQPGIM_UserInterface::QP_AddUserInterface(UUserWidget* widget, FStr
 	}
 
 	qp_UIData.Add(key, widget);
-	qp_topWidgetkey = key;
+	//qp_topWidgetkey = key;
+	qp_UIDataKey.Add(key);
 	widget->AddToViewport(qp_UIData.Num());
 	
 	QP_UpdateMouse(true);
@@ -81,12 +82,13 @@ void UQPGIM_UserInterface::QP_RemoveUserInterface(FString key)
 {
 	FString realKey = key;
 	if (key == "None") {
-		realKey = qp_topWidgetkey;
+		realKey = qp_UIDataKey.Last();
 	}
 	 
 	if(qp_UIData.Contains(realKey)) {
-		qp_UIData[realKey]->RemoveFromParent();
-		qp_UIData.Remove(realKey);
+		
+		qp_UIDataKey.RemoveAt(qp_UIDataKey.Num()-1);
+		qp_UIData.FindAndRemoveChecked(realKey)->RemoveFromParent();
 		if (qp_UIData.Num() < 1) {
 			QP_UpdateMouse(false);
 		}

@@ -33,8 +33,9 @@ public:
 
 public:
 	TMap<FString, UUserWidget*> qp_UIData;
+	TArray<FString> qp_UIDataKey;
 
-	FString qp_topWidgetkey;
+	//FString qp_topWidgetkey;
 
 	FString qp_mainUIPath;
 
