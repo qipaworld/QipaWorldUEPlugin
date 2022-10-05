@@ -87,7 +87,7 @@ void UQPGIM_UserInterface::QP_RemoveUserInterface(FString key)
 	 
 	if(qp_UIData.Contains(realKey)) {
 		
-		qp_UIDataKey.RemoveAt(qp_UIDataKey.Num()-1);
+		qp_UIDataKey.Remove(realKey);
 		qp_UIData.FindAndRemoveChecked(realKey)->RemoveFromParent();
 		if (qp_UIData.Num() < 1) {
 			QP_UpdateMouse(false);
@@ -103,16 +103,15 @@ void UQPGIM_UserInterface::QP_UpdateMouse(bool b) {
 	APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	controller->SetShowMouseCursor(b);
 	if (b) {
-		UWidgetBlueprintLibrary::SetInputMode_GameAndUI(controller);
+		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(controller);
 	}
 	else {
 		UWidgetBlueprintLibrary::SetInputMode_GameOnly(controller);
 	}
 
 }
-void UQPGIM_UserInterface::QP_BindKeyBoard()
+void UQPGIM_UserInterface::QP_KeyBoardEvent()
 {
-
 	if (qp_UIData.Num() < 1) {
 		QP_AddMainUserInterface();
 	}
@@ -120,24 +119,31 @@ void UQPGIM_UserInterface::QP_BindKeyBoard()
 		QP_RemoveUserInterface();
 	}
 }
-void UQPGIM_UserInterface::QP_ResetUIData()
+void UQPGIM_UserInterface::QP_BindKeyBoard()
 {
-
-	qp_UIData.Reset();
-	QP_UpdateMouse(false);
 	UQPDeveloperSettings* devSetting = UQPDeveloperSettings::QP_GET();
 	if (devSetting->QP_UserInterfaceAutoPop) {
 
 		APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		controller->InputComponent->BindAction(*(devSetting->QP_DefaultUserInterfaceActionKey), IE_Released, this, &UQPGIM_UserInterface::QP_BindKeyBoard);
+		controller->InputComponent->BindAction(*(devSetting->QP_DefaultUserInterfaceActionKey), IE_Released, this, &UQPGIM_UserInterface::QP_KeyBoardEvent);
 
 	}
+}
+void UQPGIM_UserInterface::QP_ResetUIData()
+{
+
+	qp_UIData.Reset();
+	qp_UIDataKey.Reset();
+	QP_UpdateMouse(false);
+	
 }
 
 void UQPGIM_UserInterface::QP_BindMapData(const UQPData* data)
 {
-	if (data->qp_changeMap.Contains("baseLevelName")) {
+	if (data->qp_changeMap.Contains("changeLevelName")) {
 		QP_ResetUIData();
 	}
-	
+	else if (data->qp_changeMap.Contains("baseLevelName")) {
+		QP_BindKeyBoard();
+	}
 }

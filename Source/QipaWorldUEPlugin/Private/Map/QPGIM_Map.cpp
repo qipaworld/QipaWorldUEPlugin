@@ -51,6 +51,7 @@ void UQPGIM_Map::QP_LoadMap(const FString MapName, const FVector Location, const
 void UQPGIM_Map::QP_OpenMap(const FString LevelName)
 {
 	//qp_loadMapName = LevelName;
+	UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("mapData")->QP_AddFString("changeLevelName", LevelName, true);
 	UGameplayStatics::OpenLevel(GetWorld(), FName(LevelName));
 	UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("mapData")->QP_AddFString("baseLevelName", LevelName);
 }

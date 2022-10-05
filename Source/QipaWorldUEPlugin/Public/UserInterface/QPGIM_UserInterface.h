@@ -61,10 +61,11 @@ public:
 	/*情况ui数据，但是不会删除ui*/
 	void QP_ResetUIData();
 
+	void QP_BindKeyBoard();
 
 	void QP_BindMapData(const UQPData* data);
 
 	void QP_UpdateMouse(bool b);
 
-	void QP_BindKeyBoard();
+	void QP_KeyBoardEvent();
 };

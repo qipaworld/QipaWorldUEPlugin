@@ -32,7 +32,7 @@ public:
 	virtual void Deinitialize();
 
 public:
-	/**´æ·ÅÁËÒôÀÖµÄÊý¾Ý*/
+	/**声音数据*/
 	UPROPERTY(BlueprintReadWrite)
 	UQPData* qp_soundData;
 	
@@ -41,8 +41,8 @@ public:
 	UPROPERTY()
 	UAudioComponent* qp_UISound = nullptr;
 
-	float qp_musicVolume = 1.0f;
-	float qp_soundVolume = 1.0f;
+	/*float qp_musicVolume = 1.0f;
+	float qp_soundVolume = 1.0f;*/
 	/**保存声音设置的文件名字*/
 	FString qp_SaveSlotName = TEXT("qp_soundSaveGame");
 	/**保存声音设置的玩家id*/
@@ -104,9 +104,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
 	void QP_PlayDisposablesUISoundBySound(USoundBase* sound);
 
+	/** 设置音效大小*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	void QP_SetSoundVolume(float v);
+
+	/** 获得音效大小*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	float QP_GetSoundVolume();
+
+	/** 设置音乐大小*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+		void QP_SetMusicVolume(float v);
+
+	/** 获得音乐大小*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+		float QP_GetMusicVolume();
+
+
 	void QP_CreateAudioComponent(UAudioComponent*& audio,float volume, USoundBase* sound);
 
-	void QP_BindSoundData(const UQPData* data);
+	void QP_SoundDataChange(const UQPData* data);
 
 	void QP_SaveSoundData();
 	void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
