@@ -29,7 +29,24 @@ void UQPGIM_Localization::Deinitialize()
 	Super::Deinitialize();
 }
 
-bool UQPGIM_Localization::QP_SetCurrentCulture(const FString& InCultureName)
+bool UQPGIM_Localization::QP_SetCurrentLanguage(FString InCultureName)
+{
+	return UKismetInternationalizationLibrary::SetCurrentLanguage(InCultureName);
+}
+
+FString UQPGIM_Localization::QP_GetCurrentLanguage()
+{
+	return UKismetInternationalizationLibrary::GetCurrentLanguage();
+}
+
+bool UQPGIM_Localization::QP_SetCurrentLocale(FString InCultureName)
+{
+	return UKismetInternationalizationLibrary::SetCurrentLocale(InCultureName);
+}
+
+
+
+bool UQPGIM_Localization::QP_SetCurrentCulture(FString InCultureName)
 {
 	return UKismetInternationalizationLibrary::SetCurrentCulture(InCultureName);
 }
@@ -39,14 +56,14 @@ FString UQPGIM_Localization::QP_GetCurrentLocale()
 	return UKismetInternationalizationLibrary::GetCurrentLocale();
 }
 
-FString UQPGIM_Localization::QP_GetCultureDisplayName(const FString& Culture, const bool Localized)
+FString UQPGIM_Localization::QP_GetCultureDisplayName(FString Culture, bool Localized)
 {
 	return UKismetInternationalizationLibrary::GetCultureDisplayName(Culture, Localized);
 }
 
 TArray<FString> UQPGIM_Localization::QP_GetLocalizedCultures() const
 {
-	return UKismetInternationalizationLibrary::GetLocalizedCultures();
+	return UKismetInternationalizationLibrary::GetLocalizedCultures(true);
 }
 
 FString UQPGIM_Localization::QP_GetSuitableCulture(TArray<FString> AvailableCultures, FString CulturetoMatch, FString FallbackCulture)

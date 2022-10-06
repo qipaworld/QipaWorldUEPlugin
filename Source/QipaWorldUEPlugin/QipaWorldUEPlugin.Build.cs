@@ -41,7 +41,7 @@ public class QipaWorldUEPlugin : ModuleRules
 				//"UnrealYaml",
                 "DeveloperSettings",
 				"UMG",
-                "UMGEditor",
+                //"UMGEditor",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

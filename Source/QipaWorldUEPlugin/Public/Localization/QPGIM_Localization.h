@@ -33,9 +33,26 @@ public:
 	//UPROPERTY(BlueprintReadWrite)
 	//TMap<FString, FString> qp_LocalizationList;
 
+	/**设置语言*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+		bool QP_SetCurrentLanguage(FString InCultureName);
+
+	/**获得语言*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+		FString QP_GetCurrentLanguage();
+
 	/**设置地区*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
-	bool QP_SetCurrentCulture(const FString& InCultureName);
+		bool QP_SetCurrentLocale(FString InCultureName);
+
+	///**获得地区*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	//	const FString QP_GetCurrentLocale(const FString& InCultureName);
+
+
+	/**设置所有，比如地区和语言和资产*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	bool QP_SetCurrentCulture(FString InCultureName);
 
 	/**获得地区*/
 
@@ -45,7 +62,7 @@ public:
 	/**获得地区显示名称*/
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
-	FString QP_GetCultureDisplayName(const FString& Culture,const bool Localized);
+	FString QP_GetCultureDisplayName(FString Culture,bool Localized);
 	
 	/**获得支持地区的列表*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
