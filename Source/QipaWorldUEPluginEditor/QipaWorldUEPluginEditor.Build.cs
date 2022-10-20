@@ -37,8 +37,14 @@ public class QipaWorldUEPluginEditor : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore", 
-				"EditorSubsystem",
+				"SlateCore",
+                "UnrealEd",
+                "EditorSubsystem",
+                "UMG",
+                "Blutility",
+                "UMGEditor",
+                "EditorScriptingUtilities",
+                "MovieScene",
 
 				// ... add private dependencies that you statically link with here ...	
 			}
