@@ -3,7 +3,7 @@
 
 #include "Map/QPGIM_Map.h"
 
-#include "Setting/QPDeveloperSettings.h"
+#include "Setting/QPDS_Default.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/LevelStreamingDynamic.h"
 #include "Data/QPGIM_Data.h"
@@ -31,10 +31,10 @@ void UQPGIM_Map::Initialize(FSubsystemCollectionBase& Collection)
 
 	qp_actionInfo.CallbackTarget = this;
 	qp_actionInfo.ExecutionFunction = "QP_LoadMapEnd";
-	qp_actionInfo.UUID = UQPDeveloperSettings::QP_GET()->QP_UUID["qp_loadMap"];
+	qp_actionInfo.UUID = UQPDS_Default::QP_GET()->QP_UUID["qp_loadMap"];
 	qp_actionInfo.Linkage = 0;
 
-	qp_loadingMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultLoadingMap;
+	qp_loadingMapName = UQPDS_Default::QP_GET()->QP_DefaultLoadingMap;
 	//qp_loadingMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;
 }
 

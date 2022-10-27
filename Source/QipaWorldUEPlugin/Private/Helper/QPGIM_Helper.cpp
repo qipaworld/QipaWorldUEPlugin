@@ -2,7 +2,7 @@
 
 
 #include "Helper/QPGIM_Helper.h"
-#include "Helper/QPHelperSaveGame.h"
+#include "Helper/QPSG_Helper.h"
 #include "Kismet/GameplayStatics.h"
 #include "Data/QPGIM_Data.h"
 #include "Data/QPData.h"
@@ -72,7 +72,7 @@ int32 UQPGIM_Helper::QP_GetCourseNum()
 void UQPGIM_Helper::QP_SaveHelperData()
 {
 
-	UQPHelperSaveGame* qp_helperSaveGame = Cast<UQPHelperSaveGame>(UGameplayStatics::CreateSaveGameObject(UQPHelperSaveGame::StaticClass()));
+	UQPSG_Helper* qp_helperSaveGame = Cast<UQPSG_Helper>(UGameplayStatics::CreateSaveGameObject(UQPSG_Helper::StaticClass()));
 	if (qp_helperSaveGame)
 	{
 
@@ -97,7 +97,7 @@ void UQPGIM_Helper::QP_SavedDelegate(const FString& SlotName, const int32 UserIn
 
 void UQPGIM_Helper::QP_LoadHelperData()
 {
-	UQPHelperSaveGame* qp_LoadHelperData = Cast<UQPHelperSaveGame>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
+	UQPSG_Helper* qp_LoadHelperData = Cast<UQPSG_Helper>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
 	if (qp_LoadHelperData)
 	{
 

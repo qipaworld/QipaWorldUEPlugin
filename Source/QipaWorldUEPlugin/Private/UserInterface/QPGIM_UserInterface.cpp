@@ -6,7 +6,7 @@
 //#include "WidgetBlueprint.h"
 #include "Blueprint/UserWidget.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Setting/QPDeveloperSettings.h"
+#include "Setting/QPDS_Default.h"
 #include "Data/QPGIM_Data.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -27,7 +27,7 @@ void UQPGIM_UserInterface::Initialize(FSubsystemCollectionBase& Collection)
 	UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("mapData")->qp_dataDelegate.AddUObject(this, &UQPGIM_UserInterface::QP_BindMapData);
 
 	QP_UQPGIM_UserInterface = this;
-	UQPDeveloperSettings* devSetting = UQPDeveloperSettings::QP_GET();
+	UQPDS_Default* devSetting = UQPDS_Default::QP_GET();
 	qp_mainUIPath = devSetting->QP_DefaultMainUserInterfacePath;
 	//LoadYaml("");
 	//qp_gameQPdataBase = NewObject<UQPData>();
@@ -121,7 +121,7 @@ void UQPGIM_UserInterface::QP_KeyBoardEvent()
 }
 void UQPGIM_UserInterface::QP_BindKeyBoard()
 {
-	UQPDeveloperSettings* devSetting = UQPDeveloperSettings::QP_GET();
+	UQPDS_Default* devSetting = UQPDS_Default::QP_GET();
 	if (devSetting->QP_UserInterfaceAutoPop) {
 
 		APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);

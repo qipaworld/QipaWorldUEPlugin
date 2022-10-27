@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
-#include "QPHelperSaveGame.generated.h"
+#include "QPSG_Helper.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPHelperSaveGame : public USaveGame
+class QIPAWORLDUEPLUGIN_API UQPSG_Helper : public USaveGame
 {
 	GENERATED_BODY()
 public:

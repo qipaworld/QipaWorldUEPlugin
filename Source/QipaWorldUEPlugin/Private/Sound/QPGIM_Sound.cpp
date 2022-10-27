@@ -6,9 +6,9 @@
 #include "Data/QPGIM_Data.h"
 #include "Data/QPData.h"
 #include "Kismet/GameplayStatics.h"
-#include "Setting/QPDeveloperSettings.h"
+#include "Setting/QPDS_Default.h"
 #include "Components/AudioComponent.h"
-#include "Sound/QPSoundSaveGame.h"
+#include "Sound/QPSG_Sound.h"
 //#include "UObject/ConstructorHelpers.h"
 
 UQPGIM_Sound* UQPGIM_Sound::QP_UQPGIM_Sound = nullptr;
@@ -31,7 +31,7 @@ void UQPGIM_Sound::Initialize(FSubsystemCollectionBase& Collection)
 	
 	QP_LoadSoundData();
 	
-	//qp_loadMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;
+	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
 }
 
 void UQPGIM_Sound::Deinitialize()
@@ -47,8 +47,8 @@ void UQPGIM_Sound::Deinitialize()
 void UQPGIM_Sound::QP_BeginPlayInit()
 {
 	
-	FString soundPath = UQPDeveloperSettings::QP_GET()->QP_DefaultBackgroundAudioPath;
-	bool autoPlay = UQPDeveloperSettings::QP_GET()->QP_BackgroundAudioAutoPlay;
+	FString soundPath = UQPDS_Default::QP_GET()->QP_DefaultBackgroundAudioPath;
+	bool autoPlay = UQPDS_Default::QP_GET()->QP_BackgroundAudioAutoPlay;
 	
 	if (autoPlay) {
 		QP_PlayBgMusicByPath(soundPath);
@@ -56,7 +56,7 @@ void UQPGIM_Sound::QP_BeginPlayInit()
 		QP_CreateAudioComponent(qp_bgSound, QP_GetMusicVolume(), QP_CreateSoundBase(soundPath));
 	}
 
-	FString UISoundPath = UQPDeveloperSettings::QP_GET()->QP_DefaultUIClickAudioPath;
+	FString UISoundPath = UQPDS_Default::QP_GET()->QP_DefaultUIClickAudioPath;
 
 	if (UISoundPath != "None") {
 		QP_CreateAudioComponent(qp_UISound, QP_GetSoundVolume(), QP_CreateSoundBase(UISoundPath));
@@ -184,7 +184,7 @@ void UQPGIM_Sound::QP_SoundDataChange(const UQPData* data)
 void UQPGIM_Sound::QP_SaveSoundData()
 {
 
-	UQPSoundSaveGame* qp_soundSaveGame = Cast<UQPSoundSaveGame>(UGameplayStatics::CreateSaveGameObject(UQPSoundSaveGame::StaticClass()));
+	UQPSG_Sound* qp_soundSaveGame = Cast<UQPSG_Sound>(UGameplayStatics::CreateSaveGameObject(UQPSG_Sound::StaticClass()));
 	if (qp_soundSaveGame)
 	{
 
@@ -208,7 +208,7 @@ void UQPGIM_Sound::QP_SavedDelegate(const FString& SlotName, const int32 UserInd
 
 void UQPGIM_Sound::QP_LoadSoundData()
 {
-	UQPSoundSaveGame* qp_LoadSoundData = Cast<UQPSoundSaveGame>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
+	UQPSG_Sound* qp_LoadSoundData = Cast<UQPSG_Sound>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
 	if (qp_LoadSoundData)
 	{
 		

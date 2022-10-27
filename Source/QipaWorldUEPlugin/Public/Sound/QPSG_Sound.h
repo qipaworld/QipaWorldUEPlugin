@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
-#include "QPSoundSaveGame.generated.h"
+#include "QPSG_Sound.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPSoundSaveGame : public USaveGame
+class QIPAWORLDUEPLUGIN_API UQPSG_Sound : public USaveGame
 {
 	GENERATED_BODY()
 	

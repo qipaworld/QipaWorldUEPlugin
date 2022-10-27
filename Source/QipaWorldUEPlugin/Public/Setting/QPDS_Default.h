@@ -1,16 +1,16 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
-#include "QPDeveloperSettings.generated.h"
+#include "QPDS_Default.generated.h"
 
 /**
  * 
  */
 UCLASS(Config = QipaWorldPluginSetting, defaultconfig, meta = (DisplayName = "Plugin Default Setting"))
-class QIPAWORLDUEPLUGIN_API UQPDeveloperSettings : public UDeveloperSettings
+class QIPAWORLDUEPLUGIN_API UQPDS_Default : public UDeveloperSettings
 {
 	GENERATED_BODY()
 public:
@@ -27,8 +27,8 @@ public:
 	virtual FText GetSectionDescription() const;
 
 public:
-	UFUNCTION(BlueprintPure,DisplayName = "QPDeveloperSettings")
-	static UQPDeveloperSettings* QP_GET();
+	UFUNCTION(BlueprintPure,DisplayName = "UQPDS_Default")
+	static UQPDS_Default* QP_GET();
 
 public:
 	UPROPERTY(Config,EditAnywhere,BlueprintReadWrite, Category = "QipaWorld")
@@ -59,5 +59,5 @@ public:
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	TMap<FString, int32> QP_UUID;
 
-	UQPDeveloperSettings();
+	UQPDS_Default();
 };

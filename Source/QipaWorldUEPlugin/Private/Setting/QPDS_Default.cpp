@@ -1,33 +1,33 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Setting/QPDeveloperSettings.h"
+#include "Setting/QPDS_Default.h"
 
 //UQPDeveloperSettings::DefaultBackgroundAudioPath = "None";
 /** Gets the settings container name for the settings, either Project or Editor */
 //FName UQPDeveloperSettings::GetContainerName() const
 //{ return TEXT("QipaWorldPlugin1"); }
 /** Gets the category for the settings, some high level grouping like, Editor, Engine, Game...etc. */
-FName UQPDeveloperSettings::GetCategoryName() const
+FName UQPDS_Default::GetCategoryName() const
 { return TEXT("QipaWorldPlugin"); }
 ///** The unique name for your section of settings, uses the class's FName. */
 //FName UQPDeveloperSettings::GetSectionName() const
 //{ return TEXT("QipaWorldPlugin3"); }
 
 /** Gets the section text, uses the classes DisplayName by default. */
-FText UQPDeveloperSettings::GetSectionText() const 
+FText UQPDS_Default::GetSectionText() const
 { return FText::FromString(TEXT("Plugin Default Setting")); }
 /** Gets the description for the section, uses the classes ToolTip by default. */
-FText UQPDeveloperSettings::GetSectionDescription() const 
+FText UQPDS_Default::GetSectionDescription() const
 { return FText::FromString(TEXT("Plugin Default Setting")); }
 
 
-UQPDeveloperSettings* UQPDeveloperSettings::QP_GET() 
+UQPDS_Default* UQPDS_Default::QP_GET()
 {
-	return GetMutableDefault<UQPDeveloperSettings>(); 
+	return GetMutableDefault<UQPDS_Default>();
 }
 
-UQPDeveloperSettings::UQPDeveloperSettings()
+UQPDS_Default::UQPDS_Default()
 {
 	//DefaultBackgroundAudioPath = "None";
 	//DefaultUIClickAudioPath = "None";
