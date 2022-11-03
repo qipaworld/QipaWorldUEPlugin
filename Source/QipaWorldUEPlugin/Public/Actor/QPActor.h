@@ -3,25 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actor/QPActor.h"
-#include "QPSkill.generated.h"
+#include "GameFramework/Actor.h"
+#include "QPActor.generated.h"
 
-class UParticleSystemComponent;
+class USceneComponent;
 /**
  * 技能的基类
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API AQPSkill : public AQPActor
+class QIPAWORLDUEPLUGIN_API AQPActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AQPSkill();
+	AQPActor();
 
 protected:
 	UPROPERTY(VisibleAnywhere)
-	UParticleSystemComponent* qp_effect;
+	USceneComponent* qp_root;
 
 protected:
 	// Called when the game starts or when spawned

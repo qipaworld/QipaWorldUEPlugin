@@ -3,31 +3,32 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actor/QPActor.h"
-#include "QPSkill.generated.h"
+#include "Skill/QPSkill.h"
+#include "Components/StaticMeshComponent.h"
 
-class UParticleSystemComponent;
+#include "QPS_Collision.generated.h"
+
 /**
- * 技能的基类
+ * 可移动的技能的基类
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API AQPSkill : public AQPActor
+class QIPAWORLDUEPLUGIN_API AQPS_Collision : public AQPSkill
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
-	AQPSkill();
+	AQPS_Collision();
 
 protected:
 	UPROPERTY(VisibleAnywhere)
-	UParticleSystemComponent* qp_effect;
+	UStaticMeshComponent* qp_staticMesh;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
