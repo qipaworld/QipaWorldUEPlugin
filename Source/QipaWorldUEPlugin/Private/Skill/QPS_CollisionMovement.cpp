@@ -2,6 +2,7 @@
 
 
 #include "Skill/QPS_CollisionMovement.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AQPS_CollisionMovement::AQPS_CollisionMovement()
@@ -10,7 +11,11 @@ AQPS_CollisionMovement::AQPS_CollisionMovement()
 	PrimaryActorTick.bCanEverTick = true;
 
 	qp_staticMesh = CreateDefaultSubobject<UStaticMeshComponent>("qp_staticMesh");
-	qp_staticMesh->SetupAttachment(RootComponent);
+	//qp_staticMesh->SetupAttachment(RootComponent);
+	qp_effect->SetupAttachment(qp_staticMesh);
+
+	RootComponent = qp_staticMesh;
+
 	qp_staticMesh->SetCollisionProfileName("SkillMovement");
 	qp_movement = CreateDefaultSubobject<UProjectileMovementComponent>("qp_movement");
 

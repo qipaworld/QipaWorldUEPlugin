@@ -27,6 +27,8 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* qp_movement;
 
+	//UPROPERTY(VisibleAnywhere)
+		//UStaticMeshComponent* qp_staticMesh;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
