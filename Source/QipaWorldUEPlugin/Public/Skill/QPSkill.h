@@ -4,9 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Actor/QPActor.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
+#include "NiagaraComponent.h"
+#include "NiagaraActor.h"
 #include "QPSkill.generated.h"
 
-class UParticleSystemComponent;
+
 /**
  * 技能的基类
  */
@@ -20,8 +24,15 @@ public:
 	AQPSkill();
 
 protected:
-	UPROPERTY(VisibleAnywhere)
-	UParticleSystemComponent* qp_effect;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UNiagaraComponent* qp_niagara;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		ANiagaraActor* qp_effect3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UNiagaraSystem* qp_effect2;*/
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX")
+		class UNiagaraSystem* MyCoolFX;*/
 
 protected:
 	// Called when the game starts or when spawned

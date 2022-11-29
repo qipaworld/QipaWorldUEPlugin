@@ -7,6 +7,8 @@
 #include "QPGIM_Helper.generated.h"
 
 class UQPData;
+class UQPSG_Helper;
+
 
 /**
  * 
@@ -30,59 +32,40 @@ public:
 	/** Implement this for deinitialization of instances of the system */
 	virtual void Deinitialize();
 
-public:
-
-	/**帮助数据*/
-	UPROPERTY(BlueprintReadWrite)
-	UQPData* qp_helperData;
-	
-	/** 帮助id*/
-	//UPROPERTY(VisibleAnywhere, Category = "QipaWorld|Helper")
-	//int32 qp_helperNum = 1;
-	/** 提示id*/
-
-	//UPROPERTY(VisibleAnywhere, Category = "QipaWorld|Helper")
-	//int32 qp_tipNum = 1;
-	/** 段教程id*/
-
-	//UPROPERTY(VisibleAnywhere, Category = "QipaWorld|Helper")
-	//int32 qp_courseNum = 1;
-
+protected:
+	FString qp_dataName = TEXT("helperData");
 	/**保存设置的文件名字*/
 	FString qp_SaveSlotName = TEXT("qp_helperSaveGame");
 	/**保存设置的玩家id*/
 	uint32 qp_UserIndex = 0;
 
+	
+	virtual void QP_LoadHelperData();
+	virtual void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
+	
+public:
 
-	/** 设置新的帮助id*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
-	void QP_SetHelperNum(int32 n);
-
-	/** 设置新的提示id*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
-	void QP_SetTipNum(int32 n);
-
-	/** 设置新的短教程id*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
-	void QP_SetCourseNum(int32 n);
-
-	/** 设置新的帮助id*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
-		int32 QP_GetHelperNum();
+	
+	/**帮助数据*/
+	UPROPERTY(BlueprintReadWrite)
+	UQPData* qp_helperData;
+	
+	UPROPERTY(BlueprintReadWrite)
+	UQPSG_Helper* qp_helperSaveData;
 
 	/** 设置新的提示id*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
-		int32 QP_GetTipNum();
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Helper")
+	void QP_SetHelperName(FString n);
 
-	/** 设置新的短教程id*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
-		int32 QP_GetCourseNum();
+	/** 获得提示id*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Helper")
+	FString QP_GetHelperName();
+	
+	/** 检测提示id*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Helper")
+	bool QP_GetHelperNameState(FString n);
 
 	void QP_SaveHelperData();
-	void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
-	void QP_LoadHelperData();
-
+	
 	void QP_BindHelperData(const UQPData* data);
-
-
 };

@@ -23,9 +23,11 @@ void UQPGIM_Helper::Initialize(FSubsystemCollectionBase& Collection)
 
 	QP_UQPGIM_Helper = this;
 
-	qp_helperData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("helperData");
 
 	QP_LoadHelperData();
+
+	qp_helperData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData(qp_dataName);
+	qp_helperData->qp_dataDelegate.AddUObject(this, &UQPGIM_Helper::QP_BindHelperData);
 
 	//qp_loadMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;
 }
@@ -39,41 +41,37 @@ void UQPGIM_Helper::Deinitialize()
 }
 
 
-void UQPGIM_Helper::QP_SetHelperNum(int32 n)
+void UQPGIM_Helper::QP_SetHelperName(FString n)
 {
-	qp_helperData->QP_Addint32("helperNum", n);
+	qp_helperSaveData->qp_helperData.Add(n, "1");
+	qp_helperSaveData->qp_helperName = n;
+	qp_helperData->QP_AddFString("helperName", n);
+
+	//QP_SaveHelperData();
 }
 
-void UQPGIM_Helper::QP_SetTipNum(int32 n)
+
+
+FString UQPGIM_Helper::QP_GetHelperName()
 {
-	qp_helperData->QP_Addint32("tipNum", n);
+	return qp_helperSaveData->qp_helperName;
 }
 
-void UQPGIM_Helper::QP_SetCourseNum(int32 n)
+bool UQPGIM_Helper::QP_GetHelperNameState(FString n)
 {
-	qp_helperData->QP_Addint32("courseNum", n);
-}
-
-int32 UQPGIM_Helper::QP_GetHelperNum()
-{
-	return 	qp_helperData->QP_Getint32("helperNum");
-}
-
-int32 UQPGIM_Helper::QP_GetTipNum()
-{
-	return qp_helperData->QP_Getint32("tipNum");
-}
-
-int32 UQPGIM_Helper::QP_GetCourseNum()
-{
-	return qp_helperData->QP_Getint32("courseNum");
+	if (qp_helperSaveData) {
+		return !qp_helperSaveData->qp_helperData.Contains(n);
+	}
+	else {
+		return false;
+	}
 }
 
 void UQPGIM_Helper::QP_SaveHelperData()
 {
 
-	UQPSG_Helper* qp_helperSaveGame = Cast<UQPSG_Helper>(UGameplayStatics::CreateSaveGameObject(UQPSG_Helper::StaticClass()));
-	if (qp_helperSaveGame)
+	//UQPSG_Helper* qp_helperSaveGame = Cast<UQPSG_Helper>(UGameplayStatics::CreateSaveGameObject(UQPSG_Helper::StaticClass()));
+	if (qp_helperSaveData)
 	{
 
 		// 设置（可选）委托。
@@ -81,41 +79,27 @@ void UQPGIM_Helper::QP_SaveHelperData()
 		// USomeUObjectClass::SaveGameDelegateFunction is a void function that takes the following parameters: const FString& SlotName, const int32 UserIndex, bool bSuccess
 		qp_SavedDelegate.BindUObject(this, &UQPGIM_Helper::QP_SavedDelegate);
 
-		qp_helperSaveGame->qp_helperNum = QP_GetHelperNum();
+		/*qp_helperSaveGame->qp_helperNum = QP_GetHelperNum();
 		qp_helperSaveGame->qp_tipNum = QP_GetTipNum();
-		qp_helperSaveGame->qp_courseNum = QP_GetCourseNum();
+		qp_helperSaveGame->qp_courseNum = QP_GetCourseNum();*/
 
 		//UGameplayStatics::SaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName, qp_UserIndex);
 		// 启动异步保存进程。
-		UGameplayStatics::AsyncSaveGameToSlot(qp_helperSaveGame, qp_SaveSlotName,qp_UserIndex, qp_SavedDelegate);
+		UGameplayStatics::AsyncSaveGameToSlot(qp_helperSaveData, qp_SaveSlotName,qp_UserIndex, qp_SavedDelegate);
 	}
 }
 
 void UQPGIM_Helper::QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess)
 {
+
 }
 
 void UQPGIM_Helper::QP_LoadHelperData()
 {
-	UQPSG_Helper* qp_LoadHelperData = Cast<UQPSG_Helper>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
-	if (qp_LoadHelperData)
-	{
-
-		QP_SetHelperNum(qp_LoadHelperData->qp_helperNum);
-		QP_SetTipNum(qp_LoadHelperData->qp_tipNum);
-		QP_SetCourseNum(qp_LoadHelperData->qp_courseNum);
-		
+	qp_helperSaveData = Cast<UQPSG_Helper>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
+	if (!qp_helperSaveData) {
+		qp_helperSaveData = Cast<UQPSG_Helper>(UGameplayStatics::CreateSaveGameObject(UQPSG_Helper::StaticClass()));
 	}
-	else
-	{
-		QP_SetHelperNum(1);
-		QP_SetTipNum(1);
-		QP_SetCourseNum(1);
-	}
-
-	//qp_handle = qp_soundData->qp_dataDelegate.AddUObject(this, &UQPGIM_Sound::QP_BindSoundData);
-	qp_helperData->qp_dataDelegate.AddUObject(this, &UQPGIM_Helper::QP_BindHelperData);
-
 }
 
 

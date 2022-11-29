@@ -15,12 +15,17 @@ class QIPAWORLDUEPLUGIN_API UQPSG_Helper : public USaveGame
 	GENERATED_BODY()
 public:
 	
+	//UPROPERTY(VisibleAnywhere, Category = "QipaWorld|Helper")
+	//TMap<FString, FString> qp_helperData;
+	//UPROPERTY(VisibleAnywhere, Category = "QipaWorld|Helper")
+	//TMap<FString, FString> qp_tipData;
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|Helper")
-	int32 qp_helperNum = 1;
+	TMap<FString, FString> qp_helperData;
 
+	//UPROPERTY(VisibleAnywhere, Category = "QipaWorld|Helper")
+	//FString qp_helperName;
+	//UPROPERTY(VisibleAnywhere, Category = "QipaWorld|Helper")
+	//FString qp_tipName;
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|Helper")
-	int32 qp_tipNum = 1;
-
-	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|Helper")
-	int32 qp_courseNum = 1;
+	FString qp_helperName;
 };

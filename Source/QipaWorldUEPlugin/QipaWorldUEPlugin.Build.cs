@@ -41,10 +41,10 @@ public class QipaWorldUEPlugin : ModuleRules
 				//"UnrealYaml",
                 "DeveloperSettings",
 				"UMG",
-                //"UMGEditor",
+                "Niagara",
 				// ... add private dependencies that you statically link with here ...	
 			}
-			);
+            );
 		
 		
 		DynamicallyLoadedModuleNames.AddRange(

@@ -1,28 +1,29 @@
-﻿// QIPAWORLD
+// QIPAWORLD
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Skill/QPSkill.h"
-#include "Components/SphereComponent.h"
-#include "QPS_Collision.generated.h"
+#include "Actor/QPActor.h"
+#include "QPA_Sun.generated.h"
 
 /**
- * 可移动的技能的基类
+ * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API AQPS_Collision : public AQPSkill
+class QIPAWORLDUEPLUGIN_API AQPA_Sun : public AQPActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AQPS_Collision();
+	AQPA_Sun();
 
 protected:
-	UPROPERTY(VisibleAnywhere)
-	USphereComponent* qp_sphere;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float qp_speed = 10.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool qp_static = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -31,4 +32,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//void ttt();
 };

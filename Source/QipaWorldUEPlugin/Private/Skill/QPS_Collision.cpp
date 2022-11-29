@@ -10,13 +10,13 @@ AQPS_Collision::AQPS_Collision()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	qp_staticMesh = CreateDefaultSubobject<UStaticMeshComponent>("qp_staticMesh");
+	qp_sphere = CreateDefaultSubobject<USphereComponent>("qp_sphere");
 	//qp_staticMesh->SetupAttachment(RootComponent);
-	qp_effect->SetupAttachment(qp_staticMesh);
+	qp_niagara->SetupAttachment(qp_sphere);
 
-	RootComponent = qp_staticMesh;
+	RootComponent = qp_sphere;
 
-	qp_staticMesh->SetCollisionProfileName("SkillMovement");
+	qp_sphere->SetCollisionProfileName("SkillMovement");
 
 }
 

@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
-#include "QPWM_Object.generated.h"
+#include "QPWM_Actor.generated.h"
 
 /**
  * 
  */
 
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPWM_Object : public UWorldSubsystem
+class QIPAWORLDUEPLUGIN_API UQPWM_Actor : public UWorldSubsystem
 {
 	GENERATED_BODY()
 
 public:
-	static UQPWM_Object* QP_UQPWM_Object;
+	static UQPWM_Actor* QP_UQPWM_Actor;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
@@ -30,14 +30,14 @@ public:
 	virtual void Deinitialize();
 
 public:
-	TMap<FString,TArray<UObject*>> qp_objData;
+	TMap<FString,TArray<AQPActor*>> qp_actorData;
 
 	/**把用不到的对象放到这个里面*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Object")
-	void QP_CollectObject(FString key, UObject* obj);
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Actor")
+	void QP_CollectActor(FString key, AQPActor* actor);
 
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Object")
-	UObject* QP_GetObject(FString key);
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Actor")
+	AQPActor* QP_GetActor(FString key);
 
 
 	/**异步加载*/
@@ -45,11 +45,11 @@ public:
 	void QP_RequestAsyncLoad(UClass* InBaseClass,FString key, UQPData* data);
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Assets")
-	void QP_RequestAsyncLoad(UClass* InBaseClass, FSoftObjectPath& keys, UQPData* data);
+	void QP_RequestAsyncLoad(UClass* InBaseClass, FSoftActorPath& keys, UQPData* data);
 
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Assets")
-	void QP_RequestAsyncLoad(UClass* InBaseClass, TArray<FSoftObjectPath> keys, UQPData* data);
+	void QP_RequestAsyncLoad(UClass* InBaseClass, TArray<FSoftActorPath> keys, UQPData* data);
 
 	void QP_RequestAsyncLoadDeferred();*/
 };
