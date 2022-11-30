@@ -16,7 +16,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Sound : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
-	
+	FString qp_soundDataName = "qp_soundDataName";
 public:
 	static UQPGIM_Sound* QP_UQPGIM_Sound;
 

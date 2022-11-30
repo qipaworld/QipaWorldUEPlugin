@@ -25,7 +25,7 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UNiagaraComponent* qp_niagara;
+	UNiagaraComponent* qp_skillNiagara;
 	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		ANiagaraActor* qp_effect3;
 

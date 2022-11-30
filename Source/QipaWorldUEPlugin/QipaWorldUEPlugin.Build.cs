@@ -42,6 +42,7 @@ public class QipaWorldUEPlugin : ModuleRules
                 "DeveloperSettings",
 				"UMG",
                 "Niagara",
+                "NiagaraAnimNotifies",
 				// ... add private dependencies that you statically link with here ...	
 			}
             );

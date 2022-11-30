@@ -12,7 +12,7 @@ AQPS_Collision::AQPS_Collision()
 
 	qp_sphere = CreateDefaultSubobject<USphereComponent>("qp_sphere");
 	//qp_staticMesh->SetupAttachment(RootComponent);
-	qp_niagara->SetupAttachment(qp_sphere);
+	qp_skillNiagara->SetupAttachment(qp_sphere);
 
 	RootComponent = qp_sphere;
 
