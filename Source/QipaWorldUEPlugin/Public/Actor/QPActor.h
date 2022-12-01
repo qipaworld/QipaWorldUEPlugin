@@ -8,9 +8,9 @@
 
 class USceneComponent;
 /**
- * 技能的基类
+ * 所有QPActor的基类
  */
-UCLASS()
+UCLASS(Meta = (ShortToolTip = "所有QPActor的基类"))
 class QIPAWORLDUEPLUGIN_API AQPActor : public AActor
 {
 	GENERATED_BODY()
@@ -20,7 +20,8 @@ public:
 	AQPActor();
 
 protected:
-	UPROPERTY(VisibleAnywhere)
+	/**因为自己C++创建的对象没有root节点，所以我加了一个*/
+	UPROPERTY(VisibleAnywhere,Category = "QipaWorld|QPActor")
 	USceneComponent* qp_root;
 
 protected:

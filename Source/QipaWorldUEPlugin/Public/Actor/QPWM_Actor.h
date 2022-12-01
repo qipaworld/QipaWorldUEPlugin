@@ -7,7 +7,7 @@
 #include "QPWM_Actor.generated.h"
 
 /**
- * 
+ * 管理游戏中对象的类。比如对象池。
  */
 
 UCLASS()
@@ -32,11 +32,18 @@ public:
 public:
 	TMap<FString,TArray<AQPActor*>> qp_actorData;
 
-	/**把用不到的对象放到这个里面*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Actor")
+	/**把用不到的对象放到这个里面，里面是个数组。
+	* @param key - 对象类型。
+	* @param actor - 对象。
+	* @warning 每个类型可以存储多个对象。
+	*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
 	void QP_CollectActor(FString key, AQPActor* actor);
-
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Actor")
+	/**通过类型在这里面取出对象
+	* @param key - 对象类型。
+	* @warning 每个类型可以取出多个对象。
+	*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
 	AQPActor* QP_GetActor(FString key);
 
 

@@ -10,7 +10,7 @@
 #include "QPS_CollisionMovement.generated.h"
 
 /**
- * 可移动的技能的基类
+ * 可移动的，可碰撞的，技能的基类
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API AQPS_CollisionMovement : public AQPS_Collision
@@ -24,7 +24,8 @@ public:
 protected:
 	//UPROPERTY(VisibleAnywhere)
 	//UStaticMeshComponent* qp_staticMesh;
-	UPROPERTY(VisibleAnywhere)
+	/**移动组件*/
+	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPSkillCollisionMovement")
 	UProjectileMovementComponent* qp_movement;
 
 	//UPROPERTY(VisibleAnywhere)
@@ -39,32 +40,32 @@ public:
 
 public:
 	/** 获得移动组件*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSkillCollisionMovement")
 	UProjectileMovementComponent* QP_GetMovement();
 
-	/** 添加速度*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
-	void QP_SetMoveSpeed(FVector NewVelocity);
+	/** 设置新的自身移动速度*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSkillCollisionMovement")
+	void SetMoveVelocityInLocalSpace(FVector NewVelocity);
 
-	/** 在添加最大速度*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	/** 设置移动最大速度*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSkillCollisionMovement")
 	void QP_SetMaxMoveSpeed(float speed);
 
-	/** 在添加最大速度*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	/** 给移动添加力*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSkillCollisionMovement")
 	void QP_AddMoveForce(FVector NewVelocity);
 
-	/** 在添加最大速度*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
-	void QP_AddLimitForce(FVector NewVelocity);
+	/** 未启用的方法，不知道用途*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	//void QP_AddLimitForce(FVector NewVelocity);
 
-	/** 在添加最大速度*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
-	void QP_AddMoveSpeed(FVector NewVelocity);
-
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
-	void QP_AddMoveSpeedFloat(float speed);
-
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	/** 在自身的速度上添加速度*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	//void QP_AddMoveSpeed(FVector NewVelocity);
+	/**在前进方向上添加速度*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	//void QP_AddMoveSpeedFloat(float speed);
+	/** 在自身的速度上添加速度*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSkillCollisionMovement")
 		void QP_AddMoveVelocity(FVector NewVelocity);
 };

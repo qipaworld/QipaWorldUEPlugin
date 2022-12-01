@@ -7,7 +7,7 @@
 #include "QPGIM_Localization.generated.h"
 
 /**
- * 
+ * 本地化管理类
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPGIM_Localization : public UGameInstanceSubsystem
@@ -34,15 +34,15 @@ public:
 	//TMap<FString, FString> qp_LocalizationList;
 
 	/**设置语言*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
 		bool QP_SetCurrentLanguage(FString InCultureName);
 
 	/**获得语言*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
 		FString QP_GetCurrentLanguage();
 
 	/**设置地区*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
 		bool QP_SetCurrentLocale(FString InCultureName);
 
 	///**获得地区*/
@@ -51,25 +51,25 @@ public:
 
 
 	/**设置所有，比如地区和语言和资产*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
 	bool QP_SetCurrentCulture(FString InCultureName);
 
 	/**获得地区*/
 
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
 	FString QP_GetCurrentLocale();
 
 	/**获得地区显示名称*/
 
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
 	FString QP_GetCultureDisplayName(FString Culture,bool Localized);
 	
 	/**获得支持地区的列表*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
 	TArray< FString > QP_GetLocalizedCultures() const;
 
 	/**在支持地区的列表里选择一个合适的语言*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Sound")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
 	FString QP_GetSuitableCulture(TArray< FString > AvailableCultures, FString CulturetoMatch, FString FallbackCulture);
 		
 };

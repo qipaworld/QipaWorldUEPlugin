@@ -63,13 +63,14 @@ public:
 	 *把你监听这个数据的方法绑定上，数据改变时会自动调用
 	 *数据内容包括是否是初始化，更改的内容的key，以及数据本身。
 	 */
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category = "QipaWorld|QPData")
 	FQP_DataDynamicDelegate qp_dataDynamicDelegate;
 
 	FString qp_dataName = "No settings";
 	
 	/**
-	* 里面存放了改变的key，改变类型
+	* 里面存放了改变的key，改变类型，
+	* 接收事件的时候可以根据这个判断哪个值发生了变化
 	*/
 	TMap<FString,FString > qp_changeMap;
 
@@ -79,15 +80,19 @@ public:
 
 	
 //protected:
+	//发送事件
 	void QP_DelegateBroadcast();
+	//发送事件
 	void QP_DynamicDelegateBroadcast();
-
+	// 发送所有事件
 	void QP_BroadcastAll();
 
 	//UQPGameInstanceDataManager* QP_GetDataManager();
+	//把事件添加到管理器，下一帧发送
 	void QP_AddBroadcastToDataManager();
+	//把事件添加到管理器，下一帧发送
 	void QP_RemoveBroadcastToDataManager();
-
+	//如果需要立刻发送，则立刻发送事件。
 	void QP_needSyncBroadcast(bool sync);
 
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
@@ -99,46 +104,46 @@ public:
 	/**这个千万不要轻易调用，
 	*你直接get，没有会自动帮你创建，
 	*你要是用这个，如果之前这个key下如果有个data，会直接被替换！！！*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_AddUQPData(FString key, UQPData* v = nullptr, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_RemoveUQPData(FString key, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetUQPData(FString key);
 
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_AddUObject(FString key, UObject* v, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_Addint32(FString key, int32 v, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_Addfloat(FString key, float v, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_Addbool(FString key, bool v, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_AddFString(FString key, FString v, bool sync = false);
 
 
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_RemoveUObject(FString key, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_Removeint32(FString key, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_Removefloat(FString key, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_Removedouble(FString key, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_Removebool(FString key, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_RemoveFString(FString key, bool sync = false);
 
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UObject* QP_GetUObject(FString key);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	int32 QP_Getint32(FString key);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	float QP_Getfloat(FString key);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	bool QP_Getbool(FString key);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	FString QP_GetFString(FString key);
 };

@@ -1,4 +1,4 @@
-// QIPAWORLD
+﻿// QIPAWORLD
 
 #pragma once
 
@@ -7,7 +7,7 @@
 #include "QPA_Sun.generated.h"
 
 /**
- * 
+ * 一个昼夜交替的太阳
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API AQPA_Sun : public AQPActor
@@ -19,10 +19,11 @@ public:
 	AQPA_Sun();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//太阳的移动速度
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSun")
 	float qp_speed = 10.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//如果是真，则太阳为静止状态。
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSun")
 	bool qp_static = false;
 protected:
 	// Called when the game starts or when spawned

@@ -8,7 +8,7 @@
 
 //class UQPData；
 /**
- * 
+ * 用户界面管理类
  */
 
 
@@ -32,40 +32,42 @@ public:
 	virtual void Deinitialize();
 
 public:
+	/**所有的ui都存这里面*/
 	TMap<FString, UUserWidget*> qp_UIData;
+	/**为了能按顺序弹出，所以单独存了key*/
 	TArray<FString> qp_UIDataKey;
 
 	//FString qp_topWidgetkey;
-
+	/**主ui路径*/
 	FString qp_mainUIPath;
 
-	/**添加UI*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|UserInterface")
+	/**添加主UI*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	UUserWidget* QP_AddMainUserInterface(FString key = "MainUserInterface");
 
 
 	/**用路径添加UI*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|UserInterface")
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	UUserWidget* QP_AddUserInterfaceByPath(FString path,FString key = "None");
 
-	/**添加UI*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|UserInterface")
+	/**用实例添加UI*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	UUserWidget* QP_AddUserInterface(UUserWidget* widget, FString key = "None");
 
-	/**添加UI*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|UserInterface")
+	/**用class添加UI*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	UUserWidget* QP_AddUserInterfaceByClass(TSubclassOf<UUserWidget>  widgetClass, FString key = "None");
-
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|UserInterface")
+	/**删除UI*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	void QP_RemoveUserInterface(FString key = "None");
-	/*情况ui数据，但是不会删除ui*/
+	/*清空ui数据，但是不会删除ui*/
 	void QP_ResetUIData();
-
+	/**获得player0 然后监听默认的ui键盘事件*/
 	void QP_BindKeyBoard();
 
 	void QP_BindMapData(const UQPData* data);
-
+	/**控制鼠标显示与隐藏*/
 	void QP_UpdateMouse(bool b);
-
+	/**监听默认ui事件，没有ui就弹出主菜单，有了就弹出最上面的*/
 	void QP_KeyBoardEvent();
 };

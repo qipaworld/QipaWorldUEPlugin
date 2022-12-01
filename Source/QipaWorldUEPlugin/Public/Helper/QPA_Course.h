@@ -1,4 +1,4 @@
-// QIPAWORLD
+﻿// QIPAWORLD
 
 #pragma once
 
@@ -7,7 +7,7 @@
 #include "QPA_Course.generated.h"
 
 /**
- * 
+ * 教程类，可以理解为连续的教程
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API AQPA_Course : public AQPA_HelperBase
@@ -15,7 +15,7 @@ class QIPAWORLDUEPLUGIN_API AQPA_Course : public AQPA_HelperBase
 	GENERATED_BODY()
 
 protected:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//下一个教程id
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCourse")
 	FString qp_nextHelperName;
 };

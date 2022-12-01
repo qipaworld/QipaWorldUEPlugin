@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -7,7 +7,7 @@
 #include "QPSG_Tip.generated.h"
 
 /**
- * 
+ * 弹框数据保存类
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPSG_Tip : public UQPSG_Helper

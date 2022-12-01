@@ -7,7 +7,7 @@
 #include "QPGIM_Tip.generated.h"
 
 /**
- * 
+ * 弹框管理类
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPGIM_Tip : public UQPGIM_Helper

@@ -8,7 +8,7 @@
 #include "QPS_Collision.generated.h"
 
 /**
- * 可移动的技能的基类
+ * 可碰撞的技能的基类
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API AQPS_Collision : public AQPSkill
@@ -20,7 +20,8 @@ public:
 	AQPS_Collision();
 
 protected:
-	UPROPERTY(VisibleAnywhere)
+	/**碰撞体*/
+	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPSkillCollision")
 	USphereComponent* qp_sphere;
 
 protected:

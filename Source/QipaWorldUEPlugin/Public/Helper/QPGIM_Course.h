@@ -9,7 +9,7 @@
 
 
 /**
- * 
+ * 教程管理类
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPGIM_Course : public UQPGIM_Helper

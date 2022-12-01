@@ -1,4 +1,4 @@
-// QIPAWORLD
+﻿// QIPAWORLD
 
 #pragma once
 
@@ -7,7 +7,7 @@
 #include "QPA_HelperBase.generated.h"
 
 /**
- * 
+ * 教程基类
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API AQPA_HelperBase : public AQPActor
@@ -15,6 +15,7 @@ class QIPAWORLDUEPLUGIN_API AQPA_HelperBase : public AQPActor
 	GENERATED_BODY()
 	
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//当前教程id
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPHelper")
 	FString qp_helperName = "helper";
 };

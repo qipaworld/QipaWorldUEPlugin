@@ -1,4 +1,4 @@
-// QIPAWORLD
+﻿// QIPAWORLD
 
 #pragma once
 
@@ -7,7 +7,7 @@
 #include "QPA_Tip.generated.h"
 
 /**
- * 
+ * 教程提示类，可以理解为一次性弹框
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API AQPA_Tip : public AQPA_HelperBase
@@ -18,10 +18,10 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
-		/** �����ʾid*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Helper")
+		/** 检测提示id*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPTip")
 	bool QP_HelperTip();
-
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "QipaWorld|Helper")
+	//弹出提示后做什么，这个在蓝图里根据实际情况写方法。
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "QipaWorld|QPTip")
 	void QP_HelperTipCell();
 };

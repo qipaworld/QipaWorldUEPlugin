@@ -24,7 +24,8 @@ public:
 	AQPSkill();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	/**技能特效*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPSkill", Meta = (ShortTooltip = "技能特效"))
 	UNiagaraComponent* qp_skillNiagara;
 	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		ANiagaraActor* qp_effect3;
