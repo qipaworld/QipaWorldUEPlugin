@@ -37,4 +37,34 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public:
+	/** 获得移动组件*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	UProjectileMovementComponent* QP_GetMovement();
+
+	/** 添加速度*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	void QP_SetMoveSpeed(FVector NewVelocity);
+
+	/** 在添加最大速度*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	void QP_SetMaxMoveSpeed(float speed);
+
+	/** 在添加最大速度*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	void QP_AddMoveForce(FVector NewVelocity);
+
+	/** 在添加最大速度*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	void QP_AddLimitForce(FVector NewVelocity);
+
+	/** 在添加最大速度*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	void QP_AddMoveSpeed(FVector NewVelocity);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+	void QP_AddMoveSpeedFloat(float speed);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Skill")
+		void QP_AddMoveVelocity(FVector NewVelocity);
 };
