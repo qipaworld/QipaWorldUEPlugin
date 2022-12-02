@@ -18,16 +18,59 @@ AQPS_Collision::AQPS_Collision()
 
 	qp_sphere->SetCollisionProfileName("SkillMovement");
 
+	// 设置碰撞响应设置
+	//Cube->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	// 绑定函数
+	qp_sphere->OnComponentBeginOverlap.AddDynamic(this, &AQPS_Collision::QP_OnOverlapBegin);
+	qp_sphere->OnComponentEndOverlap.AddDynamic(this, &AQPS_Collision::QP_OnOverlapEnd);
+
+	// 绑定函数 使用委托
+	//FScriptDelegate OverlapEndDelegate;
+	//OverlapEndDelegate.BindUFunction(this, TEXT("OnOverlapEnd"));
+	//qp_sphere->OnComponentBeginOverlap.Add(OverlapEndDelegate);
+
+	// 绑定碰撞函数
+	qp_sphere->OnComponentHit.AddDynamic(this, &AQPS_Collision::QP_OnHit);
+
+	qp_bustNiagara = CreateDefaultSubobject<UNiagaraComponent>("qp_bustNiagara");
+	qp_bustNiagara->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void AQPS_Collision::BeginPlay()
 {
 	Super::BeginPlay();
+	qp_bustNiagara->Deactivate();
 }
 
 // Called every frame
 void AQPS_Collision::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+
+void AQPS_Collision::QP_OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//UE_LOG(LogTemp, Warning, TEXT("Overlap Begin"));
+	QP_End();
+
+}
+
+void AQPS_Collision::QP_OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Overlap End"));
+}
+
+void AQPS_Collision::QP_OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Hit"));
+	//Destroy();
+}
+void AQPS_Collision::QP_End() {
+	qp_bustNiagara->Activate();
+	qp_skillNiagara->DestroyInstance();
+	SetLifeSpan(qp_bustDestroy);
+	qp_isAutoDestroy = false;
 }
