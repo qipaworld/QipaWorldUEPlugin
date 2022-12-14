@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "QPGIM_LoadAssets.generated.h"
+#include "QPGIM_Assets.generated.h"
 
 /*
-* 没有使用这个类，目前全部用的ConstructorHelpers::FClassFinder
+* 简单的资源类，比如从新加载什么的
 */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPGIM_LoadAssets : public UGameInstanceSubsystem
+class QIPAWORLDUEPLUGIN_API UQPGIM_Assets : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 	
 public:
-	static UQPGIM_LoadAssets* QP_UQPGIM_LoadAssets;
+	static UQPGIM_Assets* QP_UQPGIM_Assets;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
@@ -41,8 +41,8 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
 	//	UQPData* QP_GetQPData(FString key);
 
-	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|Data")
-	//	void QP_RemoveQPData(FString key);
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|Assets")
+		//UPackage* QP_ReloadPackage(UPackage* InPackageToReload);
 
 	//void QP_AddBroadcastUQPData(UQPData* data);
 	//void QP_RemoveBroadcastUQPData(UQPData* data);

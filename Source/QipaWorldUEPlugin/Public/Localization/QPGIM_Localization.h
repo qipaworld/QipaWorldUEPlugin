@@ -6,6 +6,8 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "QPGIM_Localization.generated.h"
 
+class UQPData;
+
 /**
  * 本地化管理类
  */
@@ -16,9 +18,18 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Localization : public UGameInstanceSubsystem
 
 public:
 	static UQPGIM_Localization* QP_UQPGIM_Localization;
+	//国际化资源路径
+	//FString qp_localizationAssetsPath = ;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
+
+	/**数据管理器里的数据名字*/
+	FString qp_localizationDataName = "qp_sLocalizationDataName";
+
+	/**国际化数据*/
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPLocalization")
+		UQPData* qp_localizationData;
 
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const;
 
@@ -32,6 +43,10 @@ public:
 	///**包含全部支持的语言*/
 	//UPROPERTY(BlueprintReadWrite)
 	//TMap<FString, FString> qp_LocalizationList;
+
+	/**获得国际化资源路径*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
+		FString QP_GetL10NAssetsPath(FString path);
 
 	/**设置语言*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
@@ -54,6 +69,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
 	bool QP_SetCurrentCulture(FString InCultureName);
 
+	/**设置所有，比如地区和语言和资产*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
+	bool QP_SetCurrentLanguageAndLocale(FString InCultureName, const bool SaveToConfig);
+
 	/**获得地区*/
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
@@ -71,5 +90,11 @@ public:
 	/**在支持地区的列表里选择一个合适的语言*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
 	FString QP_GetSuitableCulture(TArray< FString > AvailableCultures, FString CulturetoMatch, FString FallbackCulture);
-		
+	
+	/**在支持地区的列表里选择一个合适的语言*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPLocalization")
+		void QP_SetSuitableCulture();
+
+	void QP_GameLocalizationDataChange();
+
 };

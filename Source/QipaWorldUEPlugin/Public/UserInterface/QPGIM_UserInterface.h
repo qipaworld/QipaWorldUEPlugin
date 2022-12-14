@@ -68,6 +68,10 @@ public:
 	void QP_BindMapData(const UQPData* data);
 	/**控制鼠标显示与隐藏*/
 	void QP_UpdateMouse(bool b);
-	/**监听默认ui事件，没有ui就弹出主菜单，有了就弹出最上面的*/
+	/**监听默认ui事件，没有ui就弹出主菜单，有了就弹出最上面的
+	* 这里绑定的player0，没有player0可能就不能用了，所以在蓝图里监听一下也可以
+	* 但是在项目设置的qipaworld插件中关闭ui事件。
+	*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	void QP_KeyBoardEvent();
 };
