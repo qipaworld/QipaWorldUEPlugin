@@ -39,11 +39,38 @@ void UQPGIM_Localization::Deinitialize()
 }
 FString UQPGIM_Localization::QP_GetL10NAssetsPath(FString path) {
 	//path.Replace
+	FString qp_IETF = QP_GetCurrentLanguage();
 	std::string cstr(TCHAR_TO_UTF8(*path));
+	int l10nindex = cstr.find("/QPL10N/");
+
+	if (l10nindex != -1) {
+		if (path.Contains(qp_IETF, ESearchCase::CaseSensitive)) {
+			return path;
+		}
+		else {
+			int l10nindex_l = l10nindex + 8;
+			int l10nindex_2 = cstr.find("/", l10nindex_l);
+			cstr.replace(l10nindex_l, l10nindex_2- l10nindex_l, TCHAR_TO_UTF8( *qp_IETF));
+			return FString(cstr.c_str());
+		}
+	}
+	//int index = cstr.find("/Game/");
+	//if (index == -1) {
+		int indextype = cstr.find("'/");
+		if (indextype == -1) {
+			int indexEnd = cstr.find("/",1);
+			cstr.replace(indexEnd, 1, TCHAR_TO_UTF8(*FString::Printf(TEXT("/QPL10N/%s/"), *qp_IETF)));
+			return FString(cstr.c_str());
+		}
+		else {
+			int indexEnd = cstr.find("/", indextype+2);
+			cstr.replace(indexEnd, 1, TCHAR_TO_UTF8(*FString::Printf(TEXT("/QPL10N/%s/"), *qp_IETF)));
+			return FString(cstr.c_str());
+		}
+	//}
 	
-	int index = cstr.find("/Game/");
-	cstr.replace(index, 6, TCHAR_TO_UTF8(*FString::Printf(TEXT("/Game/QPL10N/%s/"), *QP_GetCurrentLanguage())));
-	return FString(cstr.c_str());
+	//cstr.replace(index, 6, TCHAR_TO_UTF8(*FString::Printf(TEXT("/Game/QPL10N/%s/"), *qp_IETF)));
+	//return FString(cstr.c_str());
 	// , *QP_GetCurrentLanguage(), *path);
 }
 bool UQPGIM_Localization::QP_SetCurrentLanguage(FString InCultureName)

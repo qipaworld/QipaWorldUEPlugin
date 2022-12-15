@@ -44,6 +44,7 @@ public class QipaWorldUEPlugin : ModuleRules
                 "Niagara",
                 "NiagaraAnimNotifies",
                 "UnrealEd",
+                "Text3D",
 				// ... add private dependencies that you statically link with here ...	
 			}
             );

@@ -5,8 +5,9 @@
 //#include "Data/QPGIM_Data.h"
 
 UQPTextBlock::UQPTextBlock() {
-	
+
 	if (UQPGIM_Localization::QP_UQPGIM_Localization!= nullptr) {
+		qp_fontPath = GetFont().FontObject.GetPathName();
 		UQPGIM_Localization::QP_UQPGIM_Localization->qp_localizationData->qp_dataDelegate.AddUObject(this, &UQPTextBlock::QP_L10NChange);
 		QP_ChangeFontSlate();
 	}
@@ -17,7 +18,7 @@ void UQPTextBlock::QP_L10NChange(const UQPData* data) {
 	QP_ChangeFontSlate();
 }
 void UQPTextBlock::QP_ChangeFontSlate() {
-	if (qp_changeSlate) {
+	if (qp_changeSlate&& MyTextBlock.IsValid()) {
 
 		const FSlateFontInfo fontinfoBase = GetFont();
 
