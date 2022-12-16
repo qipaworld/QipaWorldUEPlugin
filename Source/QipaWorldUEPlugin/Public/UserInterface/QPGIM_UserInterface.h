@@ -60,6 +60,10 @@ public:
 	/**删除UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	void QP_RemoveUserInterface(FString key = "None");
+
+	/**删除所有UI*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	void QP_RemoveAllUserInterface();
 	/*清空ui数据，但是不会删除ui*/
 	void QP_ResetUIData();
 	/**获得player0 然后监听默认的ui键盘事件*/

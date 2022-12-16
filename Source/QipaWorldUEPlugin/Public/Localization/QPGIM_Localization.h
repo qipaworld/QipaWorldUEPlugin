@@ -96,5 +96,6 @@ public:
 		void QP_SetSuitableCulture();
 
 	void QP_GameLocalizationDataChange();
-
+	UFUNCTION()
+	void QP_DelayBroad();
 };

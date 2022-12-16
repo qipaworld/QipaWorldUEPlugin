@@ -5,6 +5,7 @@
 //#include "Internationalization/PolyglotTextData.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
 #include <Kismet/KismetInternationalizationLibrary.h>
+#include "Kismet/KismetSystemLibrary.h"
 
 #include "Data/QPGIM_Data.h"
 #include "Data/QPData.h"
@@ -32,10 +33,20 @@ void UQPGIM_Localization::Initialize(FSubsystemCollectionBase& Collection)
 }
 void UQPGIM_Localization::QP_GameLocalizationDataChange() {
 	qp_localizationData->QP_AddFString("Language", QP_GetCurrentLanguage());
+
+	//const FLatentActionInfo LatentInfo(0, FMath::Rand(), TEXT("QP_DelayBroad"), this);
+	//UKismetSystemLibrary::Delay(this, 0.1f, LatentInfo);
+
 }
+void UQPGIM_Localization::QP_DelayBroad() {
+
+	//qp_localizationData->QP_AddFString("QP_DelayLanguageChange", QP_GetCurrentLanguage());
+}
+
 void UQPGIM_Localization::Deinitialize()
 {
 	Super::Deinitialize();
+	UQPGIM_Localization::QP_UQPGIM_Localization = nullptr;
 }
 FString UQPGIM_Localization::QP_GetL10NAssetsPath(FString path) {
 	//path.Replace
@@ -88,6 +99,9 @@ bool UQPGIM_Localization::QP_SetCurrentLocale(FString InCultureName)
 	return UKismetInternationalizationLibrary::SetCurrentLocale(InCultureName);
 }
 bool UQPGIM_Localization::QP_SetCurrentLanguageAndLocale(FString InCultureName, const bool SaveToConfig) {
+	//qp_localizationData->QP_AddFString("QP_LanguageChange", InCultureName,true);
+	//GLog->Log("jumpStdssssssssssssssssdddddddddddrt");
+
 	return UKismetInternationalizationLibrary::SetCurrentLanguageAndLocale(InCultureName, SaveToConfig);
 
 }

@@ -34,7 +34,8 @@ public:
 	void QP_L10NChange(const UQPData* data);
 	/**改变字体*/
 	virtual void QP_ChangeFontSlate();
-
+	UFUNCTION()
+	void QP_Init();
 private:
 	
 };

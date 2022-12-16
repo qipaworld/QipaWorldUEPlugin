@@ -99,6 +99,15 @@ void UQPGIM_UserInterface::QP_RemoveUserInterface(FString key)
 
 }
 
+
+void UQPGIM_UserInterface::QP_RemoveAllUserInterface()
+{
+	for (FString realKey: qp_UIDataKey)
+	{
+		QP_RemoveUserInterface(realKey);
+	}
+
+}
 void UQPGIM_UserInterface::QP_UpdateMouse(bool b) {
 	APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	controller->SetShowMouseCursor(b);
