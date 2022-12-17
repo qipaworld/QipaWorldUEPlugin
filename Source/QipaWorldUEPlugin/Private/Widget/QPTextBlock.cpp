@@ -29,9 +29,11 @@ void UQPTextBlock::QP_ChangeFontSlate() {
 
 		const FSlateFontInfo fontinfoBase = GetFont();
 
-		UObject* font = LoadObject<UFont>(nullptr, *UQPGIM_Localization::QP_UQPGIM_Localization->QP_GetL10NAssetsPath(qp_fontPath));
+		UFont* font = LoadObject<UFont>(nullptr, *UQPGIM_Localization::QP_UQPGIM_Localization->QP_GetL10NAssetsPath(qp_fontPath));
 
-		const FSlateFontInfo fontinfo = FSlateFontInfo(font, fontinfoBase.Size, fontinfoBase.TypefaceFontName); // Font, Font Size  for the chatbox
+		FSlateFontInfo fontinfo = FSlateFontInfo(font, fontinfoBase.Size, fontinfoBase.TypefaceFontName); // Font, Font Size  for the chatbox
+		fontinfo.FontMaterial = fontinfoBase.FontMaterial;
+		
 		SetFont(fontinfo);
 	}
 }
