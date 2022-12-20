@@ -45,6 +45,8 @@ public class QipaWorldUEPluginEditor : ModuleRules
                 "UMGEditor",
                 "EditorScriptingUtilities",
                 "MovieScene",
+                "AssetTools",
+                "QipaWorldUEPlugin",
 
 				// ... add private dependencies that you statically link with here ...	
 			}

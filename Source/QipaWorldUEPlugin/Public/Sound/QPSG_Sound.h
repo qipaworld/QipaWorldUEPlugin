@@ -16,8 +16,14 @@ class QIPAWORLDUEPLUGIN_API UQPSG_Sound : public USaveGame
 	
 public:
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPSound")
-    float qp_soundVolume = 1.0f;
+    float qp_allVolume = 1.0f;
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPSound")
     float qp_musicVolume = 1.0f;
+	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPSound")
+	float qp_effectVolume = 1.0f;
+	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPSound")
+	float qp_UIVolume = 1.0f;
+	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPSound")
+	float qp_environmentVolume = 1.0f;
 
 };
