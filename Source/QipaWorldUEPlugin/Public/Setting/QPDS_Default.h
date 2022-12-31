@@ -32,14 +32,14 @@ public:
 
 public:
 	/**默认背景音乐路径*/
-	UPROPERTY(Config,EditAnywhere,BlueprintReadWrite, Category = "QipaWorld")
-	FString QP_DefaultBackgroundAudioPath = "None";
+	//UPROPERTY(Config,EditAnywhere,BlueprintReadWrite, Category = "QipaWorld")
+	//FString QP_DefaultBackgroundAudioPath = "None";
 	/**默认点击音效路径*/
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	FString QP_DefaultUIClickAudioPath = "None";
+	//UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	//FString QP_DefaultUIClickAudioPath = "None";
 	/**是否自动播放背景音乐*/
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	bool QP_BackgroundAudioAutoPlay = true;
+	//UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	//bool QP_BackgroundAudioAutoPlay = true;
 	/**开始地图路径*/
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	FString QP_DefaultStartMap = "None";
