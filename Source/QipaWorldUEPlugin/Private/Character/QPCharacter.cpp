@@ -32,7 +32,7 @@ AQPCharacter::AQPCharacter()
 	bUseControllerRotationYaw = false;
 	qp_springArm->SetupAttachment(RootComponent);
 	qp_camera->SetupAttachment(qp_springArm);
-
+	
 
 }
 
@@ -44,7 +44,7 @@ void AQPCharacter::BeginPlay()
 	qp_movementC = GetCharacterMovement();
 	qp_movementC->bOrientRotationToMovement = true;
 	qp_movementC->MaxAcceleration = qp_walkMaxAcceleration;
-
+	qp_movementC->bRunPhysicsWithNoController = true;
 	qp_movementC->MaxWalkSpeed = qp_walkSpeed;
 	qp_isFixedCamera = false;
 	qp_isRun = false;

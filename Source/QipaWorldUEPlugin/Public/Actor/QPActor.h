@@ -19,7 +19,7 @@ public:
 	// Sets default values for this actor's properties
 	AQPActor();
 
-protected:
+
 	/**因为自己C++创建的对象没有root节点，所以我加了一个*/
 	UPROPERTY(VisibleAnywhere,Category = "QipaWorld|QPActor")
 	USceneComponent* qp_root;
@@ -29,7 +29,7 @@ protected:
 		float qp_autoDestroy = 0;
 	/**是否在规定时间内销毁*/
 	bool qp_isAutoDestroy = false;
-protected:
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

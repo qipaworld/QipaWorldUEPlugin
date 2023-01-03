@@ -1,5 +1,6 @@
 // QIPAWORLD
 
+#include "Character/QPFlyCharacter.h"
 
 #include <complex.h>
 #include <Camera/CameraComponent.h>
@@ -15,10 +16,10 @@
 
 #include "Notify/QPGIM_AnimNotifyData.h"
 
-#include "Character/QPFlyCharacter.h"
 
 AQPFlyCharacter::AQPFlyCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
+	qp_movementMode = MOVE_Flying;
 }
 
 // Called when the game starts or when spawned

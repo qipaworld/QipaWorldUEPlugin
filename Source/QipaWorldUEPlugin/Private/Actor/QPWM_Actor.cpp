@@ -2,7 +2,7 @@
 
 
 #include "Actor/QPWM_Actor.h"
-#include "Actor/QPActor.h"
+//#include "Actor/QPActor.h"
 // #include "Data/QPGIM_Data.h"
 //#include <Engine/StreamableManager.h>
 //#include <Engine/ActorLibrary.h>
@@ -31,26 +31,28 @@ void UQPWM_Actor::Initialize(FSubsystemCollectionBase& Collection)
 void UQPWM_Actor::Deinitialize()
 {
 	Super::Deinitialize();
+	QP_UQPWM_Actor = nullptr;
+
 }
 
-void UQPWM_Actor::QP_CollectActor(FString key, AQPActor* actor)
+void UQPWM_Actor::QP_CollectActor(FString key, AActor* actor)
 {	
 	if (qp_actorData.Contains(key)) {
 		qp_actorData[key].Add(actor);
 	}
 	else {
-		TArray<AQPActor*> array;
+		TArray<AActor*> array;
 		array.Add(actor);
 		qp_actorData.Add(key, array);
 	}
 	actor->AddToRoot();
 }
 
-AQPActor* UQPWM_Actor::QP_GetActor(FString key)
+AActor* UQPWM_Actor::QP_GetActor(FString key)
 {
-	AQPActor* actor = nullptr;
+	AActor* actor = nullptr;
 	if (qp_actorData.Contains(key)) {
-		TArray<AQPActor*> array = qp_actorData[key];
+		TArray<AActor*> array = qp_actorData[key];
 		int num = array.Num()-1;
 		if (num >= 0) {
 			actor = array[num];

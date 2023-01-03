@@ -18,7 +18,7 @@ public:
 	// Sets default values for this character's properties
 	AQPFlyCharacter();
 
-protected:
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -38,8 +38,8 @@ public:
 	virtual void Landed(const FHitResult& Hit) override;
 
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-		float qp_upSpeed = 250.0f;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
+		//float qp_upSpeed = 250.0f;
 
 
 	virtual void QP_MoveForward(float value)override;

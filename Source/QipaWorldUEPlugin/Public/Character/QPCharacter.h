@@ -27,7 +27,7 @@ public:
 	// Sets default values for this character's properties
 	AQPCharacter();
 
-protected:
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -79,7 +79,9 @@ public:
 	/**玩家数据*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 		UQPData* qp_playerData;
-
+	/**玩家移动模式，切换玩家时用的*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
+		TEnumAsByte<EMovementMode> qp_movementMode = MOVE_Walking;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 		float qp_walkSpeed = 250.0f;
 
