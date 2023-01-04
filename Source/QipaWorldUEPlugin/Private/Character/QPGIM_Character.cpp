@@ -43,9 +43,11 @@ void UQPGIM_Character::QP_AddCharacter(FString qp_name, ACharacter* c) {
 	qp_characterMap.Add(qp_name, c);
 }
 void UQPGIM_Character::QP_Possess(AController* controller, FString qp_name) {
-	AQPCharacter* character = Cast<AQPCharacter>(QP_GetCharacter(qp_name));
-	controller->Possess(character);
-	character->GetCharacterMovement()->SetMovementMode(character->qp_movementMode);
+	AQPCharacter* c = Cast<AQPCharacter>(QP_GetCharacter(qp_name));
+	controller->Possess(c);
+	if (c->qp_unchangeMovementMode) {
+		c->GetCharacterMovement()->SetMovementMode(c->qp_movementMode);
+	}
 }
 ACharacter* UQPGIM_Character::QP_GetCharacter(FString qp_name) {
 	if (qp_characterMap.Contains(qp_name))

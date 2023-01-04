@@ -28,7 +28,7 @@ public:
 		FName qp_moveUp = "MoveUp";
 
 	float qp_moveUpV = 0.0f;
-	FRotator qp_lastRotator;
+	float qp_lastRotatorYaw;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

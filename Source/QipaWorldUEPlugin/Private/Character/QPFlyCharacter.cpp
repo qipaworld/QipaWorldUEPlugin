@@ -20,6 +20,7 @@
 AQPFlyCharacter::AQPFlyCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
 	qp_movementMode = MOVE_Flying;
+	qp_unchangeMovementMode = true;
 }
 
 // Called when the game starts or when spawned
@@ -37,10 +38,12 @@ void AQPFlyCharacter::Tick(float DeltaTime)
 	//ue  bug 在设置z轴上升的时候会自己旋转，所以我把他转回来了。
 	FVector v = GetLastMovementInputVector();
 	if (v.X != 0 || v.Y != 0) {
-		qp_lastRotator = GetActorRotation();
+		qp_lastRotatorYaw = GetActorRotation().Yaw;
 	}
 	else if (qp_moveUpV != 0 && !qp_isFixedCamera) {
-		SetActorRotation(qp_lastRotator);
+		FRotator r = GetActorRotation();
+		r.Yaw = qp_lastRotatorYaw;
+		SetActorRotation(r);
 	}
 	 
 	

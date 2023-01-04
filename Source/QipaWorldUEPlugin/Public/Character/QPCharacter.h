@@ -82,6 +82,9 @@ public:
 	/**玩家移动模式，切换玩家时用的*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 		TEnumAsByte<EMovementMode> qp_movementMode = MOVE_Walking;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
+		bool  qp_unchangeMovementMode = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 		float qp_walkSpeed = 250.0f;
 
