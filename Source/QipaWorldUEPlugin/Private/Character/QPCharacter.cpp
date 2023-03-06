@@ -55,6 +55,23 @@ void AQPCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (qp_isAutoCameraLength) {
+		
+		if (qp_springArm->TargetArmLength>= qp_targetCameraLength) {
+			QP_mouseWheelUp();
+			if (qp_springArm->TargetArmLength <= qp_targetCameraLength) {
+				qp_isAutoCameraLength = false;
+			}
+		}
+		else if (qp_springArm->TargetArmLength <= qp_targetCameraLength) {
+			QP_mouseWheelDown();
+			if (qp_springArm->TargetArmLength >= qp_targetCameraLength) {
+				qp_isAutoCameraLength = false;
+			}
+		}
+		
+		 
+	}
 }
 
 // Called to bind functionality to input
@@ -212,6 +229,10 @@ void AQPCharacter::QP_Run()
 			 GetMesh()->SetVisibility(false);
 		 }
 	 }
+	 else {
+		 qp_isAutoCameraLength = false;
+
+	 }
  }
  //¹¥»÷½áÊø
  void  AQPCharacter::QP_mouseWheelDown() {
@@ -223,5 +244,9 @@ void AQPCharacter::QP_Run()
 		 if (qp_springArm->TargetArmLength > qp_visibleCameraMinLength) {
 			 GetMesh()->SetVisibility(true);
 		 }
+	 }
+	 else {
+		 qp_isAutoCameraLength = false;
+
 	 }
  }

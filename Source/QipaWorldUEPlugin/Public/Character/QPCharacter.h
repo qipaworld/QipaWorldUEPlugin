@@ -10,6 +10,7 @@
 #include "NiagaraActor.h"
 #include "Skill/QPS_CollisionMovement.h"
 #include "Component/QPSComponent.h"
+#include "Data/QPGIM_BaseData.h"
 
 #include "QPCharacter.generated.h"
 
@@ -98,6 +99,12 @@ public:
 		float qp_runMaxAcceleration = 600.0f;
 	/**最大速度是run就是跑，是walk就是走路*/
 	float qp_maxSpeed = 250.0f;
+
+	/*是否自动弹簧臂长度*/
+	bool qp_isAutoCameraLength = false;
+	/*目标弹簧臂长度*/
+	float qp_targetCameraLength = 0.0f;
+
 	/**相机最大距离*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 		float qp_maxCameraLength = 1200.0f;
