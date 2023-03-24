@@ -46,6 +46,7 @@ public class QipaWorldUEPlugin : ModuleRules
                 //"UnrealEd",
                 "Text3D",
                 "MetasoundEngine",
+                "NavigationSystem",
 				// ... add private dependencies that you statically link with here ...	
 			}
             );

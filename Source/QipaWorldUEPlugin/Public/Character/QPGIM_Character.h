@@ -38,7 +38,7 @@ public:
 		void QP_AddCharacter(FString qp_name, ACharacter* c);
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
-		void QP_Possess(AController* controller, FString qp_name);
+		void QP_Possess(AController* controller, FString qp_name,bool qp_unchangeMovementMode = true,bool qp_isEnter = true,bool qp_isEixt = true);
 
 	/**通过类型获得场景里对象的引用
 	* @param qp_name - 对象类型。

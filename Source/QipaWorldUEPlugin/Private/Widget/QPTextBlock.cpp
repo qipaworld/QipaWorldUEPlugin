@@ -18,7 +18,7 @@ void UQPTextBlock::QP_Init() {
 	UQPGIM_Localization::QP_UQPGIM_Localization->qp_localizationData->qp_dataDelegate.AddUObject(this, &UQPTextBlock::QP_L10NChange);
 	QP_ChangeFontSlate();
 }
-void UQPTextBlock::QP_L10NChange(const UQPData* data) {
+void UQPTextBlock::QP_L10NChange(UQPData* data) {
 
 	//if (data->qp_changeMap.Contains("QP_DelayLanguageChange")) {
 		QP_ChangeFontSlate();

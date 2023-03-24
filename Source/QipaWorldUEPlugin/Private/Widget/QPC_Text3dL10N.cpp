@@ -18,7 +18,7 @@ void UQPC_Text3dL10N::BeginPlay() {
 
 
 
-void UQPC_Text3dL10N::QP_L10NChange(const UQPData* data) {
+void UQPC_Text3dL10N::QP_L10NChange(UQPData* data) {
 
 	QP_ChangeFontSlate();
 }

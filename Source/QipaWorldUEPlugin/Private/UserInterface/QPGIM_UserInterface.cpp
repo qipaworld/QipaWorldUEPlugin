@@ -147,7 +147,7 @@ void UQPGIM_UserInterface::QP_ResetUIData()
 	
 }
 
-void UQPGIM_UserInterface::QP_BindMapData(const UQPData* data)
+void UQPGIM_UserInterface::QP_BindMapData(UQPData* data)
 {
 	if (data->qp_changeMap.Contains("changeLevelName")) {
 		QP_ResetUIData();

@@ -143,7 +143,7 @@ public:
 		float QP_GetEnvironmentVolume();
 	//void QP_CreateAudioComponent(UAudioComponent*& audio,float volume, USoundBase* sound);
 	/**音量变化的时候设置背景音乐和音效的音量*/
-	void QP_SoundDataChange(const UQPData* data);
+	void QP_SoundDataChange(UQPData* data);
 	/**退出游戏的时候保存*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
 	void QP_SaveSoundData();

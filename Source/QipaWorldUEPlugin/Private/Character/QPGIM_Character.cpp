@@ -42,10 +42,16 @@ void UQPGIM_Character::Deinitialize()
 void UQPGIM_Character::QP_AddCharacter(FString qp_name, ACharacter* c) {
 	qp_characterMap.Add(qp_name, c);
 }
-void UQPGIM_Character::QP_Possess(AController* controller, FString qp_name) {
+void UQPGIM_Character::QP_Possess(AController* controller, FString qp_name, bool qp_unchangeMovementMode, bool qp_isEnter, bool qp_isEixt) {
+	if (qp_isEixt) {
+		Cast<AQPCharacter>(controller->GetCharacter())->QP_PlayerExit();
+	}
 	AQPCharacter* c = Cast<AQPCharacter>(QP_GetCharacter(qp_name));
 	controller->Possess(c);
-	if (c->qp_unchangeMovementMode) {
+	if (qp_isEnter) {
+		c->QP_PlayerEnter();
+	}
+	if (qp_unchangeMovementMode) {
 		c->GetCharacterMovement()->SetMovementMode(c->qp_movementMode);
 	}
 }

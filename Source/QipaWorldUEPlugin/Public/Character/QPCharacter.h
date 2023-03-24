@@ -84,8 +84,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 		TEnumAsByte<EMovementMode> qp_movementMode = MOVE_Walking;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-		bool  qp_unchangeMovementMode = false;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
+		//bool  qp_unchangeMovementMode = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 		float qp_walkSpeed = 250.0f;
 
@@ -120,9 +120,15 @@ public:
 	/**是否在跑*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 		bool qp_isRun = false;
-	/**是否在跑*/
+	/**是否固定相机*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 		bool qp_isFixedCamera = false;
+
+	bool qp_isFixedCameraLast = false;
+	bool qp_isRunLast = false;
+
+	bool qp_isReset = false;
+	bool qp_isExit = false;
 
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPSlime")
 		UCameraComponent* qp_camera;
@@ -134,7 +140,17 @@ public:
 
 	float qp_forwardV = 0.0f;
 	float qp_rightV = 0.0f;
+	float qp_deltaTime = 0.f;
 public:
+	//简单的重置一下
+	virtual void QP_Reset();
+	//撤销简单的重置
+	virtual void QP_ReReset();
+	//脱离玩家控制时调用
+	virtual void QP_PlayerExit();
+	//进入玩家控制时调用
+	virtual void QP_PlayerEnter();
+
 	virtual void QP_MoveForward(float value);
 	virtual void QP_MoveRight(float value);
 	//跳跃开始

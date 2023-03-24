@@ -20,7 +20,7 @@
 AQPFlyCharacter::AQPFlyCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
 	qp_movementMode = MOVE_Flying;
-	qp_unchangeMovementMode = true;
+	//qp_unchangeMovementMode = true;
 }
 
 // Called when the game starts or when spawned

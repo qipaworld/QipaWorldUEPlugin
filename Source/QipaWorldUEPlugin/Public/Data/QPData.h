@@ -8,9 +8,9 @@
 #include "QPData.generated.h"
 //class UQPGameInstanceDataManager;
 class UQPData;
-DECLARE_MULTICAST_DELEGATE_OneParam(QP_DataDelegate,const UQPData*);
+DECLARE_MULTICAST_DELEGATE_OneParam(QP_DataDelegate, UQPData*);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FQP_DataDynamicDelegate,const UQPData*,QPData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FQP_DataDynamicDelegate, UQPData*,QPData);
 
 /***
 *这个是自动添加属性的宏

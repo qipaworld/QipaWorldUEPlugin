@@ -201,7 +201,7 @@ float UQPGIM_Sound::QP_GetEnvironmentVolume()
 	//audio->AddToRoot();
 //}
 
-void UQPGIM_Sound::QP_SoundDataChange(const UQPData* data)
+void UQPGIM_Sound::QP_SoundDataChange(UQPData* data)
 {
 	//qp_musicVolume = qp_soundData->QP_Getfloat("musicVolume");
 	//qp_soundVolume = qp_soundData->QP_Getfloat("soundVolume");

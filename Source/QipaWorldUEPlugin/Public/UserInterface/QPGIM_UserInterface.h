@@ -69,7 +69,7 @@ public:
 	/**获得player0 然后监听默认的ui键盘事件*/
 	void QP_BindKeyBoard();
 
-	void QP_BindMapData(const UQPData* data);
+	void QP_BindMapData(UQPData* data);
 	/**控制鼠标显示与隐藏*/
 	void QP_UpdateMouse(bool b);
 	/**监听默认ui事件，没有ui就弹出主菜单，有了就弹出最上面的

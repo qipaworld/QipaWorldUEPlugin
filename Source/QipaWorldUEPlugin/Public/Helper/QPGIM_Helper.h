@@ -69,5 +69,5 @@ public:
 
 	void QP_SaveHelperData();
 	/**监听帮助数据，如果变了就保存*/
-	void QP_BindHelperData(const UQPData* data);
+	void QP_BindHelperData(UQPData* data);
 };

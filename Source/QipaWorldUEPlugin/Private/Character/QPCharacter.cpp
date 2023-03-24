@@ -1,4 +1,4 @@
-// QIPAWORLD
+ï»¿// QIPAWORLD
 
 
 #include "Character/QPCharacter.h"
@@ -54,7 +54,7 @@ void AQPCharacter::BeginPlay()
 void AQPCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	qp_deltaTime = DeltaTime;
 	if (qp_isAutoCameraLength) {
 		
 		if (qp_springArm->TargetArmLength>= qp_targetCameraLength) {
@@ -155,8 +155,49 @@ void AQPCharacter::QP_Run()
 	 qp_movementC->MaxAcceleration = qp_walkMaxAcceleration;
 
  }
+ //è„±ç¦»çŽ©å®¶æŽ§åˆ¶æ—¶è°ƒç”¨
+ void AQPCharacter::QP_PlayerExit() {
+	 qp_movementMode = GetCharacterMovement()->MovementMode;
 
-//Ïà»ú¹Ì¶¨Óë×ÔÓÉµÄÇÐ»»
+	 qp_isExit = true;
+	 QP_Reset();
+	 
+ }
+ //è¿›å…¥çŽ©å®¶æŽ§åˆ¶æ—¶è°ƒç”¨
+ void AQPCharacter::QP_PlayerEnter() {
+	 if (!qp_isExit) {
+		 return;
+	 }
+	 qp_isExit = false;
+	 QP_ReReset();
+ }
+ void AQPCharacter::QP_Reset() {
+	 qp_isReset = true;
+	 qp_isFixedCameraLast = qp_isFixedCamera;
+	 qp_isRunLast = qp_isRun;
+	 if (qp_isFixedCamera) {
+		 QP_FixedCamera();
+	 }
+	 if (qp_isRun) {
+		 QP_Run();
+	 }
+ }
+void AQPCharacter::QP_ReReset() {
+	if (!qp_isReset) {
+		return;
+	}
+	qp_isReset = false;
+
+	if (qp_isFixedCameraLast) {
+		QP_FixedCamera();
+	}
+	if (qp_isRunLast) {
+		QP_Run();
+	}
+	qp_isFixedCameraLast = false;
+	qp_isRunLast = false;
+ }
+//ç›¸æœºå›ºå®šä¸Žè‡ªç”±çš„åˆ‡æ¢
  void AQPCharacter::QP_FixedCamera()
  {
 	 qp_isFixedCamera = !qp_isFixedCamera;
@@ -179,24 +220,24 @@ void AQPCharacter::QP_Run()
  {
  }
 
-//°´ÏÂÊó±êÓÒ¼ü
+//æŒ‰ä¸‹é¼ æ ‡å³é”®
  void AQPCharacter::QP_AttackTwoStart()
  {
  }
-//ËÉ¿ªÊó±êÓÒ¼ü
+//æ¾å¼€é¼ æ ‡å³é”®
  void AQPCharacter::QP_AttackTwoEnd()
  {
  }
 
  void AQPCharacter::QP_JumpStart()
  {
-	 //Èç¹ûÊÇÕæµÄ»°£¬½ÇÉ«ÌøÔ¾
+	 //å¦‚æžœæ˜¯çœŸçš„è¯ï¼Œè§’è‰²è·³è·ƒ
 	 bPressedJump = true;
 	 
  }
  void AQPCharacter::QP_JumpEnd()
  {
-	 //Èç¹ûÊÇ¼ÙµÄ»°£¬½áÊøÌøÔ¾
+	 //å¦‚æžœæ˜¯å‡çš„è¯ï¼Œç»“æŸè·³è·ƒ
 	 bPressedJump = false;
 	 //GLog->Log("jumpEnd");
 
@@ -217,7 +258,7 @@ void AQPCharacter::QP_Run()
 	
  }
 
- //¹¥»÷¿ªÊ¼
+ //æ”»å‡»å¼€å§‹
  void  AQPCharacter::QP_mouseWheelUp() {
 
 	 if (qp_springArm->TargetArmLength > qp_minCameraLength) {
@@ -234,7 +275,7 @@ void AQPCharacter::QP_Run()
 
 	 }
  }
- //¹¥»÷½áÊø
+ //æ”»å‡»ç»“æŸ
  void  AQPCharacter::QP_mouseWheelDown() {
 	 if (qp_springArm->TargetArmLength < qp_maxCameraLength) {
 		 qp_springArm->TargetArmLength = qp_springArm->TargetArmLength + qp_changeCameraLengthSpeed * GetWorld()->GetDeltaSeconds();

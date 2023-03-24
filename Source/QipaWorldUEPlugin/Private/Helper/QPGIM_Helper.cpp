@@ -103,7 +103,7 @@ void UQPGIM_Helper::QP_LoadHelperData()
 }
 
 
-void UQPGIM_Helper::QP_BindHelperData(const UQPData* data)
+void UQPGIM_Helper::QP_BindHelperData(UQPData* data)
 {
 	/*qp_helperNum = qp_helperData->QP_Getint32("helperNum");
 	qp_tipNum = qp_helperData->QP_Getint32("tipNum");

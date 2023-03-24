@@ -31,7 +31,7 @@ public:
 	UQPTextBlock();
 
 	/**监听国际化地区改变事件*/
-	void QP_L10NChange(const UQPData* data);
+	void QP_L10NChange(UQPData* data);
 	/**改变字体*/
 	virtual void QP_ChangeFontSlate();
 	UFUNCTION()
