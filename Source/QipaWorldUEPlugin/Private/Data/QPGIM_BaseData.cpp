@@ -23,7 +23,7 @@ void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 
 	QP_UQPGIM_BaseData = this;
 
-	qp_gameBaseData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData(qp_gameBaseDataName);
+	qp_gameBaseData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("UQPGIM_BaseData");
 
 	//QP_LoadSoundData();
 

@@ -22,7 +22,7 @@ void UQPGIM_AnimNotifyData::Initialize(FSubsystemCollectionBase& Collection)
 
 	QP_UQPGIM_AnimNotifyData = this;
 
-	qp_animNotifyData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData(qp_animNotifyDataName);
+	qp_animNotifyData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("UQPGIM_AnimNotifyData");
 }
 
 void UQPGIM_AnimNotifyData::Deinitialize()

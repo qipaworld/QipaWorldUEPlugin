@@ -69,4 +69,15 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
 		ACharacter* QP_ChangeMainCharacter(FString collkey, ACharacter* character,FString qp_name, FTransform T);
+	
+	/**获取一类角色的本地基数数据。
+	* @param qp_name - 角色名字。
+	* @warning 是基础数据，不是游戏进行时的实时数据。
+	*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
+	class UQPDA_Character* QP_GetCharacterData(FString qp_name);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
+	void QP_InitCharacterData(AQPCharacter* c);
+
 };

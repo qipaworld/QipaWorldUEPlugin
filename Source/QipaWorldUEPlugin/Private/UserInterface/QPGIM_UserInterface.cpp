@@ -5,6 +5,8 @@
 //#include <Subsystems/PanelExtensionSubsystem.h>
 //#include "WidgetBlueprint.h"
 #include "Blueprint/UserWidget.h"
+#include "Map/QPGIM_Map.h"
+
 #include "UObject/ConstructorHelpers.h"
 #include "Setting/QPDS_Default.h"
 #include "Data/QPGIM_Data.h"
@@ -23,8 +25,8 @@ bool UQPGIM_UserInterface::ShouldCreateSubsystem(UObject* Outer) const
 void UQPGIM_UserInterface::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
-	UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("mapData")->qp_dataDelegate.AddUObject(this, &UQPGIM_UserInterface::QP_BindMapData);
+	Collection.InitializeDependency(UQPGIM_Map::StaticClass());
+	UQPGIM_Map::QP_UQPGIM_Map->QP_GetMapData()->qp_dataDelegate.AddUObject(this, &UQPGIM_UserInterface::QP_BindMapData);
 
 	QP_UQPGIM_UserInterface = this;
 	UQPDS_Default* devSetting = UQPDS_Default::QP_GET();

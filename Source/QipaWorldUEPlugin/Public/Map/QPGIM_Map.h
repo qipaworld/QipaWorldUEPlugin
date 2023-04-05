@@ -29,6 +29,8 @@ public:
 	virtual void Deinitialize();
 
 public:
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPMap")
+	class UQPData* qp_mapData;
 	/** 是否加载完成*/
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPMap")
 	bool qp_isLoadMap = false;
@@ -60,7 +62,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")
 	void QP_OpenReadyMap();
 
-
+	/** 获取地图数据*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")
+	class UQPData* QP_GetMapData();
 	/** 加载子地图*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")
 	void QP_LoadSubMap(const FString MapName);

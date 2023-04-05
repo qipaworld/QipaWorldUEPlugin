@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Component/QPComponent.h"
-#include "QPCA_Rotate.generated.h"
+#include "QPC_Jump.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPCA_Rotate : public UQPComponent
+class QIPAWORLDUEPLUGIN_API UQPC_Jump : public UQPComponent
 {
 	GENERATED_BODY()
 	

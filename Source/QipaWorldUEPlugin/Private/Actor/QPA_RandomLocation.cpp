@@ -4,7 +4,7 @@
 #include "Actor/QPA_RandomLocation.h"
 
 AQPA_RandomLocation::AQPA_RandomLocation() {
-	qp_randmoLocatin = CreateDefaultSubobject<UQPRandomLocationC>("QP_RandomLocation");
+	qp_randmoLocatin = CreateDefaultSubobject<UQPC_RandomLocation>("QP_RandomLocation");
 	//qp_randmoLocatin->setupatt
 }
 

@@ -23,7 +23,7 @@ void UQPGIM_Localization::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 	//FInternationalization::Get().OnCultureChanged().add
-	qp_localizationData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData(qp_localizationDataName);
+	qp_localizationData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("UQPGIM_Localization");
 	//QP_GameLocalizationDataChange()
 	FInternationalization::Get().OnCultureChanged().AddUObject(this, &UQPGIM_Localization::QP_GameLocalizationDataChange);
 	QP_UQPGIM_Localization = this;

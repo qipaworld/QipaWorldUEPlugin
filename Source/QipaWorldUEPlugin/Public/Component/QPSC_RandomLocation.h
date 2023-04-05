@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "Component/QPSComponent.h"
-#include "Component/QPRandomLocationC.h"
+#include "Component/QPC_RandomLocation.h"
 
-#include "QPRandomLocationSC.generated.h"
+#include "QPSC_RandomLocation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPRandomLocationSC : public UQPSComponent
+class QIPAWORLDUEPLUGIN_API UQPSC_RandomLocation : public UQPSComponent
 {
 	GENERATED_BODY()
 public:
-	UQPRandomLocationSC();
+	UQPSC_RandomLocation();
 	/** 随机移动位置组件 */
 	UPROPERTY(Category = "QipaWorld|QPTarget", EditAnywhere, BlueprintReadWrite)
-		TObjectPtr<UQPRandomLocationC> qp_randmoLocatin;
+		TObjectPtr<UQPC_RandomLocation> qp_randmoLocatin;
 	/** 随机移动位半径 */
 	UPROPERTY(Category = "QipaWorld|QPTarget", EditAnywhere, BlueprintReadWrite)
 		float qp_radius = 50.f;

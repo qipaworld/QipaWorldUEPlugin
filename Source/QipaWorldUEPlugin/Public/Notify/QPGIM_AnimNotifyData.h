@@ -16,7 +16,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_AnimNotifyData : public UGameInstanceSubsyste
 {
 	GENERATED_BODY()
 
-	FString qp_animNotifyDataName = "qp_animNotifyDataName";
+	//FString qp_animNotifyDataName = "qp_animNotifyDataName";
 public:
 	static UQPGIM_AnimNotifyData* QP_UQPGIM_AnimNotifyData;
 

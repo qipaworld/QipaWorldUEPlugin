@@ -2,6 +2,8 @@
 
 
 #include "Character/QPGIM_Character.h"
+#include "Animation/QPC_PlayMontage.h"
+
 #include "Actor/QPWM_Actor.h"
 #include "Character/QPDA_Character.h"
 
@@ -21,7 +23,6 @@ void UQPGIM_Character::Initialize(FSubsystemCollectionBase& Collection)
 
 	QP_UQPGIM_Character = this;
 
-	//qp_soundData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData(qp_soundDataName);
 
 	//QP_LoadSoundData();
 
@@ -62,12 +63,20 @@ ACharacter* UQPGIM_Character::QP_GetCharacter(FString qp_name) {
 	}
 	return nullptr;
 }
+class UQPDA_Character* UQPGIM_Character::QP_GetCharacterData(FString qp_name) {
+	return LoadObject<UQPDA_Character>(nullptr, *(qp_assetPath + qp_name + "." + qp_name + "'"));
+}
+void UQPGIM_Character::QP_InitCharacterData(AQPCharacter* c) {
+	UQPDA_Character* data = QP_GetCharacterData(c->qp_assetDataName);
+	c->qp_assetData = data;
+	c->qp_playMontage->qp_montage.Append(data->qp_montage);
+}
 ACharacter* UQPGIM_Character::QP_GetNewCharacter(FString qp_name, FTransform T) {
 	AActor* a = UQPWM_Actor::QP_UQPWM_Actor->QP_GetActor(qp_name);
 	ACharacter* c;
 	if (!a) {
 		//qp_character
-		UQPDA_Character* data = LoadObject<UQPDA_Character>(nullptr, *(qp_assetPath + qp_name + "." + qp_name + "'"));
+		UQPDA_Character* data = QP_GetCharacterData(qp_name);
 	
 		//FTransform qp_spawnT = FTransform(GetActorRotation(), location);
 		FActorSpawnParameters qp_spawnP;
@@ -77,7 +86,19 @@ ACharacter* UQPGIM_Character::QP_GetNewCharacter(FString qp_name, FTransform T) 
 		//qp_attackSkill->QP_GetMovement()->InitialSpeed = qp_skillSpeed + GetCharacterMovement()->GetLastUpdateVelocity()->Size();
 		
 		c = GetWorld()->SpawnActor<ACharacter>(data->qp_character, T, qp_spawnP);
+		AQPCharacter* qpc = Cast<AQPCharacter>(c);
+		if (qpc) {
+			QP_InitCharacterData(qpc);
+		}
+		else {
+			UQPC_PlayMontage* pm = Cast<UQPC_PlayMontage>(c->GetComponentByClass(UQPC_PlayMontage::StaticClass()));
 
+			if (pm) {
+				pm->qp_montage.Append(data->qp_montage);
+			}
+		}
+		
+		
 	}
 	else {
 		c = Cast<ACharacter>(a);

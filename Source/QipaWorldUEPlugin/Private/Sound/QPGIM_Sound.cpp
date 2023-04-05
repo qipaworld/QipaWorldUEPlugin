@@ -28,7 +28,7 @@ void UQPGIM_Sound::Initialize(FSubsystemCollectionBase& Collection)
 
 	QP_UQPGIM_Sound = this;
 
-	qp_soundData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData(qp_soundDataName);
+	qp_soundData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("UQPGIM_Sound");
 	
 	QP_LoadSoundData();
 	

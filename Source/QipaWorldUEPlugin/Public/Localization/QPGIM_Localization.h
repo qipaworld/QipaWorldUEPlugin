@@ -25,7 +25,7 @@ public:
 	void QP_Init();*/
 
 	/**数据管理器里的数据名字*/
-	FString qp_localizationDataName = "qp_sLocalizationDataName";
+	//FString qp_localizationDataName = "qp_sLocalizationDataName";
 
 	/**国际化数据*/
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPLocalization")

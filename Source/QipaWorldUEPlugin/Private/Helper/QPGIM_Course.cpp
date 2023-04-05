@@ -19,7 +19,7 @@ bool UQPGIM_Course::ShouldCreateSubsystem(UObject* Outer) const
 
 void UQPGIM_Course::Initialize(FSubsystemCollectionBase& Collection)
 {
-	qp_dataName = TEXT("helperCourseData");
+	qp_dataName = TEXT("UQPGIM_Course");
 	qp_SaveSlotName = TEXT("qp_helperCourseSaveGame");
 
 	Super::Initialize(Collection);

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Component/QPComponent.h"
-#include "QPRandomLocationC.generated.h"
+#include "QPC_RandomLocation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPRandomLocationC : public UQPComponent
+class QIPAWORLDUEPLUGIN_API UQPC_RandomLocation : public UQPComponent
 {
 	GENERATED_BODY()
 public:

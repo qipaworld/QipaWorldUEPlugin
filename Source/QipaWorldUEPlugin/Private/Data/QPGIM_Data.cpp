@@ -58,6 +58,7 @@ void UQPGIM_Data::Initialize(FSubsystemCollectionBase& Collection)
 void UQPGIM_Data::Deinitialize()
 {
 	Super::Deinitialize();
+	QP_UQPGIM_Data = nullptr;
 }
 
 void UQPGIM_Data::Tick(float DeltaTime)

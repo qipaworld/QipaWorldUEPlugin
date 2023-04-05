@@ -14,17 +14,20 @@
 #include "Data/QPGIM_Data.h"
 #include "UObject/UnrealType.h"
 #include "Data/QPData.h"
+#include "Character/QPGIM_Character.h"
 
 #include "Notify/QPGIM_AnimNotifyData.h"
 
 // Sets default values
+int AQPCharacter::qp_characterMaxNum = 1;
+
 AQPCharacter::AQPCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 
-
+	qp_characterMaxNum++;
 	qp_camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	qp_springArm = CreateDefaultSubobject<USpringArmComponent>("springArm");
 	qp_springArm->bUsePawnControlRotation = true;
@@ -32,15 +35,30 @@ AQPCharacter::AQPCharacter()
 	bUseControllerRotationYaw = false;
 	qp_springArm->SetupAttachment(RootComponent);
 	qp_camera->SetupAttachment(qp_springArm);
-	
+	qp_playMontage = CreateDefaultSubobject<UQPC_PlayMontage>("qp_playMontage");
+	//qp_playJumpAnim = CreateDefaultSubobject<UQPC_PlayMontage>("qp_playJumpAnim");
+	//qp_attackAnim->SetupAttachment(RootComponent);
+
+
 
 }
-
+//void AQPCharacter::OnConstruction(const FTransform& Transform) {
+//	Super::OnConstruction(Transform);
+//
+//	if (UQPGIM_Data::QP_UQPGIM_Data) {
+//	}
+//}
 // Called when the game starts or when spawned
 void AQPCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	qp_playerData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData(qp_playerDataKey);
+	QP_GetQPData();
+
+	//QP_InitQPData();
+	//if (qp_characterData == nullptr) {
+		//qp_characterData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("AQPCharacter")->QP_GetUQPData("qp_Character" + qp_characterMaxNum);
+	//}
+	
 	qp_movementC = GetCharacterMovement();
 	qp_movementC->bOrientRotationToMovement = true;
 	qp_movementC->MaxAcceleration = qp_walkMaxAcceleration;
@@ -48,6 +66,12 @@ void AQPCharacter::BeginPlay()
 	qp_movementC->MaxWalkSpeed = qp_walkSpeed;
 	qp_isFixedCamera = false;
 	qp_isRun = false;
+	UQPGIM_AnimNotifyData::QP_UQPGIM_AnimNotifyData->QP_GetNotifyData(QP_AnimNotifyFireName)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyFire);
+	UQPGIM_AnimNotifyData::QP_UQPGIM_AnimNotifyData->QP_GetNotifyData(QP_AnimNotifyJunmEndName)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyJumpEnd);
+
+	if (!qp_assetData) {
+		UQPGIM_Character::QP_UQPGIM_Character->QP_InitCharacterData(this);
+	}
 }
 
 // Called every frame
@@ -96,6 +120,18 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction(qp_mouseWheelDown, IE_Pressed, this, &AQPCharacter::QP_mouseWheelDown);
 
 }
+//void AQPCharacter::QP_InitQPData() {
+//	
+//	
+//}
+UQPData* AQPCharacter::QP_GetQPData(){
+
+	if (!qp_characterData) {
+		qp_characterData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("AQPCharacter")->QP_GetUQPData("qp_Character" + qp_characterMaxNum);
+
+	}
+	return qp_characterData;
+ }
 
 void AQPCharacter::QP_UpdateMaxSpeed() 
 {
@@ -181,6 +217,9 @@ void AQPCharacter::QP_Run()
 	 if (qp_isRun) {
 		 QP_Run();
 	 }
+	 if (qp_characterData->QP_GetFString("characterAttack") == "start") {
+		 QP_AttackEnd();
+	 }
  }
 void AQPCharacter::QP_ReReset() {
 	if (!qp_isReset) {
@@ -233,7 +272,8 @@ void AQPCharacter::QP_ReReset() {
  {
 	 //如果是真的话，角色跳跃
 	 bPressedJump = true;
-	 
+	 qp_characterData->QP_AddFString("characterJump", "start");
+
  }
  void AQPCharacter::QP_JumpEnd()
  {
@@ -245,17 +285,21 @@ void AQPCharacter::QP_ReReset() {
 
  void AQPCharacter::Landed(const FHitResult& Hit) {
 	 Super::Landed(Hit);
+	 qp_characterData->QP_AddFString("characterJump", "end");
+
  }
 
 
  void AQPCharacter::QP_AttackStart()
  {
- 
+	 qp_characterData->QP_AddFString("characterAttack", "start");
+
  }
 
  void AQPCharacter::QP_AttackEnd()
  {
-	
+	 qp_characterData->QP_AddFString("characterAttack", "end");
+
  }
 
  //攻击开始
@@ -290,4 +334,20 @@ void AQPCharacter::QP_ReReset() {
 		 qp_isAutoCameraLength = false;
 
 	 }
+ }
+
+ void AQPCharacter::QP_AnimNotifyFire(UQPData* data) {
+	 //GLog->Log("QP_AnimNotifyFire");
+	 QP_Fire();
+ }
+
+ void AQPCharacter::QP_Fire() {
+	 
+ }
+ void AQPCharacter::QP_AnimNotifyJumpEnd(UQPData* data) {
+	 if (qp_characterData->QP_GetFString("characterAttack") == "start") {
+		 qp_characterData->QP_AddFString("characterAttack", "start");
+	 }
+	 //qp_isJump = false;
+
  }

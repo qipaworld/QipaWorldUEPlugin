@@ -28,7 +28,7 @@ void UQPGIM_Map::Initialize(FSubsystemCollectionBase& Collection)
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 	
 	QP_UQPGIM_Map = this;
-
+	qp_mapData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("UQPGIM_Map");
 	qp_actionInfo.CallbackTarget = this;
 	qp_actionInfo.ExecutionFunction = "QP_LoadMapEnd";
 	qp_actionInfo.UUID = UQPDS_Default::QP_GET()->QP_UUID["qp_loadMap"];
@@ -51,9 +51,9 @@ void UQPGIM_Map::QP_LoadMap(const FString MapName, const FVector Location, const
 void UQPGIM_Map::QP_OpenMap(const FString LevelName)
 {
 	//qp_loadMapName = LevelName;
-	UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("mapData")->QP_AddFString("changeLevelName", LevelName, true);
+	qp_mapData->QP_AddFString("changeLevelName", LevelName, true);
 	UGameplayStatics::OpenLevel(GetWorld(), FName(LevelName));
-	UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("mapData")->QP_AddFString("baseLevelName", LevelName);
+	qp_mapData->QP_AddFString("baseLevelName", LevelName);
 }
 void UQPGIM_Map::QP_LoadingAndOpenMap(const FString MapName)
 {
@@ -64,6 +64,11 @@ void UQPGIM_Map::QP_LoadingAndOpenMap(const FString MapName)
 void UQPGIM_Map::QP_OpenReadyMap()
 {
 	QP_OpenMap(qp_readyOpenMapName);
+}
+
+UQPData* UQPGIM_Map::QP_GetMapData()
+{
+	return qp_mapData;
 }
 
 void UQPGIM_Map::QP_LoadSubMap(const FString MapName)

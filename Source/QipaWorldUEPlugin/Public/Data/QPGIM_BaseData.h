@@ -14,7 +14,7 @@ UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPGIM_BaseData : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
-		FString qp_gameBaseDataName = "qp_gameBaseDataName";
+		//FString qp_gameBaseDataName = "qp_gameBaseDataName";
 public:
 	static UQPGIM_BaseData* QP_UQPGIM_BaseData;
 

@@ -18,7 +18,7 @@ bool UQPGIM_Tip::ShouldCreateSubsystem(UObject* Outer) const
 
 void UQPGIM_Tip::Initialize(FSubsystemCollectionBase& Collection)
 {
-	qp_dataName = TEXT("helperTipData");
+	qp_dataName = TEXT("UQPGIM_Tip");
 	qp_SaveSlotName = TEXT("qp_helperTipSaveGame");
 
 	Super::Initialize(Collection);
