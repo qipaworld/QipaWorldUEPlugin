@@ -8,6 +8,7 @@
 
 UQPGIM_AnimNotifyData* UQPGIM_AnimNotifyData::QP_UQPGIM_AnimNotifyData = nullptr;
 
+FString UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME = "qp_animNotify";
 
 bool UQPGIM_AnimNotifyData::ShouldCreateSubsystem(UObject* Outer) const
 {

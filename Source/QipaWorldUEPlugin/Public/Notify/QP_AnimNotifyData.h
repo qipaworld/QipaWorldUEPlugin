@@ -23,5 +23,6 @@ class QIPAWORLDUEPLUGIN_API UQP_AnimNotifyData : public UAnimNotify
 	FString qp_animNotifyName = "qp_animNotifyName";
 	/**发送数据*/
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference);
-
+public:
+	
 };

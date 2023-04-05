@@ -66,9 +66,8 @@ void AQPCharacter::BeginPlay()
 	qp_movementC->MaxWalkSpeed = qp_walkSpeed;
 	qp_isFixedCamera = false;
 	qp_isRun = false;
-	UQPGIM_AnimNotifyData::QP_UQPGIM_AnimNotifyData->QP_GetNotifyData(QP_AnimNotifyFireName)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyFire);
-	UQPGIM_AnimNotifyData::QP_UQPGIM_AnimNotifyData->QP_GetNotifyData(QP_AnimNotifyJunmEndName)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyJumpEnd);
-
+	qp_characterData->QP_GetUQPData(UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyEvent);
+	
 	if (!qp_assetData) {
 		UQPGIM_Character::QP_UQPGIM_Character->QP_InitCharacterData(this);
 	}
@@ -336,18 +335,20 @@ void AQPCharacter::QP_ReReset() {
 	 }
  }
 
- void AQPCharacter::QP_AnimNotifyFire(UQPData* data) {
+ void AQPCharacter::QP_AnimNotifyEvent(UQPData* data) {
 	 //GLog->Log("QP_AnimNotifyFire");
-	 QP_Fire();
+	
+	 if (data->qp_changeMap.Contains(QP_AnimNotifyFireName)) {
+		 QP_Fire();
+	 }
+	 else if (data->qp_changeMap.Contains(QP_AnimNotifyJunmEndName)) {
+		 if (qp_characterData->QP_GetFString("characterAttack") == "start") {
+			 qp_characterData->QP_AddFString("characterAttack", "start");
+		 }
+	 }
+	 
  }
 
  void AQPCharacter::QP_Fire() {
 	 
- }
- void AQPCharacter::QP_AnimNotifyJumpEnd(UQPData* data) {
-	 if (qp_characterData->QP_GetFString("characterAttack") == "start") {
-		 qp_characterData->QP_AddFString("characterAttack", "start");
-	 }
-	 //qp_isJump = false;
-
  }

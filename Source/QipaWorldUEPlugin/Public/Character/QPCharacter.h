@@ -226,8 +226,8 @@ public:
 	/**创建魔法技能*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPCharacter")
 		virtual void QP_Fire();
-	/**监听创建魔法技能事件*/
-	virtual void QP_AnimNotifyFire(UQPData* data);
+	/**监听蒙太奇事件*/
+	virtual void QP_AnimNotifyEvent(UQPData* data);
 	/**监听跳跃动画播放结束事件*/
-	virtual void QP_AnimNotifyJumpEnd(UQPData* data);
+	//virtual void QP_AnimNotifyJumpEnd(UQPData* data);
 };
