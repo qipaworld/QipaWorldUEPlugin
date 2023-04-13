@@ -13,6 +13,7 @@
 #include "Data/QPGIM_BaseData.h"
 #include "Interface/QPI_GetQPData.h"
 #include "Animation/QPC_PlayMontage.h"
+#include "Animation/QPC_MaterialAutoRestore.h"
 
 #include "QPCharacter.generated.h"
 
@@ -177,6 +178,8 @@ public:
 	float qp_deltaTime = 0.f;
 
 	class UQPDA_Character* qp_assetData = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	class UQPC_MaterialAutoRestore* qp_materialAutoRestore = nullptr;
 public:
 	//简单的重置一下
 	virtual void QP_Reset();
@@ -198,6 +201,8 @@ public:
 	
 	virtual void QP_RunStart();
 	virtual void QP_RunEnd();
+
+	virtual void QP_ChangeCharacter();
 
 	//相机固定与自由的切换
 	virtual void QP_FixedCamera();
@@ -226,6 +231,10 @@ public:
 	/**创建魔法技能*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPCharacter")
 		virtual void QP_Fire();
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPCharacter")
+	virtual void QP_SetMatAmount(float amount = 0.f);
+
 	/**监听蒙太奇事件*/
 	virtual void QP_AnimNotifyEvent(UQPData* data);
 	/**监听跳跃动画播放结束事件*/

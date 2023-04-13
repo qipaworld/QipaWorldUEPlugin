@@ -31,14 +31,16 @@ AQPCharacter::AQPCharacter()
 	qp_camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	qp_springArm = CreateDefaultSubobject<USpringArmComponent>("springArm");
 	qp_springArm->bUsePawnControlRotation = true;
+	qp_materialAutoRestore = CreateDefaultSubobject<UQPC_MaterialAutoRestore>("qp_materialAutoRestore");
 
 	bUseControllerRotationYaw = false;
 	qp_springArm->SetupAttachment(RootComponent);
 	qp_camera->SetupAttachment(qp_springArm);
 	qp_playMontage = CreateDefaultSubobject<UQPC_PlayMontage>("qp_playMontage");
-	//qp_playJumpAnim = CreateDefaultSubobject<UQPC_PlayMontage>("qp_playJumpAnim");
 	//qp_attackAnim->SetupAttachment(RootComponent);
-
+	//qp_restoreNg = CreateDefaultSubobject<UNiagaraComponent>("qp_restoreNg");
+	//qp_restoreNg->SetupAttachment(RootComponent);
+	//qp_aterialDissolve->QP_SetRootComponent(RootComponent);
 
 
 }
@@ -95,6 +97,14 @@ void AQPCharacter::Tick(float DeltaTime)
 		
 		 
 	}
+
+	if (qp_movementC->IsFalling()) {
+		if (qp_characterData->QP_GetFString("characterJump") != "start") {
+			if (qp_characterData->QP_GetFString("characterFall") != "start") {
+				qp_characterData->QP_AddFString("characterFall", "start");
+			}
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -123,6 +133,15 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 //	
 //	
 //}
+
+void AQPCharacter::QP_SetMatAmount(float amount)
+{
+	//qp_matAmount = amount;
+	//qp_matInstance->SetScalarParameterValue("qp_amount", qp_matAmount);
+	qp_materialAutoRestore->QP_SetMatAmount(amount);
+	
+
+}
 UQPData* AQPCharacter::QP_GetQPData(){
 
 	if (!qp_characterData) {
@@ -285,6 +304,7 @@ void AQPCharacter::QP_ReReset() {
  void AQPCharacter::Landed(const FHitResult& Hit) {
 	 Super::Landed(Hit);
 	 qp_characterData->QP_AddFString("characterJump", "end");
+	 qp_characterData->QP_AddFString("characterFall", "notPlay");
 
  }
 
@@ -301,6 +321,19 @@ void AQPCharacter::QP_ReReset() {
 
  }
 
+ void AQPCharacter::QP_ChangeCharacter()
+ {
+	 //qp_isFixedCameraLast = qp_isFixedCamera;
+
+	 //QP_Reset();
+	 //AutoPossessPlayer = EAutoReceiveInput::Type::Disabled;
+
+	 //UQPGIM_Character::QP_UQPGIM_Character->QP_GetCharacter("FlySlime")->AutoPossessPlayer = EAutoReceiveInput::Type::Player0;
+	 UQPGIM_Character::QP_UQPGIM_Character->QP_Possess(GetController(), "FlySlime");
+	 //->Possess(QP_GetCharacter());
+ //GetController()->Possess(UQPGIM_Character::QP_UQPGIM_Character->QP_GetCharacter("FlySlime"));
+ //GetController()->SetPawn(UQPGIM_Character::QP_UQPGIM_Character->QP_GetCharacter("FlySlime"));
+ }
  //攻击开始
  void  AQPCharacter::QP_mouseWheelUp() {
 
