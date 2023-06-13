@@ -1,0 +1,131 @@
+// Copyright 1998-2018 Epic Games, Inc. All Rights Reserved.
+
+/*=============================================================================
+    LensDistortionUVGeneration.usf:将光学变形和不
+    变形UV置换贴图生成到一个渲染目标中。
+
+    像素着色器直接计算变形视口UV，
+    不对使用Sv_Position和参考方程式的视口UV置换执行变形，
+    并将它们保存到红色和绿色的通道中。
+
+    为避免用费拉里法进行解析、
+    或在 GPU 上执行牛顿法计算不变形视口 UV 这两种方式
+    来对视口UV置换进行变形，这对着色器的工作方式如下：顶点着色器不对网格的顶点执行变形，
+    并下传到像素着色器视口 UV 应在屏幕上
+    所处的位置，而不进行变形。像素
+    着色器可生成不变形视口UV，
+    减去像素的视口UV后即可对视口UV置换进行变形。
+=============================================================================*/
+
+#include "/Engine/Public/Platform.ush"
+
+// 视口UV坐标中的像素大小。
+float2 PixelUVSize;
+
+// K1, K2, K3
+float3 RadialDistortionCoefs;
+
+// P1, P2
+float2 TangentialDistortionCoefs;
+
+// 未变形视口的相机矩阵。
+float4 UndistortedCameraMatrix;
+
+// 变形视口的相机矩阵。
+float4 DistortedCameraMatrix;
+
+// 对渲染目标输出乘法和加法。
+float2 OutputMultiplyAndAdd;
+
+// 不对V.z=1视图位置进行变形。
+float2 UndistortNormalizedViewPosition(float2 V)
+{
+    float2 V2 = V * V;
+    float R2 = V2.x + V2.y;
+
+    // 径向变形（额外添加括号是为匹配 MF_Undistortion.uasset）。
+    float2 UndistortedV = V * (1.0 + R2 * (RadialDistortionCoefs.x + R2 * (RadialDistortionCoefs.y + R2 * RadialDistortionCoefs.z)));
+
+    // 切向变形。
+    UndistortedV.x += TangentialDistortionCoefs.y * (R2 + 2 * V2.x) + 2 * TangentialDistortionCoefs.x * V.x * V.y;
+    UndistortedV.y += TangentialDistortionCoefs.x * (R2 + 2 * V2.y) + 2 * TangentialDistortionCoefs.y * V.x * V.y;
+
+    return UndistortedV;
+}
+
+// 返回变形视口UV的未变形视口UV。
+//
+// 注意：
+//        UV创建于左下角。
+float2 UndistortViewportUV(float2 ViewportUV)
+{
+    // 已变形视口UV -> 已变形视图位置（z=1）
+    float2 DistortedViewPosition = (ViewportUV - DistortedCameraMatrix.zw) / DistortedCameraMatrix.xy;
+
+    // 计算未变形的视图位置（z=1）
+    float2 UndistortedViewPosition = UndistortNormalizedViewPosition(DistortedViewPosition);
+
+    // 未变形的视图位置（z=1） -> 未变形的视口UV。
+    return UndistortedCameraMatrix.xy * UndistortedViewPosition + UndistortedCameraMatrix.zw;
+}
+
+// 翻转UV的y组件。
+float2 FlipUV(float2 UV)
+{
+    return float2(UV.x, 1 - UV.y);
+}
+
+void MainVS(
+    in uint GlobalVertexId :SV_VertexID,
+    out float2 OutVertexDistortedViewportUV :TEXCOORD0,
+    out float4 OutPosition :SV_POSITION
+    )
+{
+    // 计算单元索引。
+    uint GridCellIndex = GlobalVertexId / 6;
+
+    // 计算网格中单元行和列的ID。
+    uint GridColumnId = GridCellIndex / GRID_SUBDIVISION_Y;
+    uint GridRowId = GridCellIndex - GridColumnId * GRID_SUBDIVISION_Y;
+
+    // 计算双三角形网格单元中的顶点ID。
+    uint VertexId = GlobalVertexId - GridCellIndex * 6;
+
+    // 计算单元中三角形顶点源自左下角的UV坐标。
+    float2 CellVertexUV = float2(0x1 & ((VertexId + 1) / 3), VertexId & 0x1);
+
+    // 计算网格中顶点源自左上角的UV。
+    float2 GridInvSize = 1.f / float2(GRID_SUBDIVISION_X, GRID_SUBDIVISION_Y);
+    float2 GridVertexUV = FlipUV(
+        GridInvSize * (CellVertexUV + float2(GridColumnId, GridRowId)));
+
+    // 标准不含半像素位移。
+    GridVertexUV -= PixelUVSize * 0.5;
+
+    // 输出顶点位置。
+    OutPosition = float4(FlipUV(
+        UndistortViewportUV(GridVertexUV) + PixelUVSize * 0.5) * 2 - 1, 0, 1);
+
+    // 输出顶点源自左上角的UV。
+    OutVertexDistortedViewportUV = GridVertexUV;
+}
+
+void MainPS(
+    in noperspective float2 VertexDistortedViewportUV :TEXCOORD0,
+    in float4 SvPosition :SV_POSITION,
+    out float4 OutColor :SV_Target0
+    )
+{
+    // 计算像素源自左上角的UV。
+    float2 ViewportUV = SvPosition.xy * PixelUVSize;
+
+    // 标准不含半像素位移。
+    ViewportUV -= PixelUVSize * 0.5;
+
+    float2 DistortUVtoUndistortUV = (UndistortViewportUV((ViewportUV))) - ViewportUV;
+    float2 UndistortUVtoDistortUV = VertexDistortedViewportUV - ViewportUV;
+
+    // 输出置换通道。
+    OutColor = OutputMultiplyAndAdd.y + OutputMultiplyAndAdd.x * float4(
+        DistortUVtoUndistortUV, UndistortUVtoDistortUV);
+}

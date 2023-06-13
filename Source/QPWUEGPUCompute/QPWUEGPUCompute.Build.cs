@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class QipaWorldUEPlugin : ModuleRules
+public class QPWUEGPUCompute : ModuleRules
 {
-	public QipaWorldUEPlugin(ReadOnlyTargetRules Target) : base(Target)
+	public QPWUEGPUCompute(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
@@ -38,18 +38,18 @@ public class QipaWorldUEPlugin : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				//"UnrealYaml",
+				"Projects",
                 "DeveloperSettings",
-				"UMG",
-                "Niagara",
-                "NiagaraAnimNotifies",
+			//	"CUDA",
+                //"Niagara",
+                //"NiagaraAnimNotifies",
                 //"UnrealEd",
-                "Text3D",
-                "MetasoundEngine",
-                "NavigationSystem",
-                //"RenderCore",
+                //"Text3D",
+                //"MetasoundEngine",
+                //"NavigationSystem",
+                "RenderCore",
                 //"ShaderCore",
-                //"RHI",
+                "RHI",
 				// ... add private dependencies that you statically link with here ...	
 			}
             );
