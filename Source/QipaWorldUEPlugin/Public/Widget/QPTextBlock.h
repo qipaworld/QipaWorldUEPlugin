@@ -36,6 +36,11 @@ public:
 	virtual void QP_ChangeFontSlate();
 	UFUNCTION()
 	void QP_Init();
+#if WITH_EDITOR
+
+	virtual const FText GetPaletteCategory() override;
+#endif
+
 private:
 	
 };

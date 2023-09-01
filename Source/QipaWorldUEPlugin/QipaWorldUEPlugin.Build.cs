@@ -47,7 +47,7 @@ public class QipaWorldUEPlugin : ModuleRules
                 "Text3D",
                 "MetasoundEngine",
                 "NavigationSystem",
-                //"RenderCore",
+                "AppFramework",
                 //"ShaderCore",
                 //"RHI",
 				// ... add private dependencies that you statically link with here ...	

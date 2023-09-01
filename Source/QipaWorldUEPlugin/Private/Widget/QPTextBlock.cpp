@@ -1,5 +1,11 @@
 // QIPAWORLD
+/*
+	By Qipa for You
 
+	You are welcome to use this code anywhere as long as you include this notice.
+
+	copyright 2023
+*/
 
 #include "Widget/QPTextBlock.h"
 //#include "Data/QPGIM_Data.h"
@@ -37,3 +43,10 @@ void UQPTextBlock::QP_ChangeFontSlate() {
 		SetFont(fontinfo);
 	}
 }
+#if WITH_EDITOR
+
+const FText UQPTextBlock::GetPaletteCategory()
+{
+	return FText::FromString("QP UMG");
+}
+#endif
