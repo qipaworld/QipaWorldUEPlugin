@@ -8,12 +8,12 @@
 #include "Engine/LevelStreamingDynamic.h"
 #include "Data/QPGIM_Data.h"
 #include "Data/QPData.h"
-
+#include "Data/QPGIM_BaseData.h"
 //#include <MoviePlayer/Public/MoviePlayer.h>
 //#include "Data/QPData.h"
 
 
-UQPGIM_Map* UQPGIM_Map::QP_UQPGIM_Map = nullptr;
+UQPGIM_Map* UQPGIM_Map::qp_staticObject = nullptr;
 
 
 bool UQPGIM_Map::ShouldCreateSubsystem(UObject* Outer) const
@@ -25,16 +25,17 @@ bool UQPGIM_Map::ShouldCreateSubsystem(UObject* Outer) const
 void UQPGIM_Map::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
+	Collection.InitializeDependency(UQPGIM_BaseData::StaticClass());
 	
-	QP_UQPGIM_Map = this;
-	qp_mapData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("UQPGIM_Map");
+	qp_staticObject = this;
+	qp_mapData = UQPGIM_Data::qp_staticObject->QP_GetQPData("UQPGIM_Map");
 	qp_actionInfo.CallbackTarget = this;
 	qp_actionInfo.ExecutionFunction = "QP_LoadMapEnd";
-	qp_actionInfo.UUID = UQPDS_Default::QP_GET()->QP_UUID["qp_loadMap"];
+	
+	qp_actionInfo.UUID = UQPGIM_BaseData::qp_defaultDataAsset->QP_UUID["qp_loadMap"];
 	qp_actionInfo.Linkage = 0;
 
-	qp_loadingMapName = UQPDS_Default::QP_GET()->QP_DefaultLoadingMap;
+	qp_loadingMapName = UQPGIM_BaseData::qp_defaultDataAsset->QP_DefaultLoadingMap;
 	//qp_loadingMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;
 }
 

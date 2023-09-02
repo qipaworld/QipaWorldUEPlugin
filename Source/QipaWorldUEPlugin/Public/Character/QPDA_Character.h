@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/QPDataAsset.h"
+#include "DataAsset/QPDataAsset.h"
 #include "Character/QPCharacter.h"
 
 #include "QPDA_Character.generated.h"

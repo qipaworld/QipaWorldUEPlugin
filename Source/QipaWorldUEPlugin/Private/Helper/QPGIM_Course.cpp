@@ -8,7 +8,7 @@
 #include "Data/QPGIM_Data.h"
 #include "Data/QPData.h"
 
-UQPGIM_Course* UQPGIM_Course::QP_UQPGIM_Course = nullptr;
+UQPGIM_Course* UQPGIM_Course::qp_staticObject = nullptr;
 
 
 bool UQPGIM_Course::ShouldCreateSubsystem(UObject* Outer) const
@@ -24,7 +24,7 @@ void UQPGIM_Course::Initialize(FSubsystemCollectionBase& Collection)
 
 	Super::Initialize(Collection);
 
-	QP_UQPGIM_Course = this;
+	qp_staticObject = this;
 }
 
 void UQPGIM_Course::Deinitialize()

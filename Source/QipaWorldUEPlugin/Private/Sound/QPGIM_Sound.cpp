@@ -12,7 +12,7 @@
 #include "MetasoundSource.h"
 //#include "UObject/ConstructorHelpers.h"
 
-UQPGIM_Sound* UQPGIM_Sound::QP_UQPGIM_Sound = nullptr;
+UQPGIM_Sound* UQPGIM_Sound::qp_staticObject = nullptr;
 
 
 bool UQPGIM_Sound::ShouldCreateSubsystem(UObject* Outer) const
@@ -26,9 +26,9 @@ void UQPGIM_Sound::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 
-	QP_UQPGIM_Sound = this;
+	qp_staticObject = this;
 
-	qp_soundData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("UQPGIM_Sound");
+	qp_soundData = UQPGIM_Data::qp_staticObject->QP_GetQPData("UQPGIM_Sound");
 	
 	QP_LoadSoundData();
 	

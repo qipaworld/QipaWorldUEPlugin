@@ -20,7 +20,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Data : public UGameInstanceSubsystem, public 
 	TArray<UQPData*> qp_broadcastArray;
 	TArray<UQPData*> qp_tempBroadcastArray;
 public:
-	static UQPGIM_Data* QP_UQPGIM_Data;
+	static UQPGIM_Data* qp_staticObject;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/

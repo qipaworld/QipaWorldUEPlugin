@@ -18,7 +18,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_UserInterface : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 public:
-	static UQPGIM_UserInterface* QP_UQPGIM_UserInterface;
+	static UQPGIM_UserInterface* qp_staticObject;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/

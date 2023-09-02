@@ -8,7 +8,7 @@
 //#include <Engine/ActorLibrary.h>
 
 
-UQPWM_Actor* UQPWM_Actor::QP_UQPWM_Actor = nullptr;
+UQPWM_Actor* UQPWM_Actor::qp_staticObject = nullptr;
 
 
 bool UQPWM_Actor::ShouldCreateSubsystem(UObject* Outer) const
@@ -22,7 +22,7 @@ void UQPWM_Actor::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 
-	QP_UQPWM_Actor = this;
+	qp_staticObject = this;
 	
 	//LoadYaml("");
 	//qp_gameQPdataBase = NewActor<UQPData>();
@@ -31,7 +31,7 @@ void UQPWM_Actor::Initialize(FSubsystemCollectionBase& Collection)
 void UQPWM_Actor::Deinitialize()
 {
 	Super::Deinitialize();
-	QP_UQPWM_Actor = nullptr;
+	qp_staticObject = nullptr;
 
 }
 

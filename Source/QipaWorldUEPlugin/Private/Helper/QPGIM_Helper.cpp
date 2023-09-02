@@ -7,7 +7,7 @@
 #include "Data/QPGIM_Data.h"
 #include "Data/QPData.h"
 
-UQPGIM_Helper* UQPGIM_Helper::QP_UQPGIM_Helper = nullptr;
+UQPGIM_Helper* UQPGIM_Helper::qp_staticObject = nullptr;
 
 
 bool UQPGIM_Helper::ShouldCreateSubsystem(UObject* Outer) const
@@ -21,12 +21,12 @@ void UQPGIM_Helper::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 
-	QP_UQPGIM_Helper = this;
+	qp_staticObject = this;
 
 
 	QP_LoadHelperData();
 
-	qp_helperData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData(qp_dataName);
+	qp_helperData = UQPGIM_Data::qp_staticObject->QP_GetQPData(qp_dataName);
 	qp_helperData->qp_dataDelegate.AddUObject(this, &UQPGIM_Helper::QP_BindHelperData);
 
 	//qp_loadMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;

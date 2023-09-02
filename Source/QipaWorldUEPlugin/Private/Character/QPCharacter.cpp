@@ -47,7 +47,7 @@ AQPCharacter::AQPCharacter()
 //void AQPCharacter::OnConstruction(const FTransform& Transform) {
 //	Super::OnConstruction(Transform);
 //
-//	if (UQPGIM_Data::QP_UQPGIM_Data) {
+//	if (UQPGIM_Data::qp_staticObject) {
 //	}
 //}
 // Called when the game starts or when spawned
@@ -58,7 +58,7 @@ void AQPCharacter::BeginPlay()
 
 	//QP_InitQPData();
 	//if (qp_characterData == nullptr) {
-		//qp_characterData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("AQPCharacter")->QP_GetUQPData("qp_Character" + qp_characterMaxNum);
+		//qp_characterData = UQPGIM_Data::qp_staticObject->QP_GetQPData("AQPCharacter")->QP_GetUQPData("qp_Character" + qp_characterMaxNum);
 	//}
 	
 	qp_movementC = GetCharacterMovement();
@@ -71,7 +71,7 @@ void AQPCharacter::BeginPlay()
 	qp_characterData->QP_GetUQPData(UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyEvent);
 	
 	if (!qp_assetData) {
-		UQPGIM_Character::QP_UQPGIM_Character->QP_InitCharacterData(this);
+		UQPGIM_Character::qp_staticObject->QP_InitCharacterData(this);
 	}
 }
 
@@ -145,7 +145,7 @@ void AQPCharacter::QP_SetMatAmount(float amount)
 UQPData* AQPCharacter::QP_GetQPData(){
 
 	if (!qp_characterData) {
-		qp_characterData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("AQPCharacter")->QP_GetUQPData("qp_Character" + qp_characterMaxNum);
+		qp_characterData = UQPGIM_Data::qp_staticObject->QP_GetQPData("AQPCharacter")->QP_GetUQPData("qp_Character" + qp_characterMaxNum);
 
 	}
 	return qp_characterData;
@@ -328,11 +328,11 @@ void AQPCharacter::QP_ReReset() {
 	 //QP_Reset();
 	 //AutoPossessPlayer = EAutoReceiveInput::Type::Disabled;
 
-	 //UQPGIM_Character::QP_UQPGIM_Character->QP_GetCharacter("FlySlime")->AutoPossessPlayer = EAutoReceiveInput::Type::Player0;
-	 UQPGIM_Character::QP_UQPGIM_Character->QP_Possess(GetController(), "FlySlime");
+	 //UQPGIM_Character::qp_staticObject->QP_GetCharacter("FlySlime")->AutoPossessPlayer = EAutoReceiveInput::Type::Player0;
+	 UQPGIM_Character::qp_staticObject->QP_Possess(GetController(), "FlySlime");
 	 //->Possess(QP_GetCharacter());
- //GetController()->Possess(UQPGIM_Character::QP_UQPGIM_Character->QP_GetCharacter("FlySlime"));
- //GetController()->SetPawn(UQPGIM_Character::QP_UQPGIM_Character->QP_GetCharacter("FlySlime"));
+ //GetController()->Possess(UQPGIM_Character::qp_staticObject->QP_GetCharacter("FlySlime"));
+ //GetController()->SetPawn(UQPGIM_Character::qp_staticObject->QP_GetCharacter("FlySlime"));
  }
  //攻击开始
  void  AQPCharacter::QP_mouseWheelUp() {

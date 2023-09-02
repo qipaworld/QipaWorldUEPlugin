@@ -17,7 +17,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Localization : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 public:
-	static UQPGIM_Localization* QP_UQPGIM_Localization;
+	static UQPGIM_Localization* qp_staticObject;
 	//国际化资源路径
 	//FString qp_localizationAssetsPath = ;
 

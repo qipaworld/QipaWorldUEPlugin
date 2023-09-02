@@ -16,7 +16,7 @@ class QIPAWORLDUEPLUGIN_API UQPWM_Actor : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
-	static UQPWM_Actor* QP_UQPWM_Actor;
+	static UQPWM_Actor* qp_staticObject;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/

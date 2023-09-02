@@ -13,7 +13,8 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Data/QPData.h"
-UQPGIM_UserInterface* UQPGIM_UserInterface::QP_UQPGIM_UserInterface = nullptr;
+#include "Data/QPGIM_BaseData.h"
+UQPGIM_UserInterface* UQPGIM_UserInterface::qp_staticObject = nullptr;
 
 
 bool UQPGIM_UserInterface::ShouldCreateSubsystem(UObject* Outer) const
@@ -26,11 +27,12 @@ void UQPGIM_UserInterface::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_Map::StaticClass());
-	UQPGIM_Map::QP_UQPGIM_Map->QP_GetMapData()->qp_dataDelegate.AddUObject(this, &UQPGIM_UserInterface::QP_BindMapData);
+	UQPGIM_Map::qp_staticObject->QP_GetMapData()->qp_dataDelegate.AddUObject(this, &UQPGIM_UserInterface::QP_BindMapData);
 
-	QP_UQPGIM_UserInterface = this;
-	UQPDS_Default* devSetting = UQPDS_Default::QP_GET();
-	qp_mainUIPath = devSetting->QP_DefaultMainUserInterfacePath;
+	qp_staticObject = this;
+	//UQPDS_Default* devSetting = UQPDS_Default::QP_GET();
+	
+	qp_mainUIPath = UQPGIM_BaseData::qp_defaultDataAsset->QP_DefaultMainUserInterfacePath;
 	//LoadYaml("");
 	//qp_gameQPdataBase = NewObject<UQPData>();
 	
@@ -132,11 +134,11 @@ void UQPGIM_UserInterface::QP_KeyBoardEvent()
 }
 void UQPGIM_UserInterface::QP_BindKeyBoard()
 {
-	UQPDS_Default* devSetting = UQPDS_Default::QP_GET();
-	if (devSetting->QP_UserInterfaceAutoPop) {
+	 
+	if (UQPGIM_BaseData::qp_defaultDataAsset->QP_UserInterfaceAutoPop) {
 
 		APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		controller->InputComponent->BindAction(*(devSetting->QP_DefaultUserInterfaceActionKey), IE_Released, this, &UQPGIM_UserInterface::QP_KeyBoardEvent);
+		controller->InputComponent->BindAction(*(UQPGIM_BaseData::qp_defaultDataAsset->QP_DefaultUserInterfaceActionKey), IE_Released, this, &UQPGIM_UserInterface::QP_KeyBoardEvent);
 
 	}
 }

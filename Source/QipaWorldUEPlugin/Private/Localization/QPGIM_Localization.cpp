@@ -9,7 +9,7 @@
 
 #include "Data/QPGIM_Data.h"
 #include "Data/QPData.h"
-UQPGIM_Localization* UQPGIM_Localization::QP_UQPGIM_Localization = nullptr;
+UQPGIM_Localization* UQPGIM_Localization::qp_staticObject = nullptr;
 
 
 bool UQPGIM_Localization::ShouldCreateSubsystem(UObject* Outer) const
@@ -23,10 +23,10 @@ void UQPGIM_Localization::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 	//FInternationalization::Get().OnCultureChanged().add
-	qp_localizationData = UQPGIM_Data::QP_UQPGIM_Data->QP_GetQPData("UQPGIM_Localization");
+	qp_localizationData = UQPGIM_Data::qp_staticObject->QP_GetQPData("UQPGIM_Localization");
 	//QP_GameLocalizationDataChange()
 	FInternationalization::Get().OnCultureChanged().AddUObject(this, &UQPGIM_Localization::QP_GameLocalizationDataChange);
-	QP_UQPGIM_Localization = this;
+	qp_staticObject = this;
 
 	//LoadYaml("");
 	//qp_gameQPdataBase = NewObject<UQPData>();
@@ -46,7 +46,7 @@ void UQPGIM_Localization::QP_DelayBroad() {
 void UQPGIM_Localization::Deinitialize()
 {
 	Super::Deinitialize();
-	UQPGIM_Localization::QP_UQPGIM_Localization = nullptr;
+	UQPGIM_Localization::qp_staticObject = nullptr;
 }
 FString UQPGIM_Localization::QP_GetL10NAssetsPath(FString path) {
 	//path.Replace

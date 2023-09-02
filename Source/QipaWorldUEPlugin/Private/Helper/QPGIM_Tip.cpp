@@ -7,7 +7,7 @@
 #include "Data/QPGIM_Data.h"
 #include "Data/QPData.h"
 
-UQPGIM_Tip* UQPGIM_Tip::QP_UQPGIM_Tip = nullptr;
+UQPGIM_Tip* UQPGIM_Tip::qp_staticObject = nullptr;
 
 
 bool UQPGIM_Tip::ShouldCreateSubsystem(UObject* Outer) const
@@ -23,7 +23,7 @@ void UQPGIM_Tip::Initialize(FSubsystemCollectionBase& Collection)
 
 	Super::Initialize(Collection);
 
-	QP_UQPGIM_Tip = this;
+	qp_staticObject = this;
 }
 
 void UQPGIM_Tip::Deinitialize()

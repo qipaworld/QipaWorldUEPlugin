@@ -15,7 +15,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Tip : public UQPGIM_Helper
 	GENERATED_BODY()
 
 public:
-	static UQPGIM_Tip* QP_UQPGIM_Tip;
+	static UQPGIM_Tip* qp_staticObject;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/

@@ -4,7 +4,7 @@
 #include "Assets/QPGIM_Assets.h"
 //#include "FileHelpers.h"
 
-UQPGIM_Assets* UQPGIM_Assets::QP_UQPGIM_Assets = nullptr;
+UQPGIM_Assets* UQPGIM_Assets::qp_staticObject = nullptr;
 
 
 bool UQPGIM_Assets::ShouldCreateSubsystem(UObject* Outer) const
@@ -18,7 +18,7 @@ void UQPGIM_Assets::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	//Collection.InitializeDependency(UQPGameInstanceDataManager::StaticClass());
 
-	QP_UQPGIM_Assets = this;
+	qp_staticObject = this;
 	//LoadYaml("");
 	//qp_gameQPdataBase = NewObject<UQPData>();
 }

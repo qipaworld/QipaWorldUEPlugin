@@ -55,12 +55,12 @@ void UQPData::QP_BroadcastAll()
 
 void UQPData::QP_AddBroadcastToDataManager()
 {
-	UQPGIM_Data::QP_UQPGIM_Data->QP_AddBroadcastUQPData(this);
+	UQPGIM_Data::qp_staticObject->QP_AddBroadcastUQPData(this);
 }
 
 void UQPData::QP_RemoveBroadcastToDataManager()
 {
-	UQPGIM_Data::QP_UQPGIM_Data->QP_RemoveBroadcastUQPData(this);
+	UQPGIM_Data::qp_staticObject->QP_RemoveBroadcastUQPData(this);
 }
 
 void UQPData::QP_needSyncBroadcast(bool sync)

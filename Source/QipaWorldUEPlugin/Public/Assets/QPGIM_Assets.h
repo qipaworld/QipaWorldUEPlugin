@@ -15,7 +15,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Assets : public UGameInstanceSubsystem
 	GENERATED_BODY()
 	
 public:
-	static UQPGIM_Assets* QP_UQPGIM_Assets;
+	static UQPGIM_Assets* qp_staticObject;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/

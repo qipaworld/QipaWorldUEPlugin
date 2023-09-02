@@ -17,7 +17,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Course : public UQPGIM_Helper
 	GENERATED_BODY()
 
 public:
-	static UQPGIM_Course* QP_UQPGIM_Course;
+	static UQPGIM_Course* qp_staticObject;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/

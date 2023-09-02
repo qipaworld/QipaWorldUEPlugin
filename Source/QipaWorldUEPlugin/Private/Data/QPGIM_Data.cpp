@@ -5,7 +5,7 @@
 
 #include "Data/QPData.h"
 
-UQPGIM_Data* UQPGIM_Data::QP_UQPGIM_Data = nullptr;
+UQPGIM_Data* UQPGIM_Data::qp_staticObject = nullptr;
 //
 //void UQPGIM_Data::QP_Init()
 //{
@@ -49,7 +49,7 @@ bool UQPGIM_Data::ShouldCreateSubsystem(UObject* Outer) const
 void UQPGIM_Data::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	QP_UQPGIM_Data = this;
+	qp_staticObject = this;
 	qp_baseData = NewObject<UQPData>();
 	qp_baseData->QP_Init("UQPGIM_BaseData");
 	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
@@ -58,7 +58,7 @@ void UQPGIM_Data::Initialize(FSubsystemCollectionBase& Collection)
 void UQPGIM_Data::Deinitialize()
 {
 	Super::Deinitialize();
-	QP_UQPGIM_Data = nullptr;
+	qp_staticObject = nullptr;
 }
 
 void UQPGIM_Data::Tick(float DeltaTime)

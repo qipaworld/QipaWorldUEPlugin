@@ -9,7 +9,7 @@
 
 //qp_assetDataName = "FlySlime";
 void AQPC_Quadruped::QP_RestorSlime() {
-	UQPGIM_BaseData::QP_UQPGIM_BaseData->QP_GetGameBaseData()->QP_GetUQPData("qp_TempPlayerData")->QP_Addfloat("flyCameraLength", qp_springArm->TargetArmLength);
+	UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addfloat("flyCameraLength", qp_springArm->TargetArmLength);
 
 }
 
@@ -17,7 +17,7 @@ void AQPC_Quadruped::QP_AnimNotifyEvent(UQPData* data) {
 	Super::QP_AnimNotifyEvent(data);
 	if (data->qp_changeMap.Contains("qp_flySlimeReduceEnd")) {
 		qp_targetCameraLength = qp_springArm->TargetArmLength;
-		qp_springArm->TargetArmLength = UQPGIM_BaseData::QP_UQPGIM_BaseData->QP_GetGameBaseData()->QP_GetUQPData("qp_TempPlayerData")->QP_Getfloat("flyCameraLength");
+		qp_springArm->TargetArmLength = UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Getfloat("flyCameraLength");
 		qp_isAutoCameraLength = true;
 		QP_SetMatAmount();
 	}

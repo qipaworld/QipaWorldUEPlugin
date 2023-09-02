@@ -7,7 +7,7 @@
 #include "Actor/QPWM_Actor.h"
 #include "Character/QPDA_Character.h"
 
-UQPGIM_Character* UQPGIM_Character::QP_UQPGIM_Character = nullptr;
+UQPGIM_Character* UQPGIM_Character::qp_staticObject = nullptr;
 
 
 bool UQPGIM_Character::ShouldCreateSubsystem(UObject* Outer) const
@@ -21,7 +21,7 @@ void UQPGIM_Character::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 
-	QP_UQPGIM_Character = this;
+	qp_staticObject = this;
 
 
 	//QP_LoadSoundData();
@@ -37,7 +37,7 @@ void UQPGIM_Character::Deinitialize()
 	//qp_soundData->qp_dataDelegate.Remove(qp_handle);
 //	QP_SaveSoundData();
 	Super::Deinitialize();
-	QP_UQPGIM_Character = nullptr;
+	qp_staticObject = nullptr;
 
 }
 void UQPGIM_Character::QP_AddCharacter(FString qp_name, ACharacter* c) {
@@ -72,7 +72,7 @@ void UQPGIM_Character::QP_InitCharacterData(AQPCharacter* c) {
 	c->qp_playMontage->qp_montage.Append(data->qp_montage);
 }
 ACharacter* UQPGIM_Character::QP_GetNewCharacter(FString qp_name, FTransform T) {
-	AActor* a = UQPWM_Actor::QP_UQPWM_Actor->QP_GetActor(qp_name);
+	AActor* a = UQPWM_Actor::qp_staticObject->QP_GetActor(qp_name);
 	ACharacter* c;
 	if (!a) {
 		//qp_character
@@ -110,12 +110,12 @@ ACharacter* UQPGIM_Character::QP_GetNewCharacter(FString qp_name, FTransform T) 
 
 
 void UQPGIM_Character::QP_CollectCharacter(FString key, ACharacter* character) {
-	UQPWM_Actor::QP_UQPWM_Actor->QP_CollectActor(key,character);
+	UQPWM_Actor::qp_staticObject->QP_CollectActor(key,character);
 	qp_characterMap.Remove(key);
 
 }
 
 ACharacter* UQPGIM_Character::QP_ChangeMainCharacter(FString collkey, ACharacter* character, FString qp_name, FTransform T) {
-	UQPWM_Actor::QP_UQPWM_Actor->QP_CollectActor(collkey, character);
+	UQPWM_Actor::qp_staticObject->QP_CollectActor(collkey, character);
 	return QP_GetNewCharacter(qp_name, T);
 }

@@ -16,6 +16,6 @@ class QIPAWORLDUEPLUGIN_API UQPUtil : public UBlueprintFunctionLibrary
 public:
 	// Return true if the object is usable : non-null and not pending kill
 	UFUNCTION(BlueprintPure, Category = "QPUtil")
-	static FIntPoint GetFullScreenResolution(float percentage = 1.0f);
+	static FIntPoint QP_GetFullScreenResolution(float percentage = 1.0f);
 
 };
