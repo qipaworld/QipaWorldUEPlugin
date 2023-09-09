@@ -19,6 +19,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Data : public UGameInstanceSubsystem, public 
 	//这2个是存放准备发送的数据的，会在每帧发一次，节省性能。
 	TArray<UQPData*> qp_broadcastArray;
 	TArray<UQPData*> qp_tempBroadcastArray;
+	int qp_newDataNum = 0;
 public:
 	static UQPGIM_Data* qp_staticObject;
 
@@ -47,6 +48,14 @@ public:
 	
 	UFUNCTION(BlueprintCallable,Category = "QipaWorld|QPData")
 	UQPData* QP_GetQPData(FString key);
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	//UQPData* QP_RemoveQPData(FString key);
+	/*
+	* @bug this outKey is you remove Data is key.
+	*  you need to remove data in actor remove of you
+	*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UQPData* QP_GetNewQPData(FString& outKey);
 
 	UFUNCTION(BlueprintCallable,Category = "QipaWorld|QPData")
 	void QP_RemoveQPData(FString key);

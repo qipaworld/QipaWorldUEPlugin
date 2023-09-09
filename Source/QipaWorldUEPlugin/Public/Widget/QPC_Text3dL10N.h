@@ -14,15 +14,15 @@
  * 
  */
 UCLASS(ClassGroup = (QipaWorld), meta = (BlueprintSpawnableComponent))
-class QIPAWORLDUEPLUGIN_API UQPC_Text3dL10N : public UQPComponent
+class QIPAWORLDUEPLUGIN_API UQPC_Text3dL10N : public UText3DComponent
 {
 	GENERATED_BODY()
 public:
 	//这个是你要国际化的3d字体
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPText3D")
-	TObjectPtr<class UText3DComponent> qp_text3dComponent;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPText3D")
+	//TObjectPtr<class UText3DComponent> qp_text3dComponent;
 public:
-		virtual void BeginPlay();
+		virtual void BeginPlay() override;
 
 		FString qp_fontPath = "";
 

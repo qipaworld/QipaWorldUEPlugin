@@ -101,6 +101,7 @@ void UQPData::QP_RemoveUQPData(FString key, bool sync)
 {
 	if (qp_UQPDataMap.Contains(key))
 	{
+		qp_UQPDataMap[key]->RemoveFromRoot();
 		qp_UQPDataMap.Remove(key);
 		qp_changeMap.Add(key, "remove");
 		QP_needSyncBroadcast(sync);
