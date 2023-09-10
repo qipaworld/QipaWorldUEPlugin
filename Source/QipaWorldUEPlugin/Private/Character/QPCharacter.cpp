@@ -118,7 +118,7 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis(qp_lookUp, this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAction(qp_jump, IE_Pressed, this, &AQPCharacter::QP_JumpStart);
 	PlayerInputComponent->BindAction(qp_jump, IE_Released, this, &AQPCharacter::QP_JumpEnd);
-	PlayerInputComponent->BindAction(qp_run, IE_Pressed, this, &AQPCharacter::QP_RunStart);
+	PlayerInputComponent->BindAction(qp_run, IE_Pressed, this, &AQPCharacter::QP_Run);
 	//PlayerInputComponent->BindAction("Run", IE_Released, this, &AQPC_Slime::QP_RunEnd);
 	PlayerInputComponent->BindAction(qp_attack, IE_Pressed, this, &AQPCharacter::QP_AttackStart);
 	PlayerInputComponent->BindAction(qp_attack, IE_Released, this, &AQPCharacter::QP_AttackEnd);
@@ -205,7 +205,6 @@ void AQPCharacter::QP_Run()
  void AQPCharacter::QP_RunEnd()
  {
 	 qp_maxSpeed = qp_walkSpeed;
-
 	 qp_movementC->MaxAcceleration = qp_walkMaxAcceleration;
 
  }

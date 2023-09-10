@@ -14,6 +14,7 @@ class QIPAWORLDUEPLUGIN_API UQPU_AnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 public:
+	//virtual void UQPU_AnimInstance() override;
 	virtual void NativeInitializeAnimation();
 	virtual void NativeUninitializeAnimation();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
