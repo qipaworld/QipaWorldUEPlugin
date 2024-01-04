@@ -5,18 +5,30 @@
 #include "CoreMinimal.h"
 
 #include "UObject/NoExportTypes.h"
+#include "list"
+#include "map"
+#include "string"
 #include "QPData.generated.h"
+
 //class UQPGameInstanceDataManager;
 class UQPData;
 DECLARE_MULTICAST_DELEGATE_OneParam(QP_DataDelegate, UQPData*);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FQP_DataDynamicDelegate, UQPData*,QPData);
 
+using std::string;
+using std::list;
+using std::vector;
+//using std::string;
 /***
 *这个是自动添加属性的宏
 * 带*的是指针QP_RemoveBroadcastUQPData
 */
 #define QP_ADD_TYPE(type,...) TMap<FString, ##type __VA_ARGS__ > qp_##type##Map;
+#define QP_ADD_TYPE_CPP(type,type2,...) std::map<string, type<type2 __VA_ARGS__>*> qp_##type2##type##Map; \
+void QP_Add##type2##type##Map(string, type2 __VA_ARGS__, bool sync = false); \
+void QP_Remove##type2##type##Map(string,bool sync = false);\
+type<type2 __VA_ARGS__>* QP_Get##type2##type##Map(string key);
 
 //UENUM(BlueprintType,Category = "QipaWorld|Data")
 //enum class EQPDataChangeType :uint8
@@ -46,13 +58,24 @@ class QIPAWORLDUEPLUGIN_API UQPData : public UObject
 	GENERATED_BODY()
 private:
 	QP_ADD_TYPE(UQPData, *)
-	QP_ADD_TYPE(UObject, *)
-	QP_ADD_TYPE(int32)
-	QP_ADD_TYPE(float)
-	QP_ADD_TYPE(double)
-	QP_ADD_TYPE(bool)
-	QP_ADD_TYPE(FString)
+		QP_ADD_TYPE(UObject, *)
+		QP_ADD_TYPE(int32)
+		QP_ADD_TYPE(int64)
+		QP_ADD_TYPE(float)
+		QP_ADD_TYPE(double)
+		QP_ADD_TYPE(bool)
+		QP_ADD_TYPE(FString)
 
+		//以下是C++特有api
+	
+		//using namespace std;
+		std::map<std::string, std::list<std::string>*> sList;
+	
+		std::map<std::string, std::list<int32>*> i32List;
+		std::map<std::string, std::list<int64>*> i64List;
+		std::map<std::string, std::list<float>*> fList;
+		std::map<std::string, std::list<double>*> dList;
+		std::map<std::string,std::list<FString>*> fsList;
 public:
 	/** 这个是C++用的代理，
 	 *把你监听这个数据的方法绑定上，数据改变时会自动调用
@@ -115,6 +138,7 @@ public:
 	void QP_AddUObject(FString key, UObject* v, bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_Addint32(FString key, int32 v, bool sync = false);
+	void QP_Addint64(FString key, int64 v, bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_Addfloat(FString key, float v, bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
@@ -122,11 +146,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_AddFString(FString key, FString v, bool sync = false);
 
+	QP_ADD_TYPE_CPP(list, string);
+	QP_ADD_TYPE_CPP(list, int32);
+	QP_ADD_TYPE_CPP(list, int64);
+	QP_ADD_TYPE_CPP(list, float);
+	QP_ADD_TYPE_CPP(list, double);
+	QP_ADD_TYPE_CPP(list, FString);
+	QP_ADD_TYPE_CPP(vector, string);
+	QP_ADD_TYPE_CPP(vector, int32);
+	QP_ADD_TYPE_CPP(vector, int64);
+	QP_ADD_TYPE_CPP(vector, float);
+	QP_ADD_TYPE_CPP(vector, double);
+	QP_ADD_TYPE_CPP(vector, FString);
+	
+
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_RemoveUObject(FString key, bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_Removeint32(FString key, bool sync = false);
+	void QP_Removeint64(FString key, bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_Removefloat(FString key, bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
@@ -136,10 +175,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_RemoveFString(FString key, bool sync = false);
 
+	
+
+
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UObject* QP_GetUObject(FString key);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	int32 QP_Getint32(FString key);
+	int64 QP_Getint64(FString key);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	float QP_Getfloat(FString key);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
