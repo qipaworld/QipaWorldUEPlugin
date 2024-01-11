@@ -1,8 +1,8 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #define QP_ADD_TYPE_FUN(type,...) void UQPData::QP_Add##type(FString key, ##type __VA_ARGS__  v, bool sync) {\
-	qp_##type##Map.Add(key, v); \
-	qp_changeMap.Add(key, "change"); \
+	qp_##type##Map.Emplace(key, v); \
+	qp_changeMap.Emplace(key, "change"); \
 	QP_needSyncBroadcast(sync); \
 }\
 type __VA_ARGS__  UQPData::QP_Get##type(FString key) {\
@@ -11,7 +11,7 @@ type __VA_ARGS__  UQPData::QP_Get##type(FString key) {\
 void UQPData::QP_Remove##type(FString key, bool sync) {\
 		if (qp_##type##Map.Contains(key)){\
 		qp_##type##Map.Remove(key); \
-		qp_changeMap.Add(key, "remove"); \
+		qp_changeMap.Emplace(key, "remove"); \
 		QP_needSyncBroadcast(sync);} \
 		else{UE_LOG(LogTemp, Warning, TEXT("字典里没有找到%s"),*key);}\
 		}
@@ -35,7 +35,7 @@ auto rmv = qp_##type2##type##Map.find(key);\
 if (rmv != qp_##type2##type##Map.end()) {\
 		delete rmv->second;\
 	qp_##type2##type##Map.erase(rmv);\
-		qp_changeMap.Add(key.c_str(), "remove"); \
+		qp_changeMap.Emplace(key.c_str(), "remove"); \
 		QP_needSyncBroadcast(sync);}\
 		else{\
 	FString outS( key.c_str());\
@@ -109,8 +109,8 @@ UQPData* UQPData::QP_AddUQPData(FString key, UQPData* v, bool sync)
 		v = NewObject<UQPData>();
 		v->QP_Init(key);
 	}
-	qp_UQPDataMap.Add(key, v); 
-	qp_changeMap.Add(key, "change");
+	qp_UQPDataMap.Emplace(key, v);
+	qp_changeMap.Emplace(key, "change");
 	QP_needSyncBroadcast(sync);
 	return v;
 }
@@ -131,7 +131,7 @@ void UQPData::QP_RemoveUQPData(FString key, bool sync)
 	{
 		qp_UQPDataMap[key]->RemoveFromRoot();
 		qp_UQPDataMap.Remove(key);
-		qp_changeMap.Add(key, "remove");
+		qp_changeMap.Emplace(key, "remove");
 		QP_needSyncBroadcast(sync);
 	}
 	else {
