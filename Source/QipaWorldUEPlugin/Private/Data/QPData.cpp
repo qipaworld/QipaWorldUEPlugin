@@ -21,7 +21,7 @@ void UQPData::QP_Remove##type(FString key, bool sync) {\
 if(qp_##type2##type##Map.find(key)==qp_##type2##type##Map.end())	{\
 qp_##type2##type##Map[key] = new type<type2 __VA_ARGS__>();\
 }\
-qp_##type2##type##Map[key]->push_back(v);\
+qp_##type2##type##Map[key]->emplace_back(v);\
 QP_needSyncBroadcast(sync); \
 }\
 type<type2 __VA_ARGS__>* UQPData::QP_Get##type2##type##Map(string key) {\
@@ -43,6 +43,37 @@ if (rmv != qp_##type2##type##Map.end()) {\
 }\
 		}
 
+
+#define QP_ADD_TYPE_FUN_CPP_QPDATA(type,type2,...) void UQPData::QP_Add##type2##type##Map(string key, bool sync) {\
+if(qp_##type2##type##Map.find(key)==qp_##type2##type##Map.end())	{\
+qp_##type2##type##Map[key] = new type<UQPData*>();\
+}\
+UQPData* v = NewObject<UQPData>();\
+v->QP_Init("arr");\
+qp_##type2##type##Map[key]->emplace_back(v);\
+QP_needSyncBroadcast(sync); \
+}\
+type<type2 __VA_ARGS__>* UQPData::QP_Get##type2##type##Map(string key) {\
+		if(qp_##type2##type##Map.find(key)==qp_##type2##type##Map.end())	{\
+qp_##type2##type##Map[key] = new type<type2 __VA_ARGS__>();\
+}\
+return qp_##type2##type##Map[key];\
+	}\
+void UQPData::QP_Remove##type2##type##Map(string key,bool sync) {\
+auto rmv = qp_##type2##type##Map.find(key);\
+if (rmv != qp_##type2##type##Map.end()) {\
+for (auto v : *(rmv->second)) {\
+v->RemoveFromRoot();\
+}\
+		delete rmv->second;\
+	qp_##type2##type##Map.erase(rmv);\
+		qp_changeMap.Emplace(key.c_str(), "remove"); \
+		QP_needSyncBroadcast(sync);}\
+		else{\
+	FString outS( key.c_str());\
+	UE_LOG(LogTemp, Warning, TEXT("字典里没有找到%s"),*outS);\
+}\
+		}
 
 #include "Data/QPData.h"
 #include <Kismet/GameplayStatics.h>
@@ -153,9 +184,14 @@ QP_ADD_TYPE_FUN_CPP(list, int64);
 QP_ADD_TYPE_FUN_CPP(list, float);
 QP_ADD_TYPE_FUN_CPP(list, double);
 QP_ADD_TYPE_FUN_CPP(list, FString);
+QP_ADD_TYPE_FUN_CPP_QPDATA(list, UQPData,*);
 QP_ADD_TYPE_FUN_CPP(vector, string);
 QP_ADD_TYPE_FUN_CPP(vector, int32);
 QP_ADD_TYPE_FUN_CPP(vector, int64);
 QP_ADD_TYPE_FUN_CPP(vector, float);
 QP_ADD_TYPE_FUN_CPP(vector, double);
 QP_ADD_TYPE_FUN_CPP(vector, FString);
+QP_ADD_TYPE_FUN_CPP_QPDATA(vector, UQPData, *);
+
+
+

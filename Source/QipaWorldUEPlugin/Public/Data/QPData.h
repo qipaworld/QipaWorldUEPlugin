@@ -29,6 +29,10 @@ using std::vector;
 void QP_Add##type2##type##Map(string, type2 __VA_ARGS__, bool sync = false); \
 void QP_Remove##type2##type##Map(string,bool sync = false);\
 type<type2 __VA_ARGS__>* QP_Get##type2##type##Map(string key);
+#define QP_ADD_TYPE_CPP_QPDATA(type,type2,...) std::map<string, type<type2 __VA_ARGS__>*> qp_##type2##type##Map; \
+void QP_Add##type2##type##Map(string, bool sync = false); \
+void QP_Remove##type2##type##Map(string,bool sync = false);\
+type<type2 __VA_ARGS__>* QP_Get##type2##type##Map(string key);
 
 //UENUM(BlueprintType,Category = "QipaWorld|Data")
 //enum class EQPDataChangeType :uint8
@@ -131,7 +135,7 @@ public:
 	UQPData* QP_AddUQPData(FString key, UQPData* v = nullptr, bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_RemoveUQPData(FString key, bool sync = false);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 	UQPData* QP_GetUQPData(FString key);
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
@@ -152,12 +156,14 @@ public:
 	QP_ADD_TYPE_CPP(list, float);
 	QP_ADD_TYPE_CPP(list, double);
 	QP_ADD_TYPE_CPP(list, FString);
+	QP_ADD_TYPE_CPP_QPDATA(list, UQPData,*);
 	QP_ADD_TYPE_CPP(vector, string);
 	QP_ADD_TYPE_CPP(vector, int32);
 	QP_ADD_TYPE_CPP(vector, int64);
 	QP_ADD_TYPE_CPP(vector, float);
 	QP_ADD_TYPE_CPP(vector, double);
 	QP_ADD_TYPE_CPP(vector, FString);
+	QP_ADD_TYPE_CPP_QPDATA(vector, UQPData,*);
 	
 
 
@@ -178,15 +184,15 @@ public:
 	
 
 
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 	UObject* QP_GetUObject(FString key);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 	int32 QP_Getint32(FString key);
 	int64 QP_Getint64(FString key);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 	float QP_Getfloat(FString key);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 	bool QP_Getbool(FString key);
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 	FString QP_GetFString(FString key);
 };
