@@ -49,6 +49,7 @@ public class QPWUEGPUCompute : ModuleRules
                 //"NavigationSystem",
                 "RenderCore",
                 //"ShaderCore",
+				//"Renderer",
                 "RHI",
 				// ... add private dependencies that you statically link with here ...	
 			}

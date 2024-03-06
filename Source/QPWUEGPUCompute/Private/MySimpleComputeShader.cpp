@@ -5,7 +5,7 @@
 //#include "test.h"
 #include "QPWUEGPUComputeInclude.h"
 #include "PixelShaderUtils.h"
-#include "RenderCore/Public/RenderGraphUtils.h"
+#include "RenderGraphUtils.h"
 #include "MeshPassProcessor.inl"
 #include "StaticMeshResources.h"
 #include "DynamicMeshBuilder.h"
