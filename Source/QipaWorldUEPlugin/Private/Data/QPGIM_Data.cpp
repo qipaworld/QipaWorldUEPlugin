@@ -19,8 +19,8 @@ UQPData* UQPGIM_Data::QP_AddQPData(FString key, UQPData* data)
 }
 UQPData* UQPGIM_Data::QP_GetNewQPData(FString& outKey) {
 	outKey = FString::Printf(TEXT("QP_GetNewQPData%d"), qp_newDataNum);
-	return QP_GetQPData(outKey);
 	qp_newDataNum++;
+	return QP_GetQPData(outKey);
 }
 UQPData* UQPGIM_Data::QP_GetQPData(FString key)
 {
