@@ -4,27 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "Component/QPComponent.h"
-#include "QPC_Rotate.generated.h"
+#include "QPC_Move.generated.h"
 
-/**
- * 
- */
-UCLASS(ClassGroup = (QipaWorld), meta = (BlueprintSpawnableComponent))
-class QIPAWORLDUEPLUGIN_API UQPC_Rotate : public UQPComponent
+
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class QIPAWORLDUEPLUGIN_API UQPC_Move : public UQPComponent
 {
 	GENERATED_BODY()
-public:
 
-public:
+public:	
 	// Sets default values for this component's properties
-	UQPC_Rotate();
+	UQPC_Move();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:
+public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+		
 };
