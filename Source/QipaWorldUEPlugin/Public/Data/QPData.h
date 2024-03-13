@@ -8,6 +8,7 @@
 #include "list"
 #include "map"
 #include "string"
+#include "vector"
 #include "QPData.generated.h"
 
 //class UQPGameInstanceDataManager;
