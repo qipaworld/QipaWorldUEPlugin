@@ -18,7 +18,10 @@
 void UQPC_Move::BeginPlay()
 {
 	Super::BeginPlay();
-	qp_vector = GetOwner()->GetRootComponent()->GetRelativeLocation();
+	
+	qp_vector = qp_owner->GetActorLocation();
+	UE_LOG(LogTemp, Log, TEXT("__component__%s"), *(qp_vector.ToString()));
+
 	// ...
 	
 }
@@ -40,12 +43,9 @@ void UQPC_Move::BeginPlay()
 
 void UQPC_Move::QP_TickAnim() {
 	
-	FVector v= qp_owner->GetActorForwardVector() *10* qp_tickTime;
+	FVector v= qp_owner->GetActorForwardVector() ;
 	
-	qp_vector.X += (v.X * qp_xSpeed * qp_tickTime);
-	qp_vector.Y += (v.Y * qp_ySpeed * qp_tickTime);
-	qp_vector.Z += (v.Z * qp_zSpeed * qp_tickTime);
-	//qp_owner->GetRootComponent()->AddRelativeLocation(FVector(qp_xSpeed * qp_tickTime, qp_ySpeed * qp_tickTime, qp_zSpeed * qp_tickTime));
-	qp_owner->SetActorLocation(v+ qp_owner->GetActorLocation());
+	qp_vector += (v * qp_xSpeed * qp_tickTime);
+	qp_owner->SetActorLocation(qp_vector);
 	
 }
