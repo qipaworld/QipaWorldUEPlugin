@@ -44,7 +44,7 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPAnim")
-	void QP_Play();
+	virtual void QP_Play();
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPAnim")
-	void QP_Stop();
+	virtual void QP_Stop();
 };

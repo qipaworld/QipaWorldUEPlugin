@@ -19,12 +19,14 @@
 void UQPC_RotateTo::BeginPlay()
 {
 	Super::BeginPlay();
-	FRotator r = qp_owner->GetRootComponent()->GetRelativeRotation();
-
+	//FRotator r = qp_owner->GetRootComponent()->GetRelativeRotation();
+	//float r_r = r.Roll < 0 ? r.Roll + 360 : r.Roll;
+	//float r_y = r.Yaw < 0 ? r.Yaw + 360 : r.Yaw;
+	//float r_p = r.Pitch < 0 ? r.Pitch + 360 : r.Pitch;
 	
-	qp_xSpeed = (r.Roll - qp_targetRotator.Roll) / qp_time;
-	qp_zSpeed = (r.Yaw - qp_targetRotator.Yaw) / qp_time;
-	qp_ySpeed = (r.Pitch - qp_targetRotator.Pitch) / qp_time;
+	qp_xSpeed = qp_targetRotator.Roll / qp_time;
+	qp_zSpeed = qp_targetRotator.Yaw / qp_time;
+	qp_ySpeed = qp_targetRotator.Pitch / qp_time;
 }
 
 
@@ -50,7 +52,10 @@ void UQPC_RotateTo::QP_TickAnim() {
 
 		Super::QP_TickAnim();
 		qp_time -= qp_tickTime;
-	}
+		}
+		else {
+			QP_Stop();
+		}
 	//qp_owner->SetActorLocation(qp_owner->GetActorLocation() + qp_owner->GetActorForwardVector() * FVector());
 
 }

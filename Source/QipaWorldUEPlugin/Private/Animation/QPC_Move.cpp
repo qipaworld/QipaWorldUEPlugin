@@ -15,16 +15,17 @@
 
 
 // Called when the game starts
-void UQPC_Move::BeginPlay()
-{
-	Super::BeginPlay();
+//void UQPC_Move::BeginPlay()
+//{
+	//Super::BeginPlay();
 	
-	qp_vector = qp_owner->GetActorLocation();
-	UE_LOG(LogTemp, Log, TEXT("__component__%s"), *(qp_vector.ToString()));
+	//qp_vector = qp_owner->GetActorLocation();
+	 //;
+	//UE_LOG(LogTemp, Log, TEXT("__component__%s"), *(qp_vector.ToString()));
 
 	// ...
 	
-}
+//}
 
 
 // Called every frame
@@ -43,9 +44,20 @@ void UQPC_Move::BeginPlay()
 
 void UQPC_Move::QP_TickAnim() {
 	
-	FVector v= qp_owner->GetActorForwardVector() ;
-	
-	qp_vector += (v * qp_xSpeed * qp_tickTime);
-	qp_owner->SetActorLocation(qp_vector);
+	//FVector v= qp_owner->GetActorForwardVector() ;
+	//FRotationMatrix RotationMatrix(v.Rotation());
+	//FVector RotatedVector = RotationMatrix.TransformVector(qp_vectorSpeed * qp_tickTime);
+	qp_owner->AddActorLocalOffset(FVector(qp_xSpeed * qp_tickTime, qp_ySpeed * qp_tickTime, qp_zSpeed * qp_tickTime));//->AddRelativeLocation(RotatedVector);
+	//qp_owner->GetRootComponent()->SetRelativeLocation_Direct(qp_owner->GetRootComponent()->GetRelativeLocation()+ qp_vectorSpeed * qp_tickTime);;
+	//qp_vector += (v * qp_vectorSpeed * qp_tickTime);
+	//qp_owner->SetActorLocation(qp_vector);
 	
 }
+//void UQPC_Move::QP_Play() {
+	//qp_vector = qp_owner->GetActorLocation();
+	//Super::QP_Play();
+//}
+//void UQPC_Move::QP_Stop() {
+	//Super::QP_Stop();
+
+//}

@@ -43,7 +43,7 @@
 
 void UQPC_Rotate::QP_TickAnim() {
 
-	qp_owner->AddActorLocalRotation(FRotator(qp_ySpeed * qp_tickTime, qp_zSpeed * qp_tickTime, qp_xSpeed * qp_tickTime));
+	qp_owner->AddActorLocalRotation(FRotator(-qp_ySpeed * qp_tickTime, qp_zSpeed * qp_tickTime, qp_xSpeed * qp_tickTime));
 	//qp_owner->SetActorLocation(qp_owner->GetActorLocation() + qp_owner->GetActorForwardVector() * FVector());
 
 }
