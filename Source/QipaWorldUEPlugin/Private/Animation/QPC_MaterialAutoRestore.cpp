@@ -16,14 +16,12 @@ UQPC_MaterialAutoRestore::UQPC_MaterialAutoRestore() {
 //}
 void UQPC_MaterialAutoRestore::BeginPlay() {
 	Super::BeginPlay();
-	if(qp_materials.Num()<1)
-	{
+	
+	this->SetComponentTickEnabled(true);
+	if (!qp_mesh) {
 
 		return;
 	}
-	this->SetComponentTickEnabled(true);
-	qp_mesh = Cast<ACharacter>(GetOwner())->GetMesh();
-	
 	for (int32 i = 0; i < qp_mesh->GetNumMaterials(); ++i)
 	{
 		qp_materialDissolves.Add(qp_mesh->CreateDynamicMaterialInstance(i, qp_mesh->GetMaterial(i)));
@@ -84,5 +82,8 @@ void UQPC_MaterialAutoRestore::TickComponent(float DeltaTime,enum ELevelTick Tic
 
 }
 void UQPC_MaterialAutoRestore::QP_SetMatAmount(float amount) {
+	if (amount > 0) {
 	qp_matAmount = amount;
+	}
+
 }

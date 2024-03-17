@@ -26,7 +26,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|MaterialAutoRestore")
 	bool qp_isRestore = true;
 	bool qp_isDissolveMat = true;
-	class USkeletalMeshComponent* qp_mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPMateria")
+	UMeshComponent* qp_mesh = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|MaterialAutoRestore")
 		FName qp_amountName = "qp_amount";
 	///**恢复粒子特效*/
