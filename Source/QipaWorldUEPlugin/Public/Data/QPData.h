@@ -70,6 +70,7 @@ private:
 		QP_ADD_TYPE(double)
 		QP_ADD_TYPE(bool)
 		QP_ADD_TYPE(FString)
+		QP_ADD_TYPE(FText)
 
 		//以下是C++特有api
 	
@@ -151,6 +152,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_AddFString(FString key, FString v, bool sync = false);
 
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	void QP_AddFText(FString key, FText v, bool sync = false);
+
 	QP_ADD_TYPE_CPP(list, string);
 	QP_ADD_TYPE_CPP(list, int32);
 	QP_ADD_TYPE_CPP(list, int64);
@@ -183,6 +187,8 @@ public:
 	void QP_RemoveFString(FString key, bool sync = false);
 
 	
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	void QP_RemoveFText(FString key, bool sync = false);
 
 
 	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
@@ -196,4 +202,6 @@ public:
 	bool QP_Getbool(FString key);
 	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 	FString QP_GetFString(FString key);
+	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+	FText QP_GetFText(FString key);
 };

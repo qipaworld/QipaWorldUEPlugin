@@ -177,6 +177,7 @@ QP_ADD_TYPE_FUN(float)
 QP_ADD_TYPE_FUN(double)
 QP_ADD_TYPE_FUN(bool)
 QP_ADD_TYPE_FUN(FString)
+QP_ADD_TYPE_FUN(FText)
 
 QP_ADD_TYPE_FUN_CPP(list, string);
 QP_ADD_TYPE_FUN_CPP(list, int32);
