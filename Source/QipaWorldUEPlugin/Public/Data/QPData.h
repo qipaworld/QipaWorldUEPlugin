@@ -22,10 +22,10 @@ using std::list;
 using std::vector;
 //using std::string;
 /***
-*这个是自动添加属性的宏
-* 带*的是指针QP_RemoveBroadcastUQPData
+* auto add type
+* if have *  is a ptr
 */
-#define QP_ADD_TYPE(type,...) TMap<FString, ##type __VA_ARGS__ > qp_##type##Map;
+#define QP_ADD_TYPE(type,...) TMap<FString, type __VA_ARGS__ > qp_##type##Map;
 #define QP_ADD_TYPE_CPP(type,type2,...) std::map<string, type<type2 __VA_ARGS__>*> qp_##type2##type##Map; \
 void QP_Add##type2##type##Map(string, type2 __VA_ARGS__, bool sync = false); \
 void QP_Remove##type2##type##Map(string,bool sync = false);\

@@ -98,7 +98,7 @@ void UQPGIM_UserInterface::QP_RemoveUserInterface(FString key)
 		}
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("没有UI---%S"),*key);
+		UE_LOG(LogTemp, Warning, TEXT("not have UI---%s"),*key);
 	}
 
 }

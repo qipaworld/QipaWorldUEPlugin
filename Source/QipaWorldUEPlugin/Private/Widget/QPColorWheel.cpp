@@ -44,7 +44,7 @@ TSharedRef<SWidget> UQPColorWheel::RebuildWidget()
 	FColorPickerArgs Args;
 	
 	//Initial Color
-	Args.InitialColorOverride = QPColor; 
+	Args.InitialColor = QPColor; 
 	
 	Args.bUseAlpha = true;
 	Args.bOnlyRefreshOnOk = false;
@@ -57,16 +57,16 @@ TSharedRef<SWidget> UQPColorWheel::RebuildWidget()
 	//~~~
 	 
 	ColorPicker = SNew(QPColorPicker)
-		.TargetColorAttribute(Args.InitialColorOverride)
-		.TargetFColors(Args.ColorArray ? *Args.ColorArray : TArray<FColor*>())
-		.TargetLinearColors(Args.LinearColorArray ? *Args.LinearColorArray : TArray<FLinearColor*>())
-		.TargetColorChannels(Args.ColorChannelsArray ? *Args.ColorChannelsArray : TArray<FColorChannels>())
+		.TargetColorAttribute(Args.InitialColor)
+		//.TargetFColors(Args.ColorArray ? *Args.ColorArray : TArray<FColor*>())
+		//.TargetLinearColors(Args.LinearColorArray ? *Args.LinearColorArray : TArray<FLinearColor*>())
+		//.TargetColorChannels(Args.ColorChannelsArray ? *Args.ColorChannelsArray : TArray<FColorChannels>())
 		.UseAlpha(Args.bUseAlpha)
 		.ExpandAdvancedSection(Args.bExpandAdvancedSection)
 		.OnlyRefreshOnMouseUp(Args.bOnlyRefreshOnMouseUp && !Args.bIsModal)
 		.OnlyRefreshOnOk(Args.bOnlyRefreshOnOk || Args.bIsModal)
 		.OnColorCommitted(Args.OnColorCommitted)
-		.PreColorCommitted(Args.PreColorCommitted)
+		//.PreColorCommitted(Args.PreColorCommitted)
 		.OnColorPickerCancelled(Args.OnColorPickerCancelled)
 		.OnInteractivePickBegin(Args.OnInteractivePickBegin)
 		.OnInteractivePickEnd(Args.OnInteractivePickEnd)
