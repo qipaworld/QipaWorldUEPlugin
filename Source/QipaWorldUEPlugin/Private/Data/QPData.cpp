@@ -171,8 +171,14 @@ void UQPData::QP_RemoveUQPData(FString key, bool sync)
 }
 
 QP_ADD_TYPE_FUN(UObject, *)
+QP_ADD_TYPE_FUN(int8)
+QP_ADD_TYPE_FUN(int16)
 QP_ADD_TYPE_FUN(int32)
 QP_ADD_TYPE_FUN(int64)
+QP_ADD_TYPE_FUN(uint8)
+QP_ADD_TYPE_FUN(uint16)
+QP_ADD_TYPE_FUN(uint32)
+QP_ADD_TYPE_FUN(uint64)
 QP_ADD_TYPE_FUN(float)
 QP_ADD_TYPE_FUN(double)
 QP_ADD_TYPE_FUN(bool)
@@ -180,15 +186,27 @@ QP_ADD_TYPE_FUN(FString)
 QP_ADD_TYPE_FUN(FText)
 
 QP_ADD_TYPE_FUN_CPP(list, string);
+QP_ADD_TYPE_FUN_CPP(list, int8);
+QP_ADD_TYPE_FUN_CPP(list, int16);
 QP_ADD_TYPE_FUN_CPP(list, int32);
 QP_ADD_TYPE_FUN_CPP(list, int64);
+QP_ADD_TYPE_FUN_CPP(list, uint8);
+QP_ADD_TYPE_FUN_CPP(list, uint16);
+QP_ADD_TYPE_FUN_CPP(list, uint32);
+QP_ADD_TYPE_FUN_CPP(list, uint64);
 QP_ADD_TYPE_FUN_CPP(list, float);
 QP_ADD_TYPE_FUN_CPP(list, double);
 QP_ADD_TYPE_FUN_CPP(list, FString);
 QP_ADD_TYPE_FUN_CPP_QPDATA(list, UQPData,*);
 QP_ADD_TYPE_FUN_CPP(vector, string);
+QP_ADD_TYPE_FUN_CPP(vector, int8);
+QP_ADD_TYPE_FUN_CPP(vector, int16);
 QP_ADD_TYPE_FUN_CPP(vector, int32);
 QP_ADD_TYPE_FUN_CPP(vector, int64);
+QP_ADD_TYPE_FUN_CPP(vector, uint8);
+QP_ADD_TYPE_FUN_CPP(vector, uint16);
+QP_ADD_TYPE_FUN_CPP(vector, uint32);
+QP_ADD_TYPE_FUN_CPP(vector, uint64);
 QP_ADD_TYPE_FUN_CPP(vector, float);
 QP_ADD_TYPE_FUN_CPP(vector, double);
 QP_ADD_TYPE_FUN_CPP(vector, FString);
