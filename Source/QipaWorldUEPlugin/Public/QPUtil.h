@@ -18,4 +18,8 @@ public:
 	UFUNCTION(BlueprintPure, Category = "QPUtil")
 	static FIntPoint QP_GetFullScreenResolution(float percentage = 1.0f);
 
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+
+	static void QP_UpdateMouse(UObject* Context,bool b);
+
 };

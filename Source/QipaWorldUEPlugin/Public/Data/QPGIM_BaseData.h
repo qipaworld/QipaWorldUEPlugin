@@ -46,8 +46,8 @@ public:
 	int32 QP_GetUUID(FString& key);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetPlayerData();
-	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	//UQPData* QP_GetDefaultSetting();
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UQPData* QP_GetGameStatusData();
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	//class UQPDS_DataAsset* QP_GetDefaultSettingDataAsset();
 	void QP_InitDefaultSetting();

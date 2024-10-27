@@ -14,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Data/QPData.h"
 #include "Data/QPGIM_BaseData.h"
+#include "QPUtil.h"
 UQPGIM_UserInterface* UQPGIM_UserInterface::qp_staticObject = nullptr;
 
 
@@ -70,8 +71,10 @@ UUserWidget* UQPGIM_UserInterface::QP_AddUserInterface(UUserWidget* widget, FStr
 	//qp_topWidgetkey = key;
 	qp_UIDataKey.Add(key);
 	widget->AddToViewport(qp_UIData.Num());
+	if (qp_autoMouse) {
+		UQPUtil::QP_UpdateMouse(this,true);
+	}
 	
-	QP_UpdateMouse(true);
 	return widget;
 }
 
@@ -94,7 +97,10 @@ void UQPGIM_UserInterface::QP_RemoveUserInterface(FString key)
 		qp_UIDataKey.Remove(realKey);
 		qp_UIData.FindAndRemoveChecked(realKey)->RemoveFromParent();
 		if (qp_UIData.Num() < 1) {
-			QP_UpdateMouse(false);
+			if (qp_autoMouse) {
+				UQPUtil::QP_UpdateMouse(this, false);
+			}
+			//QP_UpdateMouse(false);
 		}
 	}
 	else {
@@ -112,16 +118,9 @@ void UQPGIM_UserInterface::QP_RemoveAllUserInterface()
 	}
 
 }
-void UQPGIM_UserInterface::QP_UpdateMouse(bool b) {
-	APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	controller->SetShowMouseCursor(b);
-	if (b) {
-		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(controller);
-	}
-	else {
-		UWidgetBlueprintLibrary::SetInputMode_GameOnly(controller);
-	}
 
+void UQPGIM_UserInterface::QP_SetAutoMouse(bool b) {
+	qp_autoMouse = b;
 }
 void UQPGIM_UserInterface::QP_KeyBoardEvent()
 {
@@ -147,7 +146,10 @@ void UQPGIM_UserInterface::QP_ResetUIData()
 
 	qp_UIData.Reset();
 	qp_UIDataKey.Reset();
-	QP_UpdateMouse(false);
+	if (qp_autoMouse) {
+		UQPUtil::QP_UpdateMouse(this, false);
+	}
+	//QP_UpdateMouse(false);
 	
 }
 

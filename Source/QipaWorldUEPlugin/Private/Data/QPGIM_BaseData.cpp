@@ -74,6 +74,12 @@ UQPData* UQPGIM_BaseData::QP_GetPlayerData() {
 	return qp_gameBaseData->QP_GetUQPData("QP_GetPlayerData");
 
 }
+UQPData* UQPGIM_BaseData::QP_GetGameStatusData() {
+	return qp_gameBaseData->QP_GetUQPData("QP_GetGameStatusData");
+
+}
+
+
 //UQPDS_DataAsset* UQPGIM_BaseData::QP_GetDefaultSettingDataAsset() {
 //	return qp_defaultDataAsset;
 //}

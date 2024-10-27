@@ -1,4 +1,4 @@
-// QIPAWORLD
+ï»¿// QIPAWORLD
 
 
 #include "Skill/QPS_Collision.h"
@@ -18,19 +18,19 @@ AQPS_Collision::AQPS_Collision()
 
 	qp_sphere->SetCollisionProfileName("SkillMovement");
 
-	// ÉèÖÃÅö×²ÏìÓ¦ÉèÖÃ
+	// Ã‰Ã¨Ã–ÃƒÃ…Ã¶Ã—Â²ÃÃ¬Ã“Â¦Ã‰Ã¨Ã–Ãƒ
 	//Cube->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	// °ó¶¨º¯Êý
+	// Â°Ã³Â¶Â¨ÂºÂ¯ÃŠÃ½
 	qp_sphere->OnComponentBeginOverlap.AddDynamic(this, &AQPS_Collision::QP_OnOverlapBegin);
 	qp_sphere->OnComponentEndOverlap.AddDynamic(this, &AQPS_Collision::QP_OnOverlapEnd);
 
-	// °ó¶¨º¯Êý Ê¹ÓÃÎ¯ÍÐ
+	// Â°Ã³Â¶Â¨ÂºÂ¯ÃŠÃ½ ÃŠÂ¹Ã“ÃƒÃŽÂ¯ÃÃ
 	//FScriptDelegate OverlapEndDelegate;
 	//OverlapEndDelegate.BindUFunction(this, TEXT("OnOverlapEnd"));
 	//qp_sphere->OnComponentBeginOverlap.Add(OverlapEndDelegate);
 
-	// °ó¶¨Åö×²º¯Êý
+	// Â°Ã³Â¶Â¨Ã…Ã¶Ã—Â²ÂºÂ¯ÃŠÃ½
 	qp_sphere->OnComponentHit.AddDynamic(this, &AQPS_Collision::QP_OnHit);
 
 	qp_bustNiagara = CreateDefaultSubobject<UNiagaraComponent>("qp_bustNiagara");
