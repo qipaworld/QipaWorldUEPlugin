@@ -5,14 +5,20 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Data/QPGIM_BaseData.h"
+
 FIntPoint UQPUtil::QP_GetFullScreenResolution(float percentage) {
 	TArray<FIntPoint> resolutions;
 	UKismetSystemLibrary::GetSupportedFullscreenResolutions(resolutions);
 	return resolutions[resolutions.Num() - 1] * percentage;
 }
-void UQPUtil::QP_UpdateMouse(UObject* Context,bool b) {
+void UQPUtil::QP_UpdateMouse(bool b, APlayerController* controller) {
+	if (!controller) {
+		//UE_LOG(LogTemp, Warning, TEXT("Update Mouse Error , Context is Null"));
+		//return;
+		controller = UGameplayStatics::GetPlayerController(UQPGIM_BaseData::qp_staticObject->GetWorld(), 0);
+	}
 	
-	APlayerController* controller = UGameplayStatics::GetPlayerController(Context->GetWorld(), 0);
 	controller->SetShowMouseCursor(b);
 	if (b) {
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(controller);

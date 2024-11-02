@@ -72,7 +72,7 @@ UUserWidget* UQPGIM_UserInterface::QP_AddUserInterface(UUserWidget* widget, FStr
 	qp_UIDataKey.Add(key);
 	widget->AddToViewport(qp_UIData.Num());
 	if (qp_autoMouse) {
-		UQPUtil::QP_UpdateMouse(this,true);
+		UQPUtil::QP_UpdateMouse(true);
 	}
 	
 	return widget;
@@ -118,7 +118,7 @@ void UQPGIM_UserInterface::QP_RemoveUserInterface(FString key)
 		qp_UIData.FindAndRemoveChecked(realKey)->RemoveFromParent();
 		if (qp_UIData.Num() < 1) {
 			if (qp_autoMouse) {
-				UQPUtil::QP_UpdateMouse(this, false);
+				UQPUtil::QP_UpdateMouse( false);
 			}
 			//QP_UpdateMouse(false);
 		}
@@ -167,7 +167,7 @@ void UQPGIM_UserInterface::QP_ResetUIData()
 	qp_UIData.Reset();
 	qp_UIDataKey.Reset();
 	if (qp_autoMouse) {
-		UQPUtil::QP_UpdateMouse(this, false);
+		UQPUtil::QP_UpdateMouse( false);
 	}
 	//QP_UpdateMouse(false);
 	

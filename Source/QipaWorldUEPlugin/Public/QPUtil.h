@@ -20,6 +20,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "QPUtil")
 
-	static void QP_UpdateMouse(UObject* Context,bool b);
+	static void QP_UpdateMouse(bool show, APlayerController* controller = nullptr);
 
 };
