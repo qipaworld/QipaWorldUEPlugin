@@ -49,6 +49,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	UUserWidget* QP_AddMainUserInterface(FString key = "MainUserInterface");
 
+	/**check user interface is open?*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	bool QP_CheckUserInterface(FString key);
+
+	/**get user interface is open?*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	UUserWidget* QP_GetUserInterface(FString key);
 
 	/**用路径添加UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
@@ -60,7 +67,7 @@ public:
 
 	/**用class添加UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	UUserWidget* QP_AddUserInterfaceByClass(TSubclassOf<UUserWidget>  widgetClass, FString key = "None");
+	UUserWidget* QP_AddUserInterfaceByClass(TSubclassOf<UUserWidget>  widgetClass, FString key = "None", bool only = false);
 	/**删除UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	void QP_RemoveUserInterface(FString key = "None");

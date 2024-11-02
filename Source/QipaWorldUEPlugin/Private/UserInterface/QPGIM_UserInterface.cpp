@@ -78,8 +78,28 @@ UUserWidget* UQPGIM_UserInterface::QP_AddUserInterface(UUserWidget* widget, FStr
 	return widget;
 }
 
-UUserWidget* UQPGIM_UserInterface::QP_AddUserInterfaceByClass(TSubclassOf<UUserWidget> widgetClass, FString key)
+/**check user interface is open?*/
+bool UQPGIM_UserInterface::QP_CheckUserInterface(FString key) {
+	return qp_UIData.Contains(key);
+}
+
+/**get user interface is open?*/
+UUserWidget* UQPGIM_UserInterface::QP_GetUserInterface(FString key) {
+	if (qp_UIData.Contains(key)) {
+
+		return qp_UIData[key];
+	}
+	return nullptr;
+}
+
+
+UUserWidget* UQPGIM_UserInterface::QP_AddUserInterfaceByClass(TSubclassOf<UUserWidget> widgetClass, FString key, bool only)
 {
+	if (only&& QP_CheckUserInterface(key)) {
+		UE_LOG(LogTemp, Warning, TEXT("UI is only and UI is open ---%s"), *key);
+
+		return nullptr;
+	}
 	UUserWidget* widget = CreateWidget<UUserWidget>(GetWorld(), widgetClass);
 
 	return QP_AddUserInterface(widget,key);
