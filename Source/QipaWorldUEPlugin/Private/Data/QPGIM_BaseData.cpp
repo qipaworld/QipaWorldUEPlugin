@@ -2,7 +2,7 @@
 
 
 #include "Data/QPGIM_BaseData.h"
-
+#include "Kismet/GameplayStatics.h"
 
 #include "Data/QPGIM_Data.h"
 #include "Data/QPData.h"
@@ -25,6 +25,12 @@ void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 
 	qp_gameBaseData = UQPGIM_Data::qp_staticObject->QP_GetQPData("UQPGIM_BaseData");
 	QP_InitDefaultSetting();
+
+	qp_baseDataSave = Cast<UQPBaseDataSave>(UGameplayStatics::LoadGameFromSlot("qp_baseDataSave", 0));
+	if (!qp_baseDataSave) {
+		qp_baseDataSave = Cast<UQPBaseDataSave>(UGameplayStatics::CreateSaveGameObject(UQPBaseDataSave::StaticClass()));
+	}
+
 	//QP_LoadSoundData();
 
 	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
@@ -41,7 +47,23 @@ void UQPGIM_BaseData::Deinitialize()
 
 	Super::Deinitialize();
 }
+float UQPGIM_BaseData::GetVersion() {
+	return qp_baseDataSave->qp_version;
+}
+void UQPGIM_BaseData::QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess) {
 
+}
+void UQPGIM_BaseData::SetVersion(float v) {
+	if (!qp_baseDataSave) {
+		return;
+	}
+	qp_baseDataSave->qp_version = v;
+	FAsyncSaveGameToSlotDelegate qp_SavedDelegate;
+	// USomeUObjectClass::SaveGameDelegateFunction is a void function that takes the following parameters: const FString& SlotName, const int32 UserIndex, bool bSuccess
+	qp_SavedDelegate.BindUObject(this, &UQPGIM_BaseData::QP_SavedDelegate);
+	UGameplayStatics::AsyncSaveGameToSlot(qp_baseDataSave, "qp_baseDataSave", 0, qp_SavedDelegate);
+
+}
 UQPData* UQPGIM_BaseData::QP_GetGameBaseData()
 {
 	return qp_gameBaseData;

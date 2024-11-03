@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "DataAsset/QPDS_DataAsset.h"
+#include "Data/QPBaseDataSave.h"
 #include "QPGIM_BaseData.generated.h"
 
 class UQPData;
@@ -32,6 +33,8 @@ public:
 	virtual void Deinitialize();
 
 public:
+	UPROPERTY()
+	UQPBaseDataSave* qp_baseDataSave;
 	/**声音数据*/
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPSound")
 		UQPData* qp_gameBaseData;
@@ -52,5 +55,12 @@ public:
 	//class UQPDS_DataAsset* QP_GetDefaultSettingDataAsset();
 	void QP_InitDefaultSetting();
 
-	
+	UFUNCTION(BlueprintCallable)
+	float GetVersion();
+
+	UFUNCTION(BlueprintCallable)
+	void SetVersion(float v);
+
+	void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
+
 };
