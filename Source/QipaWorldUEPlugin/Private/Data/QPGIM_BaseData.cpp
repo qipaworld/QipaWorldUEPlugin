@@ -30,7 +30,7 @@ void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 	if (!qp_baseDataSave) {
 		qp_baseDataSave = Cast<UQPBaseDataSave>(UGameplayStatics::CreateSaveGameObject(UQPBaseDataSave::StaticClass()));
 	}
-
+	qp_baseDataSave->AddToRoot();
 	//QP_LoadSoundData();
 
 	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
@@ -44,6 +44,10 @@ void UQPGIM_BaseData::Deinitialize()
 	//qp_soundData->qp_dataDelegate.Remove(qp_handle);
 //	QP_SaveSoundData();
 	qp_staticObject = nullptr;
+
+	if (qp_baseDataSave) {
+		UGameplayStatics::SaveGameToSlot(qp_baseDataSave, "qp_baseDataSave", 0);
+	}
 
 	Super::Deinitialize();
 }
