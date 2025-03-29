@@ -32,10 +32,10 @@ void UQPGIM_Map::Initialize(FSubsystemCollectionBase& Collection)
 	qp_actionInfo.CallbackTarget = this;
 	qp_actionInfo.ExecutionFunction = "QP_LoadMapEnd";
 	
-	qp_actionInfo.UUID = UQPGIM_BaseData::qp_defaultDataAsset->QP_UUID["qp_loadMap"];
+	qp_actionInfo.UUID = UQPGIM_BaseData::qp_staticObject-> qp_defaultDataAsset->QP_UUID["qp_loadMap"];
 	qp_actionInfo.Linkage = 0;
 
-	qp_loadingMapName = UQPGIM_BaseData::qp_defaultDataAsset->QP_DefaultLoadingMap;
+	//qp_loadingMapName = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultLoadingMap;
 	//qp_loadingMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;
 }
 
@@ -59,12 +59,42 @@ void UQPGIM_Map::QP_OpenMap(const FString LevelName)
 void UQPGIM_Map::QP_LoadingAndOpenMap(const FString MapName)
 {
 	qp_readyOpenMapName = MapName;
-	QP_LoadMap(qp_loadingMapName, FVector::ZeroVector, FRotator::ZeroRotator);
+
+	UWorld* w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultLoadingMap.Get();
+	if (!IsValid(w)) {
+		w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultLoadingMap.LoadSynchronous();
+		
+	}
+	if(IsValid(w)) {
+		UGameplayStatics::OpenLevel(GetWorld(), w->GetFName());
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("loading World not open"));
+	}
+	
+	//QP_LoadMap(qp_loadingMapName, FVector::ZeroVector, FRotator::ZeroRotator);
 }
 
 void UQPGIM_Map::QP_OpenReadyMap()
 {
-	QP_OpenMap(qp_readyOpenMapName);
+	if (qp_readyOpenMapName.IsEmpty()) {
+		UWorld* w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultStartMap.Get();
+		if (!IsValid(w)) {
+			w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultStartMap.LoadSynchronous();
+		}
+		if (IsValid(w)) {
+			QP_OpenMap(w->GetName());
+			//UGameplayStatics::OpenLevel(GetWorld(), w->GetFName());
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("Main World not open"));
+
+		}
+	}
+	else {
+		QP_OpenMap(qp_readyOpenMapName);
+	}
+	
 }
 
 UQPData* UQPGIM_Map::QP_GetMapData()

@@ -41,7 +41,7 @@ public:
 
 	//FString qp_topWidgetkey;
 	/**主ui路径*/
-	FString qp_mainUIPath;
+	//FString qp_mainUIPath;
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	void QP_SetAutoMouse(bool b);

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
+#include "DataAsset/QPDS_DataAsset.h"
 #include "QPDS_Default.generated.h"
 
 /**
@@ -31,6 +32,15 @@ public:
 	static UQPDS_Default* QP_GET();
 
 public:
+	/**qp package key*/
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	FString QP_PackageKey = "qipaworld";
+
+	/**default qp data asset */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	TSoftObjectPtr<UQPDS_DataAsset> QP_SetingDataAsset;
+	
+
 	/**默认背景音乐路径*/
 	//UPROPERTY(Config,EditAnywhere,BlueprintReadWrite, Category = "QipaWorld")
 	//FString QP_DefaultBackgroundAudioPath = "None";

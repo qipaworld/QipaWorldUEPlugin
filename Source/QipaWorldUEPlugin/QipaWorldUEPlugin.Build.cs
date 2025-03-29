@@ -26,6 +26,7 @@ public class QipaWorldUEPlugin : ModuleRules
 			new string[]
 			{
 				"Core",
+                "AudioModulation",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -48,6 +49,7 @@ public class QipaWorldUEPlugin : ModuleRules
                 "MetasoundEngine",
                 "NavigationSystem",
                 "AppFramework",
+                "AudioModulation",
                 //"ShaderCore",
                 //"RHI",
 				// ... add private dependencies that you statically link with here ...	

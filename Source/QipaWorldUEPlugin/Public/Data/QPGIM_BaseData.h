@@ -20,7 +20,8 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_BaseData : public UGameInstanceSubsystem
 public:
 	static UQPGIM_BaseData* qp_staticObject;
 
-	static UQPDS_DataAsset* qp_defaultDataAsset;
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPData")
+	UQPDS_DataAsset* qp_defaultDataAsset;
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
 
@@ -36,15 +37,15 @@ public:
 	UPROPERTY()
 	UQPBaseDataSave* qp_baseDataSave;
 	/**声音数据*/
-	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPSound")
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPData")
 		UQPData* qp_gameBaseData;
 
 	/** 获得数据*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetGameBaseData();
 	/** 获得数据*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	UQPData* QP_GetDefaultSetting();
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	//UQPData* QP_GetDefaultSetting();
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	int32 QP_GetUUID(FString& key);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")

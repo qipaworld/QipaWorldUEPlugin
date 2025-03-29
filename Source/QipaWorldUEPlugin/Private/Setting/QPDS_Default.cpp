@@ -29,6 +29,9 @@ UQPDS_Default* UQPDS_Default::QP_GET()
 
 UQPDS_Default::UQPDS_Default()
 {
+	QP_PackageKey = "qipaworld";
+	QP_SetingDataAsset = TSoftObjectPtr<UQPDS_DataAsset>(FSoftObjectPath(TEXT("/Script/QipaWorldUEPlugin.QPDS_DataAsset'/Game/QipaWorld3D/DataAsset/QP_DefaultSetting.QP_DefaultSetting'")));
+
 	//DefaultBackgroundAudioPath = "None";
 	//DefaultUIClickAudioPath = "None";
 }

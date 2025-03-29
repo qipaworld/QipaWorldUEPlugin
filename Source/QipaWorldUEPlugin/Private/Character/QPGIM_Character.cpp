@@ -3,7 +3,7 @@
 
 #include "Character/QPGIM_Character.h"
 #include "Animation/QPC_PlayMontage.h"
-
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Actor/QPWM_Actor.h"
 #include "Character/QPDA_Character.h"
 
@@ -64,7 +64,7 @@ ACharacter* UQPGIM_Character::QP_GetCharacter(FString qp_name) {
 	return nullptr;
 }
 class UQPDA_Character* UQPGIM_Character::QP_GetCharacterData(FString qp_name) {
-	return LoadObject<UQPDA_Character>(nullptr, *(qp_assetPath + qp_name + "." + qp_name + "'"));
+	return LoadObject<UQPDA_Character>(nullptr, *("/Script/QipaWorld3DUE.QPDA_Character'" + (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultCharacterDataPath.Path) +"/"+ qp_name + "." + qp_name + "'"));
 }
 void UQPGIM_Character::QP_InitCharacterData(AQPCharacter* c) {
 	UQPDA_Character* data = QP_GetCharacterData(c->qp_assetDataName);

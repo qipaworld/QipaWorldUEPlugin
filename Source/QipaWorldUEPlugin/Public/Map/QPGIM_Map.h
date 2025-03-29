@@ -42,7 +42,7 @@ public:
 	/** 这个是准备打开的地图名字*/
 	FString qp_readyOpenMapName;
 	/**带进度条地图的名字*/
-	FString qp_loadingMapName;
+	//FString qp_loadingMapName;
 
 	/**子地图加载的action*/
 	FLatentActionInfo qp_actionInfo;

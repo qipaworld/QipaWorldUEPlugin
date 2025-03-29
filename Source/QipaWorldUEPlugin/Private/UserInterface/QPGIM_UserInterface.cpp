@@ -33,7 +33,7 @@ void UQPGIM_UserInterface::Initialize(FSubsystemCollectionBase& Collection)
 	qp_staticObject = this;
 	//UQPDS_Default* devSetting = UQPDS_Default::QP_GET();
 	
-	qp_mainUIPath = UQPGIM_BaseData::qp_defaultDataAsset->QP_DefaultMainUserInterfacePath;
+	//qp_mainUIPath = UQPGIM_BaseData::qp_defaultDataAsset->QP_DefaultMainUserInterfacePath;
 	//LoadYaml("");
 	//qp_gameQPdataBase = NewObject<UQPData>();
 	
@@ -47,7 +47,22 @@ void UQPGIM_UserInterface::Deinitialize()
 
 UUserWidget* UQPGIM_UserInterface::QP_AddMainUserInterface(FString key)
 {
-	return QP_AddUserInterfaceByPath(qp_mainUIPath,key);
+	//return QP_AddUserInterfaceByClass(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.Get(),key);
+	TSubclassOf<UUserWidget> w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.Get();
+	if (!IsValid(w)) {
+		w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.LoadSynchronous();
+
+	}
+	if (IsValid(w)) {
+		return QP_AddUserInterfaceByClass(w, key);
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("MainUI not open"));
+
+		return nullptr;
+	}
+
+	
 }
 
 UUserWidget* UQPGIM_UserInterface::QP_AddUserInterfaceByPath(FString path,FString key)
@@ -154,10 +169,10 @@ void UQPGIM_UserInterface::QP_KeyBoardEvent()
 void UQPGIM_UserInterface::QP_BindKeyBoard()
 {
 	 
-	if (UQPGIM_BaseData::qp_defaultDataAsset->QP_UserInterfaceAutoPop) {
+	if (UQPGIM_BaseData::qp_staticObject-> qp_defaultDataAsset->QP_UserInterfaceAutoPop) {
 
 		APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		controller->InputComponent->BindAction(*(UQPGIM_BaseData::qp_defaultDataAsset->QP_DefaultUserInterfaceActionKey), IE_Released, this, &UQPGIM_UserInterface::QP_KeyBoardEvent);
+		controller->InputComponent->BindAction(*(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultUserInterfaceActionKey), IE_Released, this, &UQPGIM_UserInterface::QP_KeyBoardEvent);
 
 	}
 }

@@ -19,7 +19,7 @@ public:
 	TMap<FString, ACharacter*> qp_characterMap;
 	static UQPGIM_Character* qp_staticObject;
 	//Slime.Slime'
-	FString qp_assetPath = "/Script/QipaWorld3DUE.QPDA_Character'/Game/QipaWorld3D/Data/Character/";
+	//FString qp_assetPath = "/Game/QipaWorld3D/Data/Character/";
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
 
