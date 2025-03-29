@@ -6,6 +6,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Data/QPGIM_BaseData.h"
+DEFINE_LOG_CATEGORY(LOGQipaWorld);
+
+
+
 
 FIntPoint UQPUtil::QP_GetFullScreenResolution(float percentage) {
 	TArray<FIntPoint> resolutions;
@@ -27,4 +31,15 @@ void UQPUtil::QP_UpdateMouse(bool b, APlayerController* controller) {
 		UWidgetBlueprintLibrary::SetInputMode_GameOnly(controller);
 	}
 
+}
+
+void UQPUtil::QP_LOG(FString Message, FColor Color, float Duration) {
+	UE_LOG(LOGQipaWorld, Warning, TEXT("%s"), *Message);
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, Duration, Color, Message);
+	}
+
+	//FPlatformMisc::LowLevelOutputDebugString(*Message);
 }

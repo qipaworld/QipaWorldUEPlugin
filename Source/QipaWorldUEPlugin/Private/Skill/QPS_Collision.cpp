@@ -3,6 +3,7 @@
 
 #include "Skill/QPS_Collision.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "QPUtil.h"
 
 // Sets default values
 AQPS_Collision::AQPS_Collision()
@@ -60,12 +61,12 @@ void AQPS_Collision::QP_OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 
 void AQPS_Collision::QP_OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Overlap End"));
+	//UQPUtil::QP_LOG("Overlap End");
 }
 
 void AQPS_Collision::QP_OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hit"));
+	//UQPUtil::QP_LOG("Hit");
 	//Destroy();
 }
 void AQPS_Collision::QP_End() {

@@ -9,6 +9,7 @@
 #include "Data/QPGIM_Data.h"
 #include "Data/QPData.h"
 #include "AudioModulationStatics.h"
+#include "QPUtil.h"
 
 UQPGIM_BaseData* UQPGIM_BaseData::qp_staticObject = nullptr;
 //UQPDS_DataAsset* UQPGIM_BaseData::qp_defaultDataAsset = nullptr;
@@ -97,7 +98,7 @@ void UQPGIM_BaseData::QP_InitDefaultSetting() {
 		UAudioModulationStatics::ActivateBusMix(GetWorld(), LoadedBusMix);
 	}
 	else {
-		UE_LOG(LogTemp, Log, TEXT("load Control Bus Mix Error"));
+		UQPUtil::QP_LOG("load Control Bus Mix Error");
 	}
 	
 	//UQPData* qpData = QP_GetDefaultSetting();
@@ -118,7 +119,7 @@ int32 UQPGIM_BaseData::QP_GetUUID(FString& key) {
 		return qp_defaultDataAsset->QP_UUID[key];
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("do not find UUID %s"),*key);
+		UQPUtil::QP_LOG("do not find UUID "+key);
 		return 0;
 	}
 	//return QP_GetDefaultSetting()->QP_GetUQPData("QPUUID")->QP_Getint32(key);

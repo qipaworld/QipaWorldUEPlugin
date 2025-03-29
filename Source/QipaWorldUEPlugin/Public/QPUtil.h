@@ -9,6 +9,10 @@
 /**
  * 
  */
+DECLARE_LOG_CATEGORY_EXTERN(LOGQipaWorld, Log, All);
+
+
+
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPUtil : public UBlueprintFunctionLibrary
 {
@@ -21,5 +25,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QPUtil")
 
 	static void QP_UpdateMouse(bool show, APlayerController* controller = nullptr);
+
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+
+	static void QP_LOG(FString Message, FColor Color = FColor::Yellow, float Duration = 5.0f);
+
 
 };

@@ -1,5 +1,6 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
+
 #define QP_ADD_TYPE_FUN(type,...) void UQPData::QP_Add##type(FString key, type __VA_ARGS__  v, bool sync) {\
 	qp_##type##Map.Emplace(key, v); \
 	qp_changeMap.Emplace(key, "change"); \
@@ -13,7 +14,7 @@ void UQPData::QP_Remove##type(FString key, bool sync) {\
 		qp_##type##Map.Remove(key); \
 		qp_changeMap.Emplace(key, "remove"); \
 		QP_needSyncBroadcast(sync);} \
-		else{UE_LOG(LogTemp, Warning, TEXT("map is not have key %s"),*key);}\
+		else{UQPUtil::QP_LOG("map is not have key " + key);}\
 		}
 
 
@@ -39,7 +40,7 @@ if (rmv != qp_##type2##type##Map.end()) {\
 		QP_needSyncBroadcast(sync);}\
 		else{\
 	FString outS( key.c_str());\
-	UE_LOG(LogTemp, Warning, TEXT("map is not have key %s"),*outS);\
+	UQPUtil::QP_LOG("map is not have key "+outS);\
 }\
 		}
 
@@ -71,14 +72,14 @@ v->RemoveFromRoot();\
 		QP_needSyncBroadcast(sync);}\
 		else{\
 	FString outS( key.c_str());\
-	UE_LOG(LogTemp, Warning, TEXT("map is not have key %s"),*outS);\
+	UQPUtil::QP_LOG("map is not have key "+outS);\
 }\
 		}
 
 #include "Data/QPData.h"
 #include <Kismet/GameplayStatics.h>
 #include "Data/QPGIM_Data.h"
-
+#include "QPUtil.h"
 void UQPData::QP_Init(FString name)
 {
 	qp_dataName = name;
@@ -166,7 +167,7 @@ void UQPData::QP_RemoveUQPData(FString key, bool sync)
 		QP_needSyncBroadcast(sync);
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("map is not have key %s"),*key);
+		UQPUtil::QP_LOG("map is not have key "+key);
 	}
 }
 

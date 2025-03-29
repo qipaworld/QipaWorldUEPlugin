@@ -2,6 +2,7 @@
 
 
 #include "Map/QPGIM_Map.h"
+#include "QPUtil.h"
 
 #include "Setting/QPDS_Default.h"
 #include "Kismet/GameplayStatics.h"
@@ -69,7 +70,7 @@ void UQPGIM_Map::QP_LoadingAndOpenMap(const FString MapName)
 		UGameplayStatics::OpenLevel(GetWorld(), w->GetFName());
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("loading World not open"));
+		UQPUtil::QP_LOG("loading World not open");
 	}
 	
 	//QP_LoadMap(qp_loadingMapName, FVector::ZeroVector, FRotator::ZeroRotator);
@@ -87,7 +88,7 @@ void UQPGIM_Map::QP_OpenReadyMap()
 			//UGameplayStatics::OpenLevel(GetWorld(), w->GetFName());
 		}
 		else {
-			UE_LOG(LogTemp, Warning, TEXT("Main World not open"));
+			UQPUtil::QP_LOG("Main World not open");
 
 		}
 	}

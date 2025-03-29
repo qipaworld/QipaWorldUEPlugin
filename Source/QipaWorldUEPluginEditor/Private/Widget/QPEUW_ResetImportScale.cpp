@@ -7,6 +7,7 @@
 #include "Engine/SkeletalMesh.h"
 #include "EditorAssetLibrary.h"
 #include "EditorReimportHandler.h"
+#include "QPUtil.h"
 
 void UQPEUW_ResetImportScale::QP_ResetScaleAndReImport(float scale)
 {
@@ -28,13 +29,14 @@ void UQPEUW_ResetImportScale::QP_ResetScaleAndReImport(float scale)
 					QP_ChangeScale(ass, scale);
 				}
 				else {
-					UE_LOG(LogTemp, Warning, TEXT("%s：没有 UFbxAssetImportData"), *o->GetName());
+					//UQPUtil::QP_LOG();
+					UQPUtil::QP_LOG(o->GetName() + " do not have UFbxAssetImportData");
 
 				}
 				//QP_ChangeScale(Cast<UFbxAssetImportData>(Property->ContainerPtrToValuePtr<UAssetImportData>(o)), scale);
 			}
 			else {
-				UE_LOG(LogTemp, Warning, TEXT("%s：没有 AssetImportData"), *o->GetName());
+				UQPUtil::QP_LOG(o->GetName()+" do not have AssetImportData");
 			}
 			
 

@@ -57,7 +57,7 @@ UUserWidget* UQPGIM_UserInterface::QP_AddMainUserInterface(FString key)
 		return QP_AddUserInterfaceByClass(w, key);
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("MainUI not open"));
+		UQPUtil::QP_LOG("MainUI not open");
 
 		return nullptr;
 	}
@@ -111,7 +111,7 @@ UUserWidget* UQPGIM_UserInterface::QP_GetUserInterface(FString key) {
 UUserWidget* UQPGIM_UserInterface::QP_AddUserInterfaceByClass(TSubclassOf<UUserWidget> widgetClass, FString key, bool only)
 {
 	if (only&& QP_CheckUserInterface(key)) {
-		UE_LOG(LogTemp, Warning, TEXT("UI is only and UI is open ---%s"), *key);
+		UQPUtil::QP_LOG("UI is only and UI is open "+key);
 
 		return nullptr;
 	}
@@ -139,7 +139,7 @@ void UQPGIM_UserInterface::QP_RemoveUserInterface(FString key)
 		}
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("not have UI---%s"),*key);
+		UQPUtil::QP_LOG("not have UI "+key);
 	}
 
 }
