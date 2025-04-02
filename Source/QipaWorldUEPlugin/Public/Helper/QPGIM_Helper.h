@@ -43,7 +43,7 @@ protected:
 	/**加载数据*/
 	virtual void QP_LoadHelperData();
 	/**保存数据*/
-	virtual void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
+	//virtual void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
 	
 public:
 

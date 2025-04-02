@@ -25,7 +25,7 @@ void UQPGIM_Helper::Initialize(FSubsystemCollectionBase& Collection)
 
 
 	QP_LoadHelperData();
-
+	qp_helperSaveData->AddToRoot();
 	qp_helperData = UQPGIM_Data::qp_staticObject->QP_GetQPData(qp_dataName);
 	qp_helperData->qp_dataDelegate.AddUObject(this, &UQPGIM_Helper::QP_BindHelperData);
 
@@ -75,9 +75,9 @@ void UQPGIM_Helper::QP_SaveHelperData()
 	{
 
 		// 设置（可选）委托。
-		FAsyncSaveGameToSlotDelegate qp_SavedDelegate;
+		//FAsyncSaveGameToSlotDelegate qp_SavedDelegate;
 		// USomeUObjectClass::SaveGameDelegateFunction is a void function that takes the following parameters: const FString& SlotName, const int32 UserIndex, bool bSuccess
-		qp_SavedDelegate.BindUObject(this, &UQPGIM_Helper::QP_SavedDelegate);
+		//qp_SavedDelegate.BindUObject(this, &UQPGIM_Helper::QP_SavedDelegate);
 
 		/*qp_helperSaveGame->qp_helperNum = QP_GetHelperNum();
 		qp_helperSaveGame->qp_tipNum = QP_GetTipNum();
@@ -85,20 +85,23 @@ void UQPGIM_Helper::QP_SaveHelperData()
 
 		//UGameplayStatics::SaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName, qp_UserIndex);
 		// 启动异步保存进程。
-		UGameplayStatics::AsyncSaveGameToSlot(qp_helperSaveData, qp_SaveSlotName,qp_UserIndex, qp_SavedDelegate);
+		//UGameplayStatics::AsyncSaveGameToSlot(qp_helperSaveData, qp_SaveSlotName,qp_UserIndex, qp_SavedDelegate);
+		qp_helperSaveData->QP_AsyncSave();
 	}
 }
 
-void UQPGIM_Helper::QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess)
-{
-
-}
+//void UQPGIM_Helper::QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess)
+//{
+//
+//}
 
 void UQPGIM_Helper::QP_LoadHelperData()
 {
 	qp_helperSaveData = Cast<UQPSG_Helper>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
 	if (!qp_helperSaveData) {
 		qp_helperSaveData = Cast<UQPSG_Helper>(UGameplayStatics::CreateSaveGameObject(UQPSG_Helper::StaticClass()));
+		qp_helperSaveData->QP_SetSaveKey(qp_SaveSlotName);
+		qp_helperSaveData->QP_SetSaveId(qp_UserIndex);
 	}
 }
 

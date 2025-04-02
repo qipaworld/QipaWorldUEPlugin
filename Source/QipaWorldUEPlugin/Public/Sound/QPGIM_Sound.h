@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Sound/QPSG_Sound.h"
+
 #include "QPGIM_Sound.generated.h"
 
 
@@ -36,6 +38,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPSound")
 	UQPData* qp_soundData;
 	
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPSound")
+	TObjectPtr<UQPSG_Sound> qp_soundSaveGame = nullptr;
 	//UPROPERTY()
 	//UAudioComponent* qp_bgSound = nullptr;
 	//UPROPERTY()
@@ -147,7 +151,7 @@ public:
 	/**退出游戏的时候保存*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
 	void QP_SaveSoundData();
-	void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
+	//void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
 	void QP_LoadSoundData();
 	USoundBase* QP_CreateSoundBase(FString path);
 

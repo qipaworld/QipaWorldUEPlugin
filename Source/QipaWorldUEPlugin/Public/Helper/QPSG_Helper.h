@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/SaveGame.h"
+#include "Data/QPSaveGame.h"
 #include "QPSG_Helper.generated.h"
 
 /**
  * 帮助数据保存基类
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPSG_Helper : public USaveGame
+class QIPAWORLDUEPLUGIN_API UQPSG_Helper : public UQPSaveGame
 {
 	GENERATED_BODY()
 public:

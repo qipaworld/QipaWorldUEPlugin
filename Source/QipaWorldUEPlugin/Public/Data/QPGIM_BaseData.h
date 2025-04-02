@@ -62,6 +62,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetVersion(float v);
 
-	void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
+	//void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
 
 };

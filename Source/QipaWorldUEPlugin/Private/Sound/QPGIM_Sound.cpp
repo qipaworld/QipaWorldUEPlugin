@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Setting/QPDS_Default.h"
 #include "Components/AudioComponent.h"
-#include "Sound/QPSG_Sound.h"
+//#include "Sound/QPSG_Sound.h"
 #include "MetasoundSource.h"
 //#include "UObject/ConstructorHelpers.h"
 
@@ -218,8 +218,8 @@ void UQPGIM_Sound::QP_SoundDataChange(UQPData* data)
 void UQPGIM_Sound::QP_SaveSoundData()
 {
 
-	UQPSG_Sound* qp_soundSaveGame = Cast<UQPSG_Sound>(UGameplayStatics::CreateSaveGameObject(UQPSG_Sound::StaticClass()));
-	if (qp_soundSaveGame)
+	//UQPSG_Sound* qp_soundSaveGame = Cast<UQPSG_Sound>(UGameplayStatics::CreateSaveGameObject(UQPSG_Sound::StaticClass()));
+	if (IsValid(qp_soundSaveGame))
 	{
 
 		// 设置（可选）委托。
@@ -232,29 +232,38 @@ void UQPGIM_Sound::QP_SaveSoundData()
 		qp_soundSaveGame->qp_UIVolume = QP_GetUIVolume();
 		qp_soundSaveGame->qp_effectVolume = QP_GetEffectVolume();
 		qp_soundSaveGame->qp_environmentVolume = QP_GetEnvironmentVolume();
-
-		UGameplayStatics::SaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName, qp_UserIndex);
+		qp_soundSaveGame->QP_AsyncSave();
+		//UGameplayStatics::SaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName, qp_UserIndex);
 		// 启动异步保存进程。
 		//UGameplayStatics::AsyncSaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName,qp_UserIndex, qp_SavedDelegate);
 	}
 }
 
-void UQPGIM_Sound::QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess)
-{
-}
+//void UQPGIM_Sound::QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess)
+//{
+//}
 
 void UQPGIM_Sound::QP_LoadSoundData()
 {
-	UQPSG_Sound* qp_LoadSoundData = Cast<UQPSG_Sound>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
-	if (qp_LoadSoundData)
-	{
-		
-		QP_SetMusicVolume(qp_LoadSoundData->qp_musicVolume);
-		QP_SetAllVolume(qp_LoadSoundData->qp_allVolume);
-		QP_SetEffectVolume(qp_LoadSoundData->qp_effectVolume);
-		QP_SetUIVolume(qp_LoadSoundData->qp_UIVolume);
-		QP_SetEnvironmentVolume(qp_LoadSoundData->qp_environmentVolume) ;
+	if (!IsValid(qp_soundSaveGame)) {
+		qp_soundSaveGame = Cast<UQPSG_Sound>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
+		if (!IsValid(qp_soundSaveGame)) {
+			qp_soundSaveGame = Cast<UQPSG_Sound>(UGameplayStatics::CreateSaveGameObject(UQPSG_Sound::StaticClass()));
+			qp_soundSaveGame->QP_SetSaveId(qp_UserIndex);
+			qp_soundSaveGame->QP_SetSaveKey(qp_SaveSlotName);
+			
+		}
 	}
+	qp_soundSaveGame->AddToRoot();
+	/*if (qp_soundSaveGame)
+	{*/
+
+	QP_SetMusicVolume(qp_soundSaveGame->qp_musicVolume);
+	QP_SetAllVolume(qp_soundSaveGame->qp_allVolume);
+	QP_SetEffectVolume(qp_soundSaveGame->qp_effectVolume);
+	QP_SetUIVolume(qp_soundSaveGame->qp_UIVolume);
+	QP_SetEnvironmentVolume(qp_soundSaveGame->qp_environmentVolume) ;
+	/*}
 	else 
 	{
 		QP_SetMusicVolume(1);
@@ -263,7 +272,7 @@ void UQPGIM_Sound::QP_LoadSoundData()
 		QP_SetUIVolume(1);
 		QP_SetEnvironmentVolume(1);
 	}
-	
+	*/
 	//qp_handle = qp_soundData->qp_dataDelegate.AddUObject(this, &UQPGIM_Sound::QP_BindSoundData);
 	qp_soundData->qp_dataDelegate.AddUObject(this, &UQPGIM_Sound::QP_SoundDataChange);
 
