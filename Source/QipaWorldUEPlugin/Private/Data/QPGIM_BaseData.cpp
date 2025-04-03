@@ -22,6 +22,8 @@ bool UQPGIM_BaseData::ShouldCreateSubsystem(UObject* Outer) const
 
 void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 {
+	//UQPUtil::QP_LOG("????????_____AAA_____????????????");
+
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 
@@ -31,12 +33,13 @@ void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 	QP_InitDefaultSetting();
 
 	qp_baseDataSave = Cast<UQPBaseDataSave>(UGameplayStatics::LoadGameFromSlot("qp_baseDataSave", 0));
-	if (!qp_baseDataSave) {
+	if (!IsValid(qp_baseDataSave)) {
 		qp_baseDataSave = Cast<UQPBaseDataSave>(UGameplayStatics::CreateSaveGameObject(UQPBaseDataSave::StaticClass()));
 		qp_baseDataSave->QP_SetSaveKey("qp_baseDataSave");
 	}
 	
 	qp_baseDataSave->AddToRoot();
+
 	//QP_LoadSoundData();
 
 	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
@@ -49,22 +52,29 @@ void UQPGIM_BaseData::Deinitialize()
 	//}
 	//qp_soundData->qp_dataDelegate.Remove(qp_handle);
 //	QP_SaveSoundData();
+	//UQPUtil::QP_LOG("????????_____AAA__333___????????????");
+
 	qp_staticObject = nullptr;
 
-	if (qp_baseDataSave) {
+	if (IsValid(qp_baseDataSave)) {
 		qp_baseDataSave->QP_Save();
 	}
 
 	Super::Deinitialize();
 }
-float UQPGIM_BaseData::GetVersion() {
+float UQPGIM_BaseData::QP_GetVersion() {
+	if (!IsValid(qp_baseDataSave)) {
+		UQPUtil::QP_LOG("get SetVersion Error the qp_baseDataSave is null.");
+		return 0.0;
+	}
 	return qp_baseDataSave->qp_version;
 }
 //void UQPGIM_BaseData::QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess) {
 //
 //}
-void UQPGIM_BaseData::SetVersion(float v) {
-	if (!qp_baseDataSave) {
+void UQPGIM_BaseData::QP_SetVersion(float v) {
+	if (!IsValid(qp_baseDataSave)) {
+		UQPUtil::QP_LOG("save SetVersion Error the qp_baseDataSave is null. Version = " + FString::SanitizeFloat(v));
 		return;
 	}
 	qp_baseDataSave->qp_version = v;
@@ -73,8 +83,75 @@ void UQPGIM_BaseData::SetVersion(float v) {
 	// USomeUObjectClass::SaveGameDelegateFunction is a void function that takes the following parameters: const FString& SlotName, const int32 UserIndex, bool bSuccess
 	//qp_SavedDelegate.BindUObject(this, &UQPGIM_BaseData::QP_SavedDelegate);
 	//UGameplayStatics::AsyncSaveGameToSlot(qp_baseDataSave, "qp_baseDataSave", 0, qp_SavedDelegate);
+}
+bool  UQPGIM_BaseData::QP_IsInitKey(const FString& k) {
+	if (!IsValid(qp_baseDataSave)) {
+		UQPUtil::QP_LOG("get init key Error the qp_baseDataSave is null . key  = " + k);
+		return false;
+	}
+	if (qp_defaultDataAsset->QP_InitKeys.Contains(k)) {
+		return qp_baseDataSave->qp_initMaps.FindOrAdd(qp_defaultDataAsset->QP_InitKeys[k], false);
+	}
+	else {
+		UQPUtil::QP_LOG("qp_defaultDataAsset do not find InitKey <" + k + "> please go to the QP_SetingDataAsset -- QP_InitKeys -- setting!");
+		return false;
+	}
+
+	
+	
+}
+
+void  UQPGIM_BaseData::QP_SetInitKey(const FString& k, bool v) {
+	if (!IsValid(qp_baseDataSave)) {
+		UQPUtil::QP_LOG("save init key Error the qp_baseDataSave is null . key  = " + k);
+		return;
+	}
+	if (qp_defaultDataAsset->QP_InitKeys.Contains(k)) {
+		qp_baseDataSave->qp_initMaps.Add(qp_defaultDataAsset->QP_InitKeys[k], v);
+	}
+	else {
+		UQPUtil::QP_LOG("qp_defaultDataAsset do not find InitKey <" + k + "> please go to the QP_SetingDataAsset -- QP_InitKeys -- setting!");
+		//return;
+	}
+	qp_baseDataSave->QP_AsyncSave();
+}
+
+
+bool  UQPGIM_BaseData::QP_IsTipKey(const FString& k) {
+	if (!IsValid(qp_baseDataSave)) {
+		UQPUtil::QP_LOG("get tip key Error the qp_baseDataSave is null . key  = " + k);
+		return false;
+	}
+
+	if (qp_defaultDataAsset->QP_TipKeys.Contains(k)) {
+		return qp_baseDataSave->qp_tipMaps.FindOrAdd(qp_defaultDataAsset->QP_TipKeys[k], false);
+	}
+	else {
+		UQPUtil::QP_LOG("qp_defaultDataAsset do not find TipKey <" + k + "> please go to the QP_SetingDataAsset -- QP_TipKeys -- setting!");
+		return false;
+	}
 
 }
+
+void  UQPGIM_BaseData::QP_SetTipKey(const FString& k, bool v) {
+	if (!IsValid(qp_baseDataSave)) {
+		UQPUtil::QP_LOG("save tip key Error the qp_baseDataSave is null . key  = " + k);
+		return;
+	}
+
+	if (qp_defaultDataAsset->QP_TipKeys.Contains(k)) {
+		//return qp_baseDataSave->qp_tipMaps.FindOrAdd(qp_defaultDataAsset->QP_TipKeys[k], false);
+		qp_baseDataSave->qp_tipMaps.Add(qp_defaultDataAsset->QP_TipKeys[k], v);
+
+	}
+	else {
+		UQPUtil::QP_LOG("qp_defaultDataAsset do not find TipKey <" + k + "> please go to the QP_SetingDataAsset  -- QP_TipKeys -- setting!");
+		//return false;
+	}
+
+	qp_baseDataSave->QP_AsyncSave();
+}
+
 UQPData* UQPGIM_BaseData::QP_GetGameBaseData()
 {
 	return qp_gameBaseData;
@@ -117,12 +194,13 @@ void UQPGIM_BaseData::QP_InitDefaultSetting() {
 	//}
 	
 }
-int32 UQPGIM_BaseData::QP_GetUUID(FString& key) {
+int32 UQPGIM_BaseData::QP_GetUUID(const FString& key) {
 	if (qp_defaultDataAsset->QP_UUID.Contains(key)) {
 		return qp_defaultDataAsset->QP_UUID[key];
 	}
 	else {
-		UQPUtil::QP_LOG("do not find UUID "+key);
+		UQPUtil::QP_LOG("qp_defaultDataAsset do not find UUID <" + key + "> please go to the QP_SetingDataAsset  -- QP_UUID --  setting!");
+
 		return 0;
 	}
 	//return QP_GetDefaultSetting()->QP_GetUQPData("QPUUID")->QP_Getint32(key);

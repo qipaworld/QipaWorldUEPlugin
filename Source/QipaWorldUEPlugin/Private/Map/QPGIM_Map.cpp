@@ -33,7 +33,7 @@ void UQPGIM_Map::Initialize(FSubsystemCollectionBase& Collection)
 	qp_actionInfo.CallbackTarget = this;
 	qp_actionInfo.ExecutionFunction = "QP_LoadMapEnd";
 	
-	qp_actionInfo.UUID = UQPGIM_BaseData::qp_staticObject-> qp_defaultDataAsset->QP_UUID["qp_loadMap"];
+	qp_actionInfo.UUID = UQPGIM_BaseData::qp_staticObject->QP_GetUUID("qp_loadMap");
 	qp_actionInfo.Linkage = 0;
 
 	//qp_loadingMapName = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultLoadingMap;

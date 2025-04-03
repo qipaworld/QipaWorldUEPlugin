@@ -35,7 +35,8 @@ public:
 
 public:
 	UPROPERTY()
-	UQPBaseDataSave* qp_baseDataSave;
+	TObjectPtr<UQPBaseDataSave> qp_baseDataSave;
+	
 	/**声音数据*/
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPData")
 		UQPData* qp_gameBaseData;
@@ -47,7 +48,7 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	//UQPData* QP_GetDefaultSetting();
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	int32 QP_GetUUID(FString& key);
+	int32 QP_GetUUID(const FString& key);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetPlayerData();
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
@@ -57,10 +58,25 @@ public:
 	void QP_InitDefaultSetting();
 
 	UFUNCTION(BlueprintCallable)
-	float GetVersion();
+	float QP_GetVersion();
 
 	UFUNCTION(BlueprintCallable)
-	void SetVersion(float v);
+	void QP_SetVersion(float v);
+	//  is init key completed ?
+	UFUNCTION(BlueprintCallable)
+	bool QP_IsInitKey(const FString& k);
+	//  set init key completed
+	UFUNCTION(BlueprintCallable)
+	void QP_SetInitKey(const FString& k ,bool v);
+
+	//  is tip key completed ?
+	UFUNCTION(BlueprintCallable)
+	bool QP_IsTipKey(const FString& k);
+	//  set tip key completed
+	UFUNCTION(BlueprintCallable)
+	void QP_SetTipKey(const FString& k, bool v);
+
+
 
 	//void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
 

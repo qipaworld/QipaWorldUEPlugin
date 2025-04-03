@@ -47,4 +47,13 @@ public:
 	/**UUID*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	TMap<FString, int32> QP_UUID;
+
+	/**init keys*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	TMap<FString, int32> QP_InitKeys;
+
+	/**tip keys*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	TMap<FString, int32> QP_TipKeys;
+
 };
