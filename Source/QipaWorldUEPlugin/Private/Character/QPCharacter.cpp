@@ -145,7 +145,7 @@ void AQPCharacter::QP_SetMatAmount(float amount)
 UQPData* AQPCharacter::QP_GetQPData(){
 
 	if (!qp_characterData) {
-		qp_characterData = UQPGIM_Data::qp_staticObject->QP_GetQPData("AQPCharacter")->QP_GetUQPData("qp_Character" + qp_characterMaxNum);
+		qp_characterData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("AQPCharacter")->QP_GetUQPData("qp_Character" + qp_characterMaxNum);
 
 	}
 	return qp_characterData;
@@ -370,14 +370,16 @@ void AQPCharacter::QP_ReReset() {
  void AQPCharacter::QP_AnimNotifyEvent(UQPData* data) {
 	 //GLog->Log("QP_AnimNotifyFire");
 	
-	 if (data->qp_changeMap.Contains(QP_AnimNotifyFireName)) {
-		 QP_Fire();
-	 }
-	 else if (data->qp_changeMap.Contains(QP_AnimNotifyJunmEndName)) {
-		 if (qp_characterData->QP_GetFString("characterAttack") == "start") {
-			 qp_characterData->QP_AddFString("characterAttack", "start");
-		 }
-	 }
+	if (data->QP_IsChange<FName, FName>(QP_AnimNotifyFireName, EQPDataValueType::FNAME)) {
+		QP_Fire();
+	}
+	else if (data->QP_IsChange<FName, FName>(QP_AnimNotifyJunmEndName, EQPDataValueType::FNAME)) {
+		if (qp_characterData->QP_GetFString("characterAttack") == "start") {
+			qp_characterData->QP_AddFString("characterAttack", "start");
+		}
+	}
+	 
+	 
 	 
  }
 

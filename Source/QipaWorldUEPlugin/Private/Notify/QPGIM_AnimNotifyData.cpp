@@ -8,7 +8,7 @@
 
 UQPGIM_AnimNotifyData* UQPGIM_AnimNotifyData::QP_UQPGIM_AnimNotifyData = nullptr;
 
-FString UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME = "qp_animNotify";
+FName UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME = "qp_animNotify";
 
 bool UQPGIM_AnimNotifyData::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -23,7 +23,7 @@ void UQPGIM_AnimNotifyData::Initialize(FSubsystemCollectionBase& Collection)
 
 	QP_UQPGIM_AnimNotifyData = this;
 
-	qp_animNotifyData = UQPGIM_Data::qp_staticObject->QP_GetQPData("UQPGIM_AnimNotifyData");
+	qp_animNotifyData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_AnimNotifyData");
 }
 
 void UQPGIM_AnimNotifyData::Deinitialize()
@@ -36,9 +36,9 @@ UQPData* UQPGIM_AnimNotifyData::QP_GetNotifyBaseData(){
 	return qp_animNotifyData;
 }
 
-UQPData* UQPGIM_AnimNotifyData::QP_GetNotifyData(FString name){
+UQPData* UQPGIM_AnimNotifyData::QP_GetNotifyData(FName name){
 	return qp_animNotifyData->QP_GetUQPData(name);
 }
-UQPData* UQPGIM_AnimNotifyData::QP_AddNotifyData(FString name){
+UQPData* UQPGIM_AnimNotifyData::QP_AddNotifyData(FName name){
 	return qp_animNotifyData->QP_GetUQPData(name);
 }

@@ -17,23 +17,24 @@ void UQPC_PlayMontage::BeginPlay() {
 void UQPC_PlayMontage::QP_PlayEvent(UQPData* data) {
 	for (auto& animData : qp_montage)
 	{
-
-		if (data->qp_changeMap.Contains(animData.Key)) {
-			//更改key但是不切换动画
-			if (data->QP_GetFString(animData.Key) == "notPlay") {
-				continue;
-			}
-
-			//你没有添加要播放的动画蒙太奇
-			if (ensure(animData.Value)) {
-				//只能让character播放蒙太奇
-				if (ensure(qp_character)) {
-
-					qp_character->PlayAnimMontage(animData.Value, 1.0f, FName(*(data->QP_GetFString(animData.Key))));
+	
+			if (data->QP_IsChange<FName, FName>(animData.Key, EQPDataValueType::FNAME)) {
+				//更改key但是不切换动画
+				if (data->QP_GetFName(animData.Key) == "notPlay") {
+					continue;
 				}
-				//qp_isJump = true;
+
+				//你没有添加要播放的动画蒙太奇
+				if (ensure(animData.Value)) {
+					//只能让character播放蒙太奇
+					if (ensure(qp_character)) {
+
+						qp_character->PlayAnimMontage(animData.Value, 1.0f, data->QP_GetFName(animData.Key));
+					}
+					//qp_isJump = true;
+				}
 			}
-		}
+		
 	}
 	
 	

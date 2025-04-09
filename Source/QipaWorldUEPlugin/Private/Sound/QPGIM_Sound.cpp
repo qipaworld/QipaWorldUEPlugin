@@ -28,7 +28,7 @@ void UQPGIM_Sound::Initialize(FSubsystemCollectionBase& Collection)
 
 	qp_staticObject = this;
 
-	qp_soundData = UQPGIM_Data::qp_staticObject->QP_GetQPData("UQPGIM_Sound");
+	qp_soundData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_Sound");
 	
 	QP_LoadSoundData();
 	
@@ -249,9 +249,8 @@ void UQPGIM_Sound::QP_LoadSoundData()
 		qp_soundSaveGame = Cast<UQPSG_Sound>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
 		if (!IsValid(qp_soundSaveGame)) {
 			qp_soundSaveGame = Cast<UQPSG_Sound>(UGameplayStatics::CreateSaveGameObject(UQPSG_Sound::StaticClass()));
-			qp_soundSaveGame->QP_SetSaveId(qp_UserIndex);
 			qp_soundSaveGame->QP_SetSaveKey(qp_SaveSlotName);
-			
+			qp_soundSaveGame->QP_SetSaveId(qp_UserIndex);
 		}
 	}
 	qp_soundSaveGame->AddToRoot();

@@ -40,7 +40,7 @@ public:
 	bool qp_isLoadSubMap = false;
 
 	/** 这个是准备打开的地图名字*/
-	FString qp_readyOpenMapName;
+	FName qp_readyOpenMapName;
 	/**带进度条地图的名字*/
 	//FString qp_loadingMapName;
 
@@ -49,15 +49,15 @@ public:
 
 	/** 加载新地图，并且保持原来的地图*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")
-	void QP_LoadMap(const FString MapName, const FVector Location, const FRotator Rotation);
+	void QP_LoadMap(const FString& MapName, const FVector& Location, const FRotator& Rotation);
 
 	/** 直接切换地图*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")
-	void QP_OpenMap(const FString MapName);
+	void QP_OpenMap(FName MapName);
 
 	/** 切换地图的时候加个进度条*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")
-	void QP_LoadingAndOpenMap(const FString MapName);
+	void QP_LoadingAndOpenMap(FName MapName);
 	/** 打开准备加载的地图*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")
 	void QP_OpenReadyMap();
@@ -67,7 +67,7 @@ public:
 	class UQPData* QP_GetMapData();
 	/** 加载子地图*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")
-	void QP_LoadSubMap(const FString MapName);
+	void QP_LoadSubMap(FName MapName);
 
 	/*UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")*/
 	void QP_LoadMapEnd();

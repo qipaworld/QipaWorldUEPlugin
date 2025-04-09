@@ -3,14 +3,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Object/QPObject.h"
+#include "Data/QPData.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Components/ListView.h"
 #include "QPGIM_UserInterface.generated.h"
 
-//class UQPData；
+class UQPData;
 /**
  * 用户界面管理类
  */
 
+//UENUM(BlueprintType)
+//enum class EBindViewDataType : uint8
+//{
+//	qpInt32               UMETA(DisplayName = "Int32"),
+//	qpFString               UMETA(DisplayName = "FString"),
+//};
 
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPGIM_UserInterface : public UGameInstanceSubsystem
@@ -47,30 +56,30 @@ public:
 	void QP_SetAutoMouse(bool b);
 	/**添加主UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	UUserWidget* QP_AddMainUserInterface(FString key = "MainUserInterface");
+	UUserWidget* QP_AddMainUserInterface(const FString& key = "MainUserInterface");
 
 	/**check user interface is open?*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	bool QP_CheckUserInterface(FString key);
+	bool QP_CheckUserInterface(const FString& key);
 
 	/**get user interface is open?*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	UUserWidget* QP_GetUserInterface(FString key);
+	UUserWidget* QP_GetUserInterface(const FString& key);
 
 	/**用路径添加UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	UUserWidget* QP_AddUserInterfaceByPath(FString path,FString key = "None");
+	UUserWidget* QP_AddUserInterfaceByPath(const FString& path,const FString& key = "None");
 
 	/**用实例添加UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	UUserWidget* QP_AddUserInterface(UUserWidget* widget, FString key = "None");
+	UUserWidget* QP_AddUserInterface(UUserWidget* widget, const FString& key = "None");
 
 	/**用class添加UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	UUserWidget* QP_AddUserInterfaceByClass(TSubclassOf<UUserWidget>  widgetClass, FString key = "None", bool only = false);
+	UUserWidget* QP_AddUserInterfaceByClass(TSubclassOf<UUserWidget>  widgetClass, const FString& key = "None", bool only = false);
 	/**删除UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	void QP_RemoveUserInterface(FString key = "None");
+	void QP_RemoveUserInterface(const FString& key = "None");
 
 	/**删除所有UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
@@ -89,4 +98,87 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	void QP_KeyBoardEvent();
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	void QP_ListViewBindData(FName key,  UListView* view, TSubclassOf<UQPObject> itemClass,UQPData* data, EQPDataKeyType t,EQPDataValueType vt);
+
+	template<typename K, typename V>
+	void QP_ListViewBindData_CPP(FName key,  UListView* view, TSubclassOf<UQPObject> itemClass, UQPData* data, EQPDataKeyType t, EQPDataValueType vt) {
+		
+		TMap<FName, UQPObject*> items;
+		TMap<int32, UQPObject*> itemsExI;
+		UQPObject* obj = nullptr;
+
+		
+		for (auto v : ((QPBaseData<K, V>*)data->qp_ValueMap[t][vt])->qp_ValueMap) {
+			obj = NewObject<UQPObject>(view, itemClass);
+
+			if constexpr (std::is_same<V, FName>::value)
+			{
+				obj->QP_SetObjTag(v.Value);
+			}
+			else
+			{
+				obj->QP_SetObjId(v.Value);
+			}
+			if constexpr (std::is_same<K, FName>::value)
+			{
+				items.Add(v.Key, obj);
+			}
+			else
+			{
+				itemsExI.Add(v.Key, obj);
+			}
+			view->AddItem(obj);
+		}
+
+		
+		qp_viewDataHandele.Add(key, data->qp_dataDelegate.AddLambda([view, itemClass, t,vt, &items, &itemsExI, data, key, this](UQPData* lambData) {
+			if (!IsValid(view)) {
+				UQPUtil::QP_LOG("listView auto Update  view  is null " + itemClass->ClassConfigName.ToString());
+				QP_ListViewRemoveData(key, view, data);
+				return;
+			}
+			UQPObject* obj = nullptr;
+
+			for (auto v : ((QPBaseData<K, V>*)lambData->qp_ValueMap[t][vt])->qp_changeMap) {
+				if (v.Value == EQPDataChangeType::REMOVE) {
+
+					if constexpr (std::is_same<K, FName>::value)
+					{
+						view->RemoveItem(items[v.Key]);
+						items.Remove(v.Key);
+					}
+					else
+					{
+						view->RemoveItem(itemsExI[v.Key]);
+						itemsExI.Remove(v.Key);
+					}
+
+					
+				}
+				else if (v.Value == EQPDataChangeType::ADD) {
+					obj = NewObject<UQPObject>(view, itemClass);
+					
+					if constexpr (std::is_same<V, FName>::value)
+					{
+						obj->QP_SetObjTag(lambData->QP_GetValue<K, V>(v.Key,vt,t));
+					}
+					else
+					{
+						obj->QP_SetObjId(lambData->QP_GetValue<K, V>(v.Key,vt,t));
+					}
+					view->AddItem(obj);
+				}
+			}
+			}));
+
+	}
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	void QP_ListViewRemoveData( FName key, class UListView* view, UQPData* data);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	UQPData* QP_GetEventData(FName key);
+
+	TMap<FName, FDelegateHandle> qp_viewDataHandele;
 };

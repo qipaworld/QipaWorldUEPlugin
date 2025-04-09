@@ -34,6 +34,8 @@ void UQPSaveGame::QP_Save(){
 
 
 void UQPSaveGame::QP_AsyncSave(){
+	/*QP_Save();
+	return;*/
 	if (qp_saveKey.IsEmpty()) {
 		UQPUtil::QP_LOG("save game error :the save key is empty.");
 	}

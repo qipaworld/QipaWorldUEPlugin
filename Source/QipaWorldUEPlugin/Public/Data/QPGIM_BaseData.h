@@ -6,9 +6,10 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "DataAsset/QPDS_DataAsset.h"
 #include "Data/QPBaseDataSave.h"
+#include "Data/QPData.h"
 #include "QPGIM_BaseData.generated.h"
 
-class UQPData;
+//class UQPData;
 /**
  * 这个一些基础的游戏数据存放类
  */
@@ -53,6 +54,8 @@ public:
 	UQPData* QP_GetPlayerData();
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetGameStatusData();
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UQPData* QP_GetUIEventData();
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	//class UQPDS_DataAsset* QP_GetDefaultSettingDataAsset();
 	void QP_InitDefaultSetting();

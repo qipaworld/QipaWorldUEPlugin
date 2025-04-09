@@ -26,7 +26,7 @@ void UQPGIM_Helper::Initialize(FSubsystemCollectionBase& Collection)
 
 	QP_LoadHelperData();
 	qp_helperSaveData->AddToRoot();
-	qp_helperData = UQPGIM_Data::qp_staticObject->QP_GetQPData(qp_dataName);
+	qp_helperData = UQPGIM_Data::qp_staticObject->QP_GetUQPData(qp_dataName);
 	qp_helperData->qp_dataDelegate.AddUObject(this, &UQPGIM_Helper::QP_BindHelperData);
 
 	//qp_loadMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;

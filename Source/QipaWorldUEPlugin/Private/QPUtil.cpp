@@ -33,7 +33,7 @@ void UQPUtil::QP_UpdateMouse(bool b, APlayerController* controller) {
 
 }
 
-void UQPUtil::QP_LOG(FString Message, FColor Color, float Duration) {
+void UQPUtil::QP_LOG(const FString& Message, const FColor& Color, float Duration) {
 	UE_LOG(LOGQipaWorld, Warning, TEXT("%s"), *Message);
 
 	if (GEngine)

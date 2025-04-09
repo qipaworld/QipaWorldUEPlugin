@@ -12,14 +12,14 @@
 void UQPU_AnimInstance::NativeInitializeAnimation() {
 	Super::NativeInitializeAnimation();
 	if (!qp_data&& UQPGIM_Data::qp_staticObject) {
-		qp_data = UQPGIM_Data::qp_staticObject->QP_GetQPData(GetName());
+		qp_data = UQPGIM_Data::qp_staticObject->QP_GetUQPData(GetFName());
 	}
 }
 void UQPU_AnimInstance::NativeUninitializeAnimation() {
 	Super::NativeUninitializeAnimation();
 	
 	if (qp_data && UQPGIM_Data::qp_staticObject) {
-		UQPGIM_Data::qp_staticObject->QP_RemoveQPData(GetName());
+		UQPGIM_Data::qp_staticObject->QP_RemoveUQPData(GetFName());
 		qp_data = nullptr;
 	}
 }

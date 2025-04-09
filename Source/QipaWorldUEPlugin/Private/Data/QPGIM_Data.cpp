@@ -13,23 +13,23 @@ UQPGIM_Data* UQPGIM_Data::qp_staticObject = nullptr;
 //}
 
 
-UQPData* UQPGIM_Data::QP_AddQPData(FString key, UQPData* data)
-{
-	return qp_baseData->QP_AddUQPData(key,data);
-}
-UQPData* UQPGIM_Data::QP_GetNewQPData(FString& outKey) {
-	outKey = FString::Printf(TEXT("QP_GetNewQPData%d"), qp_newDataNum);
-	qp_newDataNum++;
-	return QP_GetQPData(outKey);
-}
-UQPData* UQPGIM_Data::QP_GetQPData(FString key)
+//UQPData* UQPGIM_Data::QP_AddQPData(FString key, UQPData* data)
+//{
+//	return qp_baseData->QP_AddUQPData(key,data);
+//}
+//UQPData* UQPGIM_Data::QP_GetNewQPData(FString& outKey) {
+//	outKey = FString::Printf(TEXT("QP_GetNewQPData%d"), qp_newDataNum);
+//	qp_newDataNum++;
+//	return QP_GetQPData(outKey);
+//}
+UQPData* UQPGIM_Data::QP_GetUQPData(FName key)
 {
 	return qp_baseData->QP_GetUQPData(key);
 }
 
-void UQPGIM_Data::QP_RemoveQPData(FString key)
+bool UQPGIM_Data::QP_RemoveUQPData(FName key)
 {
-	qp_baseData->QP_RemoveUQPData(key);
+	return qp_baseData->QP_RemoveUQPData(key);
 }
 
 void UQPGIM_Data::QP_AddBroadcastUQPData(UQPData* data)
@@ -54,8 +54,8 @@ void UQPGIM_Data::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	qp_staticObject = this;
-	qp_baseData = NewObject<UQPData>();
-	qp_baseData->QP_Init("UQPGIM_BaseData");
+	qp_baseData = NewObject<UQPData>(this);
+	qp_baseData->QP_Init();
 	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 }
 

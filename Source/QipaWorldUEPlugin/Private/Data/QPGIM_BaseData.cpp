@@ -7,7 +7,7 @@
 #include "AudioDeviceManager.h"
 #include "AudioDevice.h"
 #include "Data/QPGIM_Data.h"
-#include "Data/QPData.h"
+
 #include "AudioModulationStatics.h"
 #include "QPUtil.h"
 
@@ -29,7 +29,7 @@ void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 
 	qp_staticObject = this;
 
-	qp_gameBaseData = UQPGIM_Data::qp_staticObject->QP_GetQPData("UQPGIM_BaseData");
+	qp_gameBaseData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_BaseData");
 	QP_InitDefaultSetting();
 
 	qp_baseDataSave = Cast<UQPBaseDataSave>(UGameplayStatics::LoadGameFromSlot("qp_baseDataSave", 0));
@@ -213,6 +213,14 @@ UQPData* UQPGIM_BaseData::QP_GetGameStatusData() {
 	return qp_gameBaseData->QP_GetUQPData("QP_GetGameStatusData");
 
 }
+
+UQPData* UQPGIM_BaseData::QP_GetUIEventData() {
+	return qp_gameBaseData->QP_GetUQPData("QP_GetUIEventData");
+
+}
+
+//UQPData* QP_GetUIEventData();
+
 
 
 //UQPDS_DataAsset* UQPGIM_BaseData::QP_GetDefaultSettingDataAsset() {

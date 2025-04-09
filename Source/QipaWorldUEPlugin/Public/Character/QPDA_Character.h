@@ -19,7 +19,7 @@ class QIPAWORLDUEPLUGIN_API UQPDA_Character : public UQPDataAsset
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 	TSubclassOf<AQPCharacter> qp_character;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	TMap<FString, class UAnimMontage*> qp_montage;
+	TMap<FName, class UAnimMontage*> qp_montage;
 
 	//UPROPERTY(EditAnywhere, AdvancedDisplay, Category = "QipaWorld|QPSlime", Meta = (ToolTip = "Material overrides."))
 	//TArray<TObjectPtr<class UMaterialInterface>> OverrideMaterials;

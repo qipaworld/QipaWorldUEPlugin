@@ -96,14 +96,14 @@ public:
 
 	/**数据名称*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FString qp_playerDataKey = "qp_playerData";
+		FName qp_playerDataKey = "qp_playerData";
 
 	/**发射魔法炮弹的事件名字*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FString QP_AnimNotifyFireName = "QP_AnimNotifyFireName";
+		FName QP_AnimNotifyFireName = "QP_AnimNotifyFireName";
 	/**结束跳跃的事件名字*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FString QP_AnimNotifyJunmEndName = "qp_slimeJunmEnd";
+		FName QP_AnimNotifyJunmEndName = "qp_slimeJunmEnd";
 
 
 	/**玩家数据*/

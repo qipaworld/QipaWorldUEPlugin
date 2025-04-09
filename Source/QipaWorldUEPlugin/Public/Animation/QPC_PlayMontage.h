@@ -21,7 +21,7 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	TMap<FString, class UAnimMontage*> qp_montage;
+	TMap<FName, class UAnimMontage*> qp_montage;
 
 	void QP_PlayEvent(UQPData* data);
 private:

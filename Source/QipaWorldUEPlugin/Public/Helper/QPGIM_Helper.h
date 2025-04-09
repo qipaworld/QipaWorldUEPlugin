@@ -34,7 +34,7 @@ public:
 
 protected:
 	/**在数据管理器里的名字*/
-	FString qp_dataName = TEXT("UQPGIM_Helper");
+	FName qp_dataName = TEXT("UQPGIM_Helper");
 	/**保存设置的文件名字*/
 	FString qp_SaveSlotName = TEXT("qp_helperSaveGame");
 	/**保存设置的玩家id*/
