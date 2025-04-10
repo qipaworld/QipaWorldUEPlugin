@@ -105,11 +105,13 @@ public:
 	template<typename K, typename V>
 	void QP_ListViewBindData_CPP(FName key,  UListView* view, TSubclassOf<UQPObject> itemClass, UQPData* data, EQPDataKeyType t, EQPDataValueType vt) {
 		
-		TMap<FName, UQPObject*> items;
-		TMap<int32, UQPObject*> itemsExI;
+		TSharedPtr < TMap<FName, UQPObject*>> items = MakeShared< TMap<FName, UQPObject*>>();
+		TSharedPtr < TMap<int32, UQPObject*>> itemsExI = MakeShared< TMap<int32, UQPObject*>>();
+		//TMap<int32, UQPObject*> itemsExI;
+		
 		UQPObject* obj = nullptr;
 
-		
+		data->QP_CheckQPBaseData<K, V>(vt, t);
 		for (auto v : ((QPBaseData<K, V>*)data->qp_ValueMap[t][vt])->qp_ValueMap) {
 			obj = NewObject<UQPObject>(view, itemClass);
 
@@ -123,17 +125,17 @@ public:
 			}
 			if constexpr (std::is_same<K, FName>::value)
 			{
-				items.Add(v.Key, obj);
+				items->Add(v.Key, obj);
 			}
 			else
 			{
-				itemsExI.Add(v.Key, obj);
+				itemsExI->Add(v.Key, obj);
 			}
 			view->AddItem(obj);
 		}
 
-		
-		qp_viewDataHandele.Add(key, data->qp_dataDelegate.AddLambda([view, itemClass, t,vt, &items, &itemsExI, data, key, this](UQPData* lambData) {
+		//UQPUtil::QP_LOG_EX<int>("_____________", itemsExI->Num());
+		qp_viewDataHandele.Add(key, data->qp_dataDelegate.AddLambda([view, itemClass, t,vt, items, itemsExI, data, key, this](UQPData* lambData) {
 			if (!IsValid(view)) {
 				UQPUtil::QP_LOG("listView auto Update  view  is null " + itemClass->ClassConfigName.ToString());
 				QP_ListViewRemoveData(key, view, data);
@@ -146,15 +148,15 @@ public:
 
 					if constexpr (std::is_same<K, FName>::value)
 					{
-						view->RemoveItem(items[v.Key]);
-						items.Remove(v.Key);
+						view->RemoveItem((*items)[v.Key]);
+						items->Remove(v.Key);
 					}
 					else
 					{
-						view->RemoveItem(itemsExI[v.Key]);
-						itemsExI.Remove(v.Key);
+						UQPUtil::QP_LOG_EX<int>("_____________", itemsExI->Num());
+						view->RemoveItem((*itemsExI)[v.Key]);
+						itemsExI->Remove(v.Key);
 					}
-
 					
 				}
 				else if (v.Value == EQPDataChangeType::ADD) {
@@ -168,7 +170,27 @@ public:
 					{
 						obj->QP_SetObjId(lambData->QP_GetValue<K, V>(v.Key,vt,t));
 					}
+					if constexpr (std::is_same<K, FName>::value)
+					{
+						items->Add(v.Key, obj);
+					}
+					else
+					{
+						itemsExI->Add(v.Key, obj);
+					}
 					view->AddItem(obj);
+				}
+				else if (v.Value == EQPDataChangeType::CLEAR) {
+					if constexpr (std::is_same<K, FName>::value)
+					{
+						items->Reset();
+					}
+					else
+					{
+						itemsExI->Reset();
+					}
+					view->ClearListItems();
+
 				}
 			}
 			}));

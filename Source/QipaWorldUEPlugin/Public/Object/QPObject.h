@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class QIPAWORLDUEPLUGIN_API UQPObject : public UObject
 {
 	GENERATED_BODY()
