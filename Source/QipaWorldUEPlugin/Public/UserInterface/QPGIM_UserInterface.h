@@ -105,37 +105,30 @@ public:
 	template<typename K, typename V>
 	void QP_ListViewBindData_CPP(FName key,  UListView* view, TSubclassOf<UQPObject> itemClass, UQPData* data, EQPDataKeyType t, EQPDataValueType vt) {
 		
-		TSharedPtr < TMap<FName, UQPObject*>> items = MakeShared< TMap<FName, UQPObject*>>();
-		TSharedPtr < TMap<int32, UQPObject*>> itemsExI = MakeShared< TMap<int32, UQPObject*>>();
-		//TMap<int32, UQPObject*> itemsExI;
+		TSharedPtr < TMap<K, UQPObject*>> items = MakeShared< TMap<K, UQPObject*>>();
+		
 		
 		UQPObject* obj = nullptr;
-
+		TArray<K> keys;
+		((IQPBaseData*)data->qp_ValueMap[t][vt])->QP_GetMapKeys(keys);
 		data->QP_CheckQPBaseData<K, V>(vt, t);
-		for (auto v : ((QPBaseData<K, V>*)data->qp_ValueMap[t][vt])->qp_ValueMap) {
+		for (auto v : keys) {
 			obj = NewObject<UQPObject>(view, itemClass);
 
-			if constexpr (std::is_same<V, FName>::value)
-			{
-				obj->QP_SetObjTag(v.Value);
-			}
-			else
-			{
-				obj->QP_SetObjId(v.Value);
-			}
 			if constexpr (std::is_same<K, FName>::value)
 			{
-				items->Add(v.Key, obj);
+				obj->QP_SetObjTag(v);
 			}
 			else
 			{
-				itemsExI->Add(v.Key, obj);
+				obj->QP_SetObjId(v);
 			}
+			items->Add(v, obj);
 			view->AddItem(obj);
 		}
 
 		//UQPUtil::QP_LOG_EX<int>("_____________", itemsExI->Num());
-		qp_viewDataHandele.Add(key, data->qp_dataDelegate.AddLambda([view, itemClass, t,vt, items, itemsExI, data, key, this](UQPData* lambData) {
+		qp_viewDataHandele.Add(key, data->qp_dataDelegate.AddLambda([view, itemClass, t,vt, items, data, key, this](UQPData* lambData) {
 			if (!IsValid(view)) {
 				UQPUtil::QP_LOG("listView auto Update  view  is null " + itemClass->ClassConfigName.ToString());
 				QP_ListViewRemoveData(key, view, data);
@@ -145,52 +138,28 @@ public:
 
 			for (auto v : ((QPBaseData<K, V>*)lambData->qp_ValueMap[t][vt])->qp_changeMap) {
 				if (v.Value == EQPDataChangeType::REMOVE) {
-
-					if constexpr (std::is_same<K, FName>::value)
-					{
-						view->RemoveItem((*items)[v.Key]);
-						items->Remove(v.Key);
-					}
-					else
-					{
-						UQPUtil::QP_LOG_EX<int>("_____________", itemsExI->Num());
-						view->RemoveItem((*itemsExI)[v.Key]);
-						itemsExI->Remove(v.Key);
-					}
-					
+					view->RemoveItem((*items)[v.Key]);
+					items->Remove(v.Key);
 				}
 				else if (v.Value == EQPDataChangeType::ADD) {
 					obj = NewObject<UQPObject>(view, itemClass);
 					
-					if constexpr (std::is_same<V, FName>::value)
-					{
-						obj->QP_SetObjTag(lambData->QP_GetValue<K, V>(v.Key,vt,t));
-					}
-					else
-					{
-						obj->QP_SetObjId(lambData->QP_GetValue<K, V>(v.Key,vt,t));
-					}
 					if constexpr (std::is_same<K, FName>::value)
 					{
-						items->Add(v.Key, obj);
+						obj->QP_SetObjTag(v.Key);
 					}
 					else
 					{
-						itemsExI->Add(v.Key, obj);
+						obj->QP_SetObjId(v.Key);
 					}
+					
+					items->Add(v.Key, obj);
+					
 					view->AddItem(obj);
 				}
 				else if (v.Value == EQPDataChangeType::CLEAR) {
-					if constexpr (std::is_same<K, FName>::value)
-					{
-						items->Reset();
-					}
-					else
-					{
-						itemsExI->Reset();
-					}
+					items->Reset();
 					view->ClearListItems();
-
 				}
 			}
 			}));

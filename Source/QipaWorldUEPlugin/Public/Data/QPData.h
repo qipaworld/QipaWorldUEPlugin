@@ -32,16 +32,57 @@ enum class EQPDataChangeType :uint8
 
 class IQPBaseData {
 public:
+	EQPDataValueType qp_valueType;
+	EQPDataKeyType qp_keyType;
 	virtual void QP_RestChangeMap() = 0;
+	virtual void QP_GetMapKeys(TArray<FName>& qp_outArray) = 0;
+	virtual void QP_GetMapKeys(TArray<FString>& qp_outArray) = 0;
+	virtual void QP_GetMapKeys(TArray<int32>& qp_outArray) = 0;
+
 	virtual ~IQPBaseData() {};
 };
 template<typename K, typename V>
 class QPBaseData:IQPBaseData {
 public:
+	QPBaseData(EQPDataValueType vt, EQPDataKeyType kt) {
+		qp_valueType = vt;
+		qp_keyType = kt;
+	}
 	TMap<K, EQPDataChangeType> qp_changeMap;
 	TMap<K, V> qp_ValueMap;
 	virtual ~QPBaseData()override {};
 
+	virtual void QP_GetMapKeys(TArray<FName>& qp_outArray) override {
+		
+		if constexpr (std::is_same<K, FName>::value) {
+				for (auto v : qp_ValueMap) {
+					qp_outArray.Add(v.Key);
+				}
+		}
+		else if constexpr (std::is_same<K, int32>::value) {
+			for (auto v : qp_ValueMap) {
+				qp_outArray.Add(FName(*FString::FromInt(v.Key)));
+			}
+		}
+	}
+	virtual void QP_GetMapKeys(TArray<FString>& qp_outArray) override {
+		
+		if constexpr (std::is_same<K, FName>::value || std::is_same<K, int32>::value) {
+			for (auto v : qp_ValueMap) {
+				qp_outArray.Emplace(LexToString(v.Key));
+			}
+		}
+		
+		
+	}
+	virtual void QP_GetMapKeys(TArray<int32>& qp_outArray) override {
+		if constexpr (std::is_same<K, int32>::value) {
+			for (auto v : qp_ValueMap) {
+				qp_outArray.Emplace(v.Key);
+			}
+		}
+
+	}
 	virtual void QP_RestChangeMap()override {
 		qp_changeMap.Reset();
 	}
@@ -235,7 +276,7 @@ public:
 	template<typename K, typename V>
 	inline void QP_CheckQPBaseData(EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME) {
 		if (!qp_ValueMap.FindOrAdd(kt).Contains(vt)) {
-			qp_ValueMap[kt].Emplace(vt, new QPBaseData<K, V>()); 
+			qp_ValueMap[kt].Emplace(vt, new QPBaseData<K, V>(vt, kt));
 		}
 	}
 

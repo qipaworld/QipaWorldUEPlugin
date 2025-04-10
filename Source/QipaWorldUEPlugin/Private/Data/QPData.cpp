@@ -5,7 +5,7 @@
 #define QP_ADD_TYPE_FUN(funType,funValue,typeKey,typeValue,typeEnumK,typeEnumV,NameEx) void UQPData::QP_Add##NameEx (typeKey key, funValue v, bool sync)\
 {\
 	if (!qp_ValueMap.FindOrAdd(typeEnumK).Contains(typeEnumV)) {\
-		qp_ValueMap[typeEnumK].Emplace(typeEnumV, new QPBaseData<typeKey, typeValue>());\
+		qp_ValueMap[typeEnumK].Emplace(typeEnumV, new QPBaseData<typeKey, typeValue>(typeEnumV,typeEnumK));\
 	}\
 	((QPBaseData<typeKey, typeValue>*)qp_ValueMap[typeEnumK][typeEnumV])->QP_AddValue(key, v);\
 	QP_needSyncBroadcast(sync);\
@@ -13,7 +13,7 @@
 funType UQPData::QP_Get##NameEx (typeKey key)\
 {\
 	if (!qp_ValueMap.FindOrAdd(typeEnumK).Contains(typeEnumV)) {\
-		 qp_ValueMap[typeEnumK].Emplace(typeEnumV, new QPBaseData<typeKey, typeValue>());\
+		 qp_ValueMap[typeEnumK].Emplace(typeEnumV, new QPBaseData<typeKey, typeValue>(typeEnumV,typeEnumK));\
 	}\
 	return ((QPBaseData<typeKey, typeValue>*)qp_ValueMap[typeEnumK][typeEnumV])->qp_ValueMap.FindOrAdd(key);\
 }\
@@ -65,6 +65,17 @@ void UQPData::QP_Clear##NameEx (typeKey key, bool sync) {\
 #include "Data/QPGIM_Data.h"
 
 
+//void QPBaseData::QP_GetMapKeys(TArray<FName>& qp_outArray) {
+//	for (auto v : qp_ValueMap) {
+//		if (qp_keyType) {
+//
+//		}
+//	}
+//	
+//}
+//void QPBaseData::QP_GetMapKeys(TArray<FString>& qp_outArray) {
+//
+//}
 
 void UQPData::BeginDestroy()
 {
