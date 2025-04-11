@@ -38,9 +38,9 @@ public:
 	UPROPERTY()
 	TObjectPtr<UQPBaseDataSave> qp_baseDataSave;
 	
-	/**声音数据*/
+	/**数据*/
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPData")
-		UQPData* qp_gameBaseData;
+	TObjectPtr<UQPData> qp_gameBaseData;
 
 	/** 获得数据*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")

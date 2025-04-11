@@ -232,9 +232,10 @@ void UQPGIM_UserInterface::QP_ListViewBindData(FName key, UListView* view,  TSub
 	
 	
 }
-void UQPGIM_UserInterface::QP_ListViewRemoveData( FName key, class UListView* view, UQPData* data) {
+void UQPGIM_UserInterface::QP_ListViewUnbindData( FName key, class UListView* view, UQPData* data) {
 	if (qp_viewDataHandele.Contains(key)) {
 		data->qp_dataDelegate.Remove(qp_viewDataHandele[key]);
+		qp_viewDataHandele.Remove(key);
 	}
 	else {
 		UQPUtil::QP_LOG("QP_ListViewRemoveData Error qp_viewDataHandele not have view " + key.ToString());

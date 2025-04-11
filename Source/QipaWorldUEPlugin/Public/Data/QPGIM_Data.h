@@ -14,8 +14,8 @@ UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPGIM_Data : public UGameInstanceSubsystem, public FTickableGameObject
 {
 	GENERATED_BODY()
-	//UPROPERTY()
-	UQPData* qp_baseData;
+	UPROPERTY()
+	TObjectPtr<UQPData> qp_baseData;
 	//这2个是存放准备发送的数据的，会在每帧发一次，节省性能。
 	TArray<UQPData*> qp_broadcastArray;
 	TArray<UQPData*> qp_tempBroadcastArray;

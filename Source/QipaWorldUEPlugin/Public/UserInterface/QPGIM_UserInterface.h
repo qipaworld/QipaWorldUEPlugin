@@ -110,8 +110,8 @@ public:
 		
 		UQPObject* obj = nullptr;
 		TArray<K> keys;
-		((IQPBaseData*)data->qp_ValueMap[t][vt])->QP_GetMapKeys(keys);
 		data->QP_CheckQPBaseData<K, V>(vt, t);
+		((IQPBaseData*)data->qp_ValueMap[t][vt])->QP_GetMapKeys(keys);
 		for (auto v : keys) {
 			obj = NewObject<UQPObject>(view, itemClass);
 
@@ -131,7 +131,7 @@ public:
 		qp_viewDataHandele.Add(key, data->qp_dataDelegate.AddLambda([view, itemClass, t,vt, items, data, key, this](UQPData* lambData) {
 			if (!IsValid(view)) {
 				UQPUtil::QP_LOG("listView auto Update  view  is null " + itemClass->ClassConfigName.ToString());
-				QP_ListViewRemoveData(key, view, data);
+				QP_ListViewUnbindData(key, view, data);
 				return;
 			}
 			UQPObject* obj = nullptr;
@@ -166,7 +166,7 @@ public:
 
 	}
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	void QP_ListViewRemoveData( FName key, class UListView* view, UQPData* data);
+	void QP_ListViewUnbindData( FName key, class UListView* view, UQPData* data);
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	UQPData* QP_GetEventData(FName key);
