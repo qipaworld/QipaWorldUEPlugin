@@ -118,9 +118,14 @@ public:
 			return false;
 		}
 	}
-	inline void QP_Clear(K k) {
-		qp_changeMap.Emplace(k, EQPDataChangeType::CLEAR);
-		qp_ValueMap.Reset();
+	inline void QP_Clear() {
+		//if (qp_ValueMap.Num() > 0) {
+			for (auto v : qp_ValueMap) {
+				qp_changeMap.Emplace(v.Key, EQPDataChangeType::CLEAR);
+				qp_ValueMap.Reset();
+				return;
+			}
+		//}
 	}
 
 	inline bool QP_IsChange(K k) {
@@ -331,14 +336,14 @@ public:
 		
 	}
 	template<typename K, typename V>
-	void QP_ClearValue(K k, EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME, bool sync = false) {
+	void QP_ClearValue( EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME, bool sync = false) {
 		if (qp_ValueMap.FindOrAdd(kt).Contains(vt)) {
 			if constexpr (std::is_same<V, UQPData*>::value) {
 				for (auto v : ((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->qp_ValueMap) {
 					v.Value->Rename(); 
 				}
 			}
-			((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Clear(k);
+			((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Clear();
 			
 		}
 		QP_needSyncBroadcast(sync);
@@ -360,7 +365,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	bool QP_RemoveUQPData(FName key, bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_ClearUQPData(FName key,bool sync = false);
+	void QP_ClearUQPData(bool sync = false);
 
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
@@ -372,7 +377,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	bool QP_RemoveUQPDataExI(int32 key, bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_ClearUQPDataExI(int32 key, bool sync = false);
+	void QP_ClearUQPDataExI( bool sync = false);
 
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
@@ -384,7 +389,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	bool QP_RemoveUQPDataExO(UObject* key, bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_ClearUQPDataExO(UObject* key, bool sync = false);
+	void QP_ClearUQPDataExO( bool sync = false);
 
 	//------------------------------------------------------
 
@@ -449,6 +454,7 @@ public:
 
 	//---------------------------------------------------------------
 
+	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 	bool QP_ContainsUObject(FName key);
 	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 	bool QP_Containsint32(FName key);
@@ -469,22 +475,22 @@ public:
 
 	//---------------------------------------------------------------
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_ClearUObject(FName key, bool sync = false);
+	void QP_ClearUObject( bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_Clearint32(FName key, bool sync = false);
+	void QP_Clearint32( bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_Clearfloat(FName key, bool sync = false);
+	void QP_Clearfloat( bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_Clearbool(FName key, bool sync = false);
+	void QP_Clearbool( bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_ClearFString(FName key, bool sync = false);
+	void QP_ClearFString( bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_ClearFText(FName key, bool sync = false);
+	void QP_ClearFText( bool sync = false);
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_ClearFName(FName key, bool sync = false);
+	void QP_ClearFName( bool sync = false);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_ClearFVector(FName key, bool sync = false);
+	void QP_ClearFVector( bool sync = false);
 	//---------------------------------------------------------------
 
 
@@ -570,22 +576,22 @@ public:
 
 //---------------------------------------------------------------
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearUObjectExI(int32 key, bool sync = false);
+void QP_ClearUObjectExI( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_Clearint32ExI(int32 key, bool sync = false);
+void QP_Clearint32ExI( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearfloatExI(int32 key, bool sync = false);
+void QP_ClearfloatExI( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearboolExI(int32 key, bool sync = false);
+void QP_ClearboolExI( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearFStringExI(int32 key, bool sync = false);
+void QP_ClearFStringExI( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearFTextExI(int32 key, bool sync = false);
+void QP_ClearFTextExI( bool sync = false);
 
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearFNameExI(int32 key, bool sync = false);
+void QP_ClearFNameExI( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearFVectorExI(int32 key, bool sync = false);
+void QP_ClearFVectorExI( bool sync = false);
 
 //---------------------------------------------------------------
 
@@ -687,22 +693,22 @@ FVector& QP_GetFVectorExO(UObject* k = nullptr);
 
 //---------------------------------------------------------------
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearUObjectExO(UObject* key, bool sync = false);
+void QP_ClearUObjectExO( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_Clearint32ExO(UObject* key, bool sync = false);
+void QP_Clearint32ExO( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearfloatExO(UObject* key, bool sync = false);
+void QP_ClearfloatExO( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearboolExO(UObject* key, bool sync = false);
+void QP_ClearboolExO( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearFStringExO(UObject* key, bool sync = false);
+void QP_ClearFStringExO( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearFTextExO(UObject* key, bool sync = false);
+void QP_ClearFTextExO( bool sync = false);
 
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearFNameExO(UObject* key, bool sync = false);
+void QP_ClearFNameExO( bool sync = false);
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_ClearFVectorExO(UObject* key, bool sync = false);
+void QP_ClearFVectorExO( bool sync = false);
 
 //---------------------------------------------------------------
 
@@ -726,6 +732,78 @@ bool QP_ContainsFVectorExO(UObject* key);
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Adddouble(FName key, double v, bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_AdddoubleExI(int32 key, double v, bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_AdddoubleExO(UObject* key, double v, bool sync = false);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_ContainsdoubleExI(int32 key);
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_ContainsdoubleExO(UObject* key);
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_Containsdouble(FName key);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+double QP_Getdouble(FName key);
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+double QP_GetdoubleExI(int32 key);
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+double QP_GetdoubleExO(UObject* k = nullptr);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_RemovedoubleExO(UObject* key, bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Removedouble(FName key, bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_RemovedoubleExI(int32 key, bool sync = false);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_CleardoubleExI(bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_CleardoubleExO(bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Cleardouble(bool sync = false);
+
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Addint64(FName key, int64 v, bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Addint64ExI(int32 key, int64 v, bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Addint64ExO(UObject* key, int64 v, bool sync = false);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_Containsint64ExI(int32 key);
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_Containsint64ExO(UObject* key);
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_Containsint64(FName key);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+int64 QP_Getint64(FName key);
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+int64 QP_Getint64ExI(int32 key);
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+int64 QP_Getint64ExO(UObject* k = nullptr);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Removeint64ExO(UObject* key, bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Removeint64(FName key, bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Removeint64ExI(int32 key, bool sync = false);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Clearint64ExI(bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Clearint64ExO(bool sync = false);
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_Clearint64(bool sync = false);
+
 
 
 };

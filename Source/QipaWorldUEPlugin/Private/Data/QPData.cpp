@@ -24,8 +24,8 @@ void UQPData::QP_Remove##NameEx (typeKey key, bool sync)\
 {\
 	QP_RemoveValue<typeKey,typeValue>(key,typeEnumV,typeEnumK,sync);\
 }\
-void UQPData::QP_Clear##NameEx (typeKey key, bool sync) {\
-	QP_ClearValue<typeKey,typeValue>(key,typeEnumV,typeEnumK,sync);\
+void UQPData::QP_Clear##NameEx ( bool sync) {\
+	QP_ClearValue<typeKey,typeValue>(typeEnumV,typeEnumK,sync);\
 }
 
 //if (qp_ValueMap.FindOrAdd(typeEnumK).Contains(typeEnumV)) {
@@ -56,8 +56,8 @@ bool UQPData::QP_Remove##NameEx (typeKey key, bool sync)\
 {\
 	return QP_RemoveValue<typeKey, UQPData*>(key,EQPDataValueType::UQPDATA,typeEnumK,sync);\
 }\
-void UQPData::QP_Clear##NameEx (typeKey key, bool sync) {\
-	QP_ClearValue<typeKey, UQPData*>(key,EQPDataValueType::UQPDATA,typeEnumK,sync);\
+void UQPData::QP_Clear##NameEx ( bool sync) {\
+	QP_ClearValue<typeKey, UQPData*>(EQPDataValueType::UQPDATA,typeEnumK,sync);\
 }
 
 #include "Data/QPData.h"
@@ -242,6 +242,14 @@ QP_ADD_TYPE_FUN(FText&, const FText&, int32, FText, EQPDataKeyType::INT32, EQPDa
 QP_ADD_TYPE_FUN(FName, FName, int32, FName, EQPDataKeyType::INT32, EQPDataValueType::FNAME, FNameExI)
 QP_ADD_TYPE_FUN(FVector&, const FVector&, int32, FVector, EQPDataKeyType::INT32, EQPDataValueType::FVECTOR, FVectorExI)
 //QP_ADD_TYPE_FUN(TArray&, const TArray&, int32, TArray, EQPDataKeyType::INT32, EQPDataValueType::TARRAY, FTArrayExI)
+
+QP_ADD_TYPE_FUN(double, double, int32, double, EQPDataKeyType::INT32, EQPDataValueType::DOUBLE, doubleExI)
+QP_ADD_TYPE_FUN(double, double, UObject*, double, EQPDataKeyType::VOID, EQPDataValueType::DOUBLE, doubleExO)
+QP_ADD_TYPE_FUN(double, double, FName, double, EQPDataKeyType::FNAME, EQPDataValueType::DOUBLE, double)
+
+QP_ADD_TYPE_FUN(int64, int64, int32, int64, EQPDataKeyType::INT32, EQPDataValueType::INT64, int64ExI)
+QP_ADD_TYPE_FUN(int64, int64, UObject*, int64, EQPDataKeyType::VOID, EQPDataValueType::INT64, int64ExO)
+QP_ADD_TYPE_FUN(int64, int64, FName, int64, EQPDataKeyType::FNAME, EQPDataValueType::INT64, int64)
 
 
 
