@@ -28,19 +28,6 @@ void UQPData::QP_Clear##NameEx ( bool sync) {\
 	QP_ClearValue<typeKey,typeValue>(typeEnumV,typeEnumK,sync);\
 }
 
-//if (qp_ValueMap.FindOrAdd(typeEnumK).Contains(typeEnumV)) {
-//		if (((QPBaseData<typeKey, typeValue>*)qp_ValueMap[typeEnumK][typeEnumV])->QP_Remove(key)) {
-//				QP_needSyncBroadcast(sync); 
-//				return; 
-//		}
-//}
-//UQPUtil::QP_LOG_EX<typeKey>("QPData QP_Remove is not have key ", key); 
-
-	//if (qp_ValueMap.FindOrAdd(typeEnumK).Contains(typeEnumV)) {
-		//((QPBaseData<typeKey, typeValue>*)qp_ValueMap[typeEnumK][typeEnumV])->QP_Clear(key);
-	//}\
-	//QP_needSyncBroadcast(sync);
-
 #define QP_ADD_TYPE_FUN_QPDATA(typeKey,typeEnumK,NameEx) void UQPData::QP_Add##NameEx (typeKey key, UQPData* v, bool sync)\
 {\
 	QP_AddValue<typeKey, UQPData*>(key,v,EQPDataValueType::UQPDATA,typeEnumK,sync);\
@@ -65,21 +52,10 @@ void UQPData::QP_Clear##NameEx ( bool sync) {\
 #include "Data/QPGIM_Data.h"
 
 
-//void QPBaseData::QP_GetMapKeys(TArray<FName>& qp_outArray) {
-//	for (auto v : qp_ValueMap) {
-//		if (qp_keyType) {
-//
-//		}
-//	}
-//	
-//}
-//void QPBaseData::QP_GetMapKeys(TArray<FString>& qp_outArray) {
-//
-//}
-
 void UQPData::BeginDestroy()
 {
 	Super::BeginDestroy();
+
 	for (auto v : qp_ValueMap) {
 		for (auto v2 : v.Value) {
 			delete v2.Value;
@@ -89,7 +65,7 @@ void UQPData::BeginDestroy()
 
 void UQPData::QP_Init()
 {
-	//AddToRoot();
+	AddToRoot();
 }
 
 void UQPData::QP_DelegateBroadcast()
@@ -145,69 +121,13 @@ void UQPData::QP_needSyncBroadcast(bool sync)
 		QP_AddBroadcastToDataManager();
 	}
 }
-
+void UQPData::QP_BroadcastNow() {
+	QP_BroadcastAll();
+	QP_RemoveBroadcastToDataManager();
+}
 QP_ADD_TYPE_FUN_QPDATA(FName, EQPDataKeyType::FNAME, UQPData)
 QP_ADD_TYPE_FUN_QPDATA(int32, EQPDataKeyType::INT32, UQPDataExI)
 QP_ADD_TYPE_FUN_QPDATA(UObject*,EQPDataKeyType::VOID,UQPDataExO)
-
-//UQPData* UQPData::QP_AddUQPData(FName key, UQPData* v, bool sync)
-//{
-//	
-//	if (!qp_ValueMap.FindOrAdd(EQPDataKeyType::FNAME).Contains(EQPDataValueType::UQPDATA)) {
-//		qp_ValueMap[EQPDataKeyType::FNAME].Emplace(EQPDataValueType::UQPDATA,new QPBaseData<FName, UQPData*>());
-//	}
-//	if (((QPBaseData<FName, UQPData*>*)qp_ValueMap[EQPDataKeyType::FNAME][EQPDataValueType::UQPDATA])->QP_Contains(key)) {
-//		UQPUtil::QP_LOG("QPData QP_AddUQPData do not repeat add key ! " + LexToString(key));
-//		return;
-//	}
-//	if (v == nullptr)
-//	{
-//		v = NewObject<UQPData>();
-//		v->QP_Init();
-//	}
-//	((QPBaseData<FName, UQPData*>*)qp_ValueMap[EQPDataKeyType::FNAME][EQPDataValueType::UQPDATA])->QP_AddValue(key, v);
-//	
-//	QP_needSyncBroadcast(sync);
-//	return v;
-//}
-//
-//UQPData* UQPData::QP_GetUQPData(FName key)
-//{
-//
-//	if (!qp_ValueMap.FindOrAdd(EQPDataKeyType::FNAME).Contains(EQPDataValueType::UQPDATA) || !((QPBaseData<FName, UQPData*>*)qp_ValueMap[EQPDataKeyType::FNAME][EQPDataValueType::UQPDATA])->QP_Contains(key)) {
-//		return QP_AddUQPData(key);
-//	}
-//	return ((QPBaseData<FName, UQPData*>*)qp_ValueMap[EQPDataKeyType::FNAME][EQPDataValueType::UQPDATA])->QP_GetValue(key);
-//	
-//}
-//bool UQPData::QP_ContainsUQPData(FName key) {
-//	if (qp_ValueMap.FindOrAdd(EQPDataKeyType::FNAME).Contains(EQPDataValueType::UQPDATA)) {
-//		return ((QPBaseData<FName, UQPData*>*)qp_ValueMap[EQPDataKeyType::FNAME][EQPDataValueType::UQPDATA])->QP_Contains(key);
-//	}
-//	return false;
-//}
-// 由于清理内存问题没有搞清楚，所以现在不支持删除data,因为data加载根节点上，data内可能还有data 所以不支持删除
-//bool UQPData::QP_RemoveUQPData(FName key, bool sync)
-//{
-//	if (qp_ValueMap.FindOrAdd(EQPDataKeyType::FNAME).Contains(EQPDataValueType::UQPDATA)) {
-//		if (((QPBaseData<FName, UQPData*>*)qp_ValueMap[EQPDataKeyType::FNAME][EQPDataValueType::UQPDATA])->QP_Contains(key)) {
-//			((QPBaseData<FName, UQPData*>*)qp_ValueMap[EQPDataKeyType::FNAME][EQPDataValueType::UQPDATA])->QP_GetValue(key)->Rename();
-//			((QPBaseData<FName, UQPData*>*)qp_ValueMap[EQPDataKeyType::FNAME][EQPDataValueType::UQPDATA])->QP_Remove(key);
-//			QP_needSyncBroadcast(sync);
-//			return;
-//		}
-//	}
-//	UQPUtil::QP_LOG("QPData QP_Remove is not have key" + LexToString(key));
-//}
-//void UQPData::QP_ClearUQPData(FName key, bool sync) {
-//	if (qp_ValueMap.FindOrAdd(EQPDataKeyType::FNAME).Contains(EQPDataValueType::UQPDATA)) {
-//		for (auto v : ((QPBaseData<FString, UQPData*>*)qp_ValueMap[EQPDataKeyType::FNAME][EQPDataValueType::UQPDATA])->qp_ValueMap) {
-//			v.Value->Rename();
-//		}
-//		((QPBaseData<FName, UQPData*>*)qp_ValueMap[EQPDataKeyType::FNAME][EQPDataValueType::UQPDATA])->QP_Clear(key);
-//	}
-//	QP_needSyncBroadcast(sync);
-//}
 
 //-----------------------
 

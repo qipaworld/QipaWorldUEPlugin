@@ -100,10 +100,10 @@ public:
 	void QP_KeyBoardEvent();
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	void QP_ListViewBindData(FName key,  UListView* view, TSubclassOf<UQPObject> itemClass,UQPData* data, EQPDataKeyType t,EQPDataValueType vt);
+	void QP_ListViewBindData(FName key,  UListView* view, TSubclassOf<UQPObject> itemClass,UQPData* data, EQPDataKeyType t,EQPDataValueType vt,bool isUpdateChange = false);
 
 	template<typename K, typename V>
-	void QP_ListViewBindData_CPP(FName key,  UListView* view, TSubclassOf<UQPObject> itemClass, UQPData* data, EQPDataKeyType t, EQPDataValueType vt) {
+	void QP_ListViewBindData_CPP(FName key,  UListView* view, TSubclassOf<UQPObject> itemClass, UQPData* data, EQPDataKeyType t, EQPDataValueType vt, bool isUpdateChange = false) {
 		
 		TSharedPtr < TMap<K, UQPObject*>> items = MakeShared< TMap<K, UQPObject*>>();
 		
@@ -128,7 +128,7 @@ public:
 		}
 
 		//UQPUtil::QP_LOG_EX<int>("_____________", itemsExI->Num());
-		qp_viewDataHandele.Add(key, data->qp_dataDelegate.AddLambda([view, itemClass, t,vt, items, data, key, this](UQPData* lambData) {
+		qp_viewDataHandele.Add(key, data->qp_dataDelegate.AddLambda([view, itemClass, t,vt, items, data, key, this, isUpdateChange](UQPData* lambData) {
 			if (!IsValid(view)) {
 				UQPUtil::QP_LOG("listView auto Update  view  is null " + itemClass->ClassConfigName.ToString());
 				QP_ListViewUnbindData(key, view, data);
@@ -160,6 +160,13 @@ public:
 				else if (v.Value == EQPDataChangeType::CLEAR) {
 					items->Reset();
 					view->ClearListItems();
+				}
+				else if (v.Value == EQPDataChangeType::CHANGE) {
+					if (isUpdateChange) {
+						view->RemoveItem((*items)[v.Key]);
+						view->AddItem((*items)[v.Key]);
+						//items->Remove(v.Key);
+					}
 				}
 			}
 			}));

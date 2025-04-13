@@ -50,7 +50,13 @@ public:
 	}
 	TMap<K, EQPDataChangeType> qp_changeMap;
 	TMap<K, V> qp_ValueMap;
-	virtual ~QPBaseData()override {};
+	virtual ~QPBaseData()override {
+		if constexpr (std::is_same<V, UQPData>::value) {
+			for (auto v : qp_ValueMap) {
+				v.Value->RemoveFromRoot();
+			}
+		}
+	};
 
 	virtual void QP_GetMapKeys(TArray<FName>& qp_outArray) override {
 		
@@ -183,7 +189,7 @@ enum class EQPDataValueType :uint8
 		}\
 		if (v == nullptr)\
 		{\
-			v = NewObject<UQPData>(this);\
+			v = NewObject<UQPData>();\
 			v->QP_Init();\
 		}\
 	}\
@@ -262,6 +268,9 @@ public:
 	//如果需要立刻发送，则立刻发送事件。----
 	void QP_needSyncBroadcast(bool sync);
 	
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	void QP_BroadcastNow();
+
 	template<typename K, typename V>
 	inline bool QP_IsChange(K k,EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME ) {
 		if (qp_ValueMap.FindOrAdd(kt).Contains(vt)) {
@@ -317,7 +326,7 @@ public:
 			if constexpr (std::is_same<V, UQPData*>::value) {
 					if (((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Contains(k)) {
 						
-						((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_GetValue(k)->Rename(); 
+						((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_GetValue(k)->RemoveFromRoot();
 						((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Remove(k); 
 						QP_needSyncBroadcast(sync); 
 						return true; 
@@ -340,7 +349,7 @@ public:
 		if (qp_ValueMap.FindOrAdd(kt).Contains(vt)) {
 			if constexpr (std::is_same<V, UQPData*>::value) {
 				for (auto v : ((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->qp_ValueMap) {
-					v.Value->Rename(); 
+					v.Value->RemoveFromRoot();
 				}
 			}
 			((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Clear();

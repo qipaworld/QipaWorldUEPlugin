@@ -206,7 +206,7 @@ void UQPGIM_UserInterface::QP_BindMapData(UQPData* data)
 	//}
 	
 }
-void UQPGIM_UserInterface::QP_ListViewBindData(FName key, UListView* view,  TSubclassOf<UQPObject> itemClass, UQPData* data, EQPDataKeyType t, EQPDataValueType vt) {
+void UQPGIM_UserInterface::QP_ListViewBindData(FName key, UListView* view,  TSubclassOf<UQPObject> itemClass, UQPData* data, EQPDataKeyType t, EQPDataValueType vt, bool isUpdateChange) {
 
 	if (qp_viewDataHandele.Contains(key)) {
 		UQPUtil::QP_LOG("QP_ListViewBindData Error   Contains View " + LexToString( key));
@@ -215,18 +215,18 @@ void UQPGIM_UserInterface::QP_ListViewBindData(FName key, UListView* view,  TSub
 
 	if ( t == EQPDataKeyType::INT32 ) {
 		if (vt == EQPDataValueType::INT32) {
-			QP_ListViewBindData_CPP<int32, int32>(key, view, itemClass, data, t, vt);
+			QP_ListViewBindData_CPP<int32, int32>(key, view, itemClass, data, t, vt, isUpdateChange);
 		}
 		else {
-			QP_ListViewBindData_CPP<int32, FName>(key, view, itemClass, data, t, vt);
+			QP_ListViewBindData_CPP<int32, FName>(key, view, itemClass, data, t, vt, isUpdateChange);
 		}
 	}
 	else {
 		if (vt == EQPDataValueType::INT32) {
-			QP_ListViewBindData_CPP<FName, int32>(key, view, itemClass, data, t, vt);
+			QP_ListViewBindData_CPP<FName, int32>(key, view, itemClass, data, t, vt, isUpdateChange);
 		}
 		else {
-			QP_ListViewBindData_CPP<FName, FName>(key, view, itemClass, data, t, vt);
+			QP_ListViewBindData_CPP<FName, FName>(key, view, itemClass, data, t, vt, isUpdateChange);
 		}
 	}
 	

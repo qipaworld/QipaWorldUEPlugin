@@ -54,7 +54,7 @@ void UQPGIM_Data::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	qp_staticObject = this;
-	qp_baseData = NewObject<UQPData>(this);
+	qp_baseData = NewObject<UQPData>();
 	qp_baseData->QP_Init();
 	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 }
