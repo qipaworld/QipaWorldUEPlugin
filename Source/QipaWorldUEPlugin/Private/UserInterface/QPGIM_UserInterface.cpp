@@ -172,6 +172,9 @@ void UQPGIM_UserInterface::QP_KeyBoardEvent()
 		QP_RemoveUserInterface();
 	}
 }
+int32 UQPGIM_UserInterface::QP_GetPopUINum() {
+	return qp_UIData.Num();
+}
 void UQPGIM_UserInterface::QP_BindKeyBoard()
 {
 	 

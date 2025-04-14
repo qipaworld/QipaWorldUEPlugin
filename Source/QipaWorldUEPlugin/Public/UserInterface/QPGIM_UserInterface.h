@@ -99,6 +99,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	void QP_KeyBoardEvent();
 
+	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPUserInterface")
+	int32 QP_GetPopUINum();
+
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	void QP_ListViewBindData(FName key,  UListView* view, TSubclassOf<UQPObject> itemClass,UQPData* data, EQPDataKeyType t,EQPDataValueType vt,bool isUpdateChange = false);
 

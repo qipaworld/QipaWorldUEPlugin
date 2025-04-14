@@ -35,15 +35,21 @@ public:
 	* @param actor - 对象。
 	* @warning 每个类型可以存储多个对象。
 	*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
+	//void QP_CollectActor(FString key, AActor* actor);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
-	void QP_CollectActor(FString key, AActor* actor);
+	void QP_AddActor(FString key, AActor* actor,bool ishid = false);
+	//int32 qp_getNum = 0;
 	/**通过类型在这里面取出对象
 	* @param key - 对象类型。
 	* @warning 每个类型可以取出多个对象。
 	*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
+	//AActor* QP_GetActor(FString key);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
-	AActor* QP_GetActor(FString key);
+	AActor* QP_PopActor(FString key, bool isshow = false);
 
+	void QP_BindMapData(class UQPData* data);
 
 	/**异步加载*/
 	/*UFUNCTION(BlueprintCallable, Category = "QipaWorld|Assets")

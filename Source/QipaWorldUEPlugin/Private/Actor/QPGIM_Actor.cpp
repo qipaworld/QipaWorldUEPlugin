@@ -2,6 +2,8 @@
 
 
 #include "Actor/QPGIM_Actor.h"
+#include "Map/QPGIM_Map.h"
+#include "Data/QPData.h"
 
 #include "QPUtil.h"
 
@@ -17,13 +19,19 @@ bool UQPGIM_Actor::ShouldCreateSubsystem(UObject* Outer) const
 void UQPGIM_Actor::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-
+	Collection.InitializeDependency(UQPGIM_Map::StaticClass());
+	UQPGIM_Map::qp_staticObject->QP_GetMapData()->qp_dataDelegate.AddUObject(this, &UQPGIM_Actor::QP_BindMapData);
 	qp_staticObject = this;
 
-	//LoadYaml("");
-	//qp_gameQPdataBase = NewActor<UQPData>();
 }
+void UQPGIM_Actor::QP_BindMapData(UQPData* data)
+{
 
+	 if (data->QP_IsChange<FName, FName>("baseLevelName", EQPDataValueType::FNAME)) {
+		 qp_actorData.Reset();
+		}
+
+}
 void UQPGIM_Actor::Deinitialize()
 {
 	Super::Deinitialize();
@@ -31,33 +39,39 @@ void UQPGIM_Actor::Deinitialize()
 
 }
 
-void UQPGIM_Actor::QP_CollectActor(FString key, AActor* actor)
+void UQPGIM_Actor::QP_AddActor(FString key, AActor* actor, bool ishid)
 {
-	if (qp_actorData.Contains(key)) {
-		qp_actorData[key].Add(actor);
+	if (!qp_actorData.Contains(key)) {
+		qp_actorData.Emplace(key, TArray<AActor*>());
 	}
-	else {
-		TArray<AActor*> array;
-		array.Add(actor);
-		qp_actorData.Add(key, array);
+	qp_actorData[key].Add(actor);
+	if (ishid) {
+		actor->SetActorHiddenInGame(true);
+		actor->SetActorEnableCollision(false);    
+		actor->SetActorTickEnabled(false);        
 	}
-	actor->AddToRoot();
 }
 
-AActor* UQPGIM_Actor::QP_GetActor(FString key)
+
+AActor* UQPGIM_Actor::QP_PopActor(FString key, bool isshow)
 {
 	AActor* actor = nullptr;
 	if (qp_actorData.Contains(key)) {
-		TArray<AActor*> array = qp_actorData[key];
-		int num = array.Num() - 1;
-		if (num >= 0) {
-			actor = array[num];
-			array.RemoveAt(num);
+		if (qp_actorData[key].Num() > 0) {
+			actor = qp_actorData[key].Pop();
+			if (isshow) {
+				actor->SetActorHiddenInGame(false);
+				actor->SetActorEnableCollision(true);   
+				actor->SetActorTickEnabled(true);        
+			}
+			//actor->SetActorHiddenInGame(false);
+			//actor->RemoveFromRoot();
 		}
 		//qp_objData[key].Add(obj);
 	}
 	return actor;
 }
+
 //
 //void UQPGIM_Actor::QP_RequestAsyncLoad(UClass* InBaseClass, FString key, UQPData* data)
 //{

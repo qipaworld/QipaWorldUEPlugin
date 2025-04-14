@@ -72,7 +72,7 @@ void UQPGIM_Character::QP_InitCharacterData(AQPCharacter* c) {
 	c->qp_playMontage->qp_montage.Append(data->qp_montage);
 }
 ACharacter* UQPGIM_Character::QP_GetNewCharacter(FString qp_name, FTransform T) {
-	AActor* a = UQPGIM_Actor::qp_staticObject->QP_GetActor(qp_name);
+	AActor* a = UQPGIM_Actor::qp_staticObject->QP_PopActor(qp_name);
 	ACharacter* c;
 	if (!a) {
 		//qp_character
@@ -110,12 +110,12 @@ ACharacter* UQPGIM_Character::QP_GetNewCharacter(FString qp_name, FTransform T) 
 
 
 void UQPGIM_Character::QP_CollectCharacter(FString key, ACharacter* character) {
-	UQPGIM_Actor::qp_staticObject->QP_CollectActor(key,character);
+	UQPGIM_Actor::qp_staticObject->QP_AddActor(key,character,true);
 	qp_characterMap.Remove(key);
 
 }
 
 ACharacter* UQPGIM_Character::QP_ChangeMainCharacter(FString collkey, ACharacter* character, FString qp_name, FTransform T) {
-	UQPGIM_Actor::qp_staticObject->QP_CollectActor(collkey, character);
+	UQPGIM_Actor::qp_staticObject->QP_AddActor(collkey, character,true);
 	return QP_GetNewCharacter(qp_name, T);
 }
