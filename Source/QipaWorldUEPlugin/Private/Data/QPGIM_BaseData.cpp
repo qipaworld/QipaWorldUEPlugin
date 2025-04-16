@@ -31,12 +31,8 @@ void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 
 	qp_gameBaseData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_BaseData");
 	QP_InitDefaultSetting();
-
-	qp_baseDataSave = Cast<UQPBaseDataSave>(UGameplayStatics::LoadGameFromSlot("qp_baseDataSave", 0));
-	if (!IsValid(qp_baseDataSave)) {
-		qp_baseDataSave = Cast<UQPBaseDataSave>(UGameplayStatics::CreateSaveGameObject(UQPBaseDataSave::StaticClass()));
-		qp_baseDataSave->QP_SetSaveKey("qp_baseDataSave");
-	}
+	qp_baseDataSave = UQPSaveGame::QP_LoadSaveData<UQPBaseDataSave>("qp_baseDataSave", 0);
+	
 	
 	qp_baseDataSave->AddToRoot();
 

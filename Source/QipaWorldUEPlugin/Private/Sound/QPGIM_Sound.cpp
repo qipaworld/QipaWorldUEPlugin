@@ -4,6 +4,7 @@
 #include "Sound/QPGIM_Sound.h"
 
 #include "Data/QPGIM_Data.h"
+#include "Data/QPGIM_BaseData.h"
 #include "Data/QPData.h"
 #include "Kismet/GameplayStatics.h"
 #include "Setting/QPDS_Default.h"
@@ -25,6 +26,7 @@ void UQPGIM_Sound::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
+	Collection.InitializeDependency(UQPGIM_BaseData::StaticClass());
 
 	qp_staticObject = this;
 
@@ -246,12 +248,7 @@ void UQPGIM_Sound::QP_SaveSoundData()
 void UQPGIM_Sound::QP_LoadSoundData()
 {
 	if (!IsValid(qp_soundSaveGame)) {
-		qp_soundSaveGame = Cast<UQPSG_Sound>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
-		if (!IsValid(qp_soundSaveGame)) {
-			qp_soundSaveGame = Cast<UQPSG_Sound>(UGameplayStatics::CreateSaveGameObject(UQPSG_Sound::StaticClass()));
-			qp_soundSaveGame->QP_SetSaveKey(qp_SaveSlotName);
-			qp_soundSaveGame->QP_SetSaveId(qp_UserIndex);
-		}
+		qp_soundSaveGame = UQPSaveGame::QP_LoadSaveData<UQPSG_Sound>(qp_SaveSlotName, qp_UserIndex);
 	}
 	qp_soundSaveGame->AddToRoot();
 	/*if (qp_soundSaveGame)

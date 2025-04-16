@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "Kismet/GameplayStatics.h"
 #include "QPSaveGame.generated.h"
 
 /**
@@ -18,7 +19,22 @@ class QIPAWORLDUEPLUGIN_API UQPSaveGame : public USaveGame
 	FString qp_saveKey;
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|UQPSaveGame")
 	int32 qp_saveId = 0;
+
+	//static FString qp_save_;
 public:
+	static FString QP_GetSaveType();
+	template<typename T>
+	static T* QP_LoadSaveData(const FString& key,int32 index = 0) {
+		FString saveType = QP_GetSaveType();
+		FString k = saveType == "NONE" ? key : saveType + key;
+		T* saveData = Cast<T>(UGameplayStatics::LoadGameFromSlot(k, index));
+		if (!IsValid(saveData)) {
+			saveData = Cast<T>(UGameplayStatics::CreateSaveGameObject(T::StaticClass()));
+			saveData->QP_SetSaveKey(k);
+			saveData->QP_SetSaveId(index);
+		}
+		return saveData;
+	}
 	UFUNCTION(BlueprintCallable)
 	void QP_SetSaveKey(const FString& v);
 	UFUNCTION(BlueprintCallable)
@@ -31,6 +47,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void QP_Save();
+
+	UFUNCTION(BlueprintCallable)
+	void QP_SaveMemory();
 
 	UFUNCTION(BlueprintCallable)
 	void QP_AsyncSave();

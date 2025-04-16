@@ -39,12 +39,7 @@ void UQPGIM_Course::Deinitialize()
 
 void UQPGIM_Course::QP_LoadHelperData()
 {
+	qp_helperSaveData = UQPSaveGame::QP_LoadSaveData<UQPSG_Course>(qp_SaveSlotName, qp_UserIndex);
 
-	qp_helperSaveData = Cast<UQPSG_Course>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
-	if (!qp_helperSaveData) {
-		qp_helperSaveData = Cast<UQPSG_Course>(UGameplayStatics::CreateSaveGameObject(UQPSG_Course::StaticClass()));
-		qp_helperSaveData->QP_SetSaveKey(qp_SaveSlotName);
-		qp_helperSaveData->QP_SetSaveId(qp_UserIndex);
-	}
 	//qp_helperSaveData->AddToRoot();
 }

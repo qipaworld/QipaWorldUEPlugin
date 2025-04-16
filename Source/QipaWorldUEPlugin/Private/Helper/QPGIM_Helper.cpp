@@ -5,6 +5,7 @@
 #include "Helper/QPSG_Helper.h"
 #include "Kismet/GameplayStatics.h"
 #include "Data/QPGIM_Data.h"
+#include "Data/QPGIM_BaseData.h"
 #include "Data/QPData.h"
 
 UQPGIM_Helper* UQPGIM_Helper::qp_staticObject = nullptr;
@@ -19,8 +20,8 @@ bool UQPGIM_Helper::ShouldCreateSubsystem(UObject* Outer) const
 void UQPGIM_Helper::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
-
+	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
+	Collection.InitializeDependency(UQPGIM_BaseData::StaticClass());
 	qp_staticObject = this;
 
 
@@ -97,12 +98,7 @@ void UQPGIM_Helper::QP_SaveHelperData()
 
 void UQPGIM_Helper::QP_LoadHelperData()
 {
-	qp_helperSaveData = Cast<UQPSG_Helper>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
-	if (!qp_helperSaveData) {
-		qp_helperSaveData = Cast<UQPSG_Helper>(UGameplayStatics::CreateSaveGameObject(UQPSG_Helper::StaticClass()));
-		qp_helperSaveData->QP_SetSaveKey(qp_SaveSlotName);
-		qp_helperSaveData->QP_SetSaveId(qp_UserIndex);
-	}
+	qp_helperSaveData = UQPSaveGame::QP_LoadSaveData<UQPSG_Helper>(qp_SaveSlotName, qp_UserIndex);
 }
 
 

@@ -3,10 +3,21 @@
 
 #include "Data/QPSaveGame.h"
 #include "Kismet/GameplayStatics.h"
-#include "QPUtil.h"
+#include "Data/QPGIM_BaseData.h"
 
+#include "QPUtil.h"
+//FString UQPSaveGame::qp_save_ = "NONE";
+
+FString UQPSaveGame::QP_GetSaveType() {
+	return UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType;
+}
 void UQPSaveGame::QP_SetSaveKey(const FString& v) {
-	qp_saveKey = v;
+	//if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType == "NONE") {
+		qp_saveKey = v;
+	/*}
+	else {
+		qp_saveKey = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType + v;
+	}*/
 }
 
 const FString& UQPSaveGame::QP_GetSaveKey(){
@@ -30,8 +41,27 @@ void UQPSaveGame::QP_Save(){
 	else {
 		UGameplayStatics::SaveGameToSlot(this, qp_saveKey, qp_saveId);
 	}
-}
 
+}
+void UQPSaveGame::QP_SaveMemory() {
+	if (qp_saveKey.IsEmpty()) {
+		UQPUtil::QP_LOG("save game error :the save key is empty.");
+	}
+	else {
+		TArray<uint8> OutSaveData;
+		if (UGameplayStatics::SaveGameToMemory(this, OutSaveData))
+		{
+			if (UGameplayStatics::SaveDataToSlot(OutSaveData, qp_saveKey, qp_saveId))
+			{
+				UQPUtil::QP_LOG("save game error :UGameplayStatics::SaveDataToSlot Error.");
+			}
+		}
+		else {
+			UQPUtil::QP_LOG("save game error :UGameplayStatics::SaveGameToMemory Error.");
+		}
+		
+	}
+}
 
 void UQPSaveGame::QP_AsyncSave(){
 	/*QP_Save();

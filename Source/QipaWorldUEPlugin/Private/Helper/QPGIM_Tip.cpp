@@ -36,10 +36,6 @@ void UQPGIM_Tip::Deinitialize()
 
 void UQPGIM_Tip::QP_LoadHelperData()
 {
-	qp_helperSaveData = Cast<UQPSG_Tip>(UGameplayStatics::LoadGameFromSlot(qp_SaveSlotName, qp_UserIndex));
-	if (!qp_helperSaveData) {
-		qp_helperSaveData = Cast<UQPSG_Tip>(UGameplayStatics::CreateSaveGameObject(UQPSG_Tip::StaticClass()));
-		qp_helperSaveData->QP_SetSaveKey(qp_SaveSlotName);
-		qp_helperSaveData->QP_SetSaveId(qp_UserIndex);
-	}
+	qp_helperSaveData = UQPSaveGame::QP_LoadSaveData<UQPSG_Tip>(qp_SaveSlotName, qp_UserIndex);
+
 }

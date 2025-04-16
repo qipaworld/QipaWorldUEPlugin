@@ -56,4 +56,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	TMap<FString, int32> QP_TipKeys;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	FString QP_SaveKeyType = "NONE";
 };
