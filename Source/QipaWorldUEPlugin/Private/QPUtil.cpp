@@ -5,16 +5,36 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "GameFramework/GameUserSettings.h"
 #include "Data/QPGIM_BaseData.h"
 DEFINE_LOG_CATEGORY(LOGQipaWorld);
 
+//void UQPUtil::QP_ScreenFullWindowed() {
+//	if (UGameUserSettings* Settings = GEngine->GetGameUserSettings())
+//	{
+//		Settings->SetFullscreenMode(EWindowMode::Windowed);
+//
+//		Settings->ApplySettings(false);
+//	}
+//}
+void UQPUtil::QP_ScreenResolution(float percentage) {
+	if (UGameUserSettings* Settings = GEngine->GetGameUserSettings())
+	{
+		FIntPoint v = QP_GetFullScreenResolution(percentage);
 
+		Settings->SetScreenResolution(v);
+		Settings->SetFullscreenMode(EWindowMode::Windowed);
 
+		Settings->ApplySettings(false);
+	}
+}
 
 FIntPoint UQPUtil::QP_GetFullScreenResolution(float percentage) {
 	TArray<FIntPoint> resolutions;
 	UKismetSystemLibrary::GetSupportedFullscreenResolutions(resolutions);
-	return resolutions[resolutions.Num() - 1] * percentage;
+	//resolutions.Last().X;
+	return FIntPoint(FMath::RoundToInt(resolutions.Last().X * percentage), FMath::RoundToInt(resolutions.Last().Y * percentage));
+	//return resolutions[resolutions.Num() - 1] * percentage;
 }
 void UQPUtil::QP_UpdateMouse(bool b, APlayerController* controller) {
 	if (!controller) {

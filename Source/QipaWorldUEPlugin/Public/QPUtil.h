@@ -21,6 +21,12 @@ class QIPAWORLDUEPLUGIN_API UQPUtil : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:
+
+	//UFUNCTION(BlueprintCallable, Category = "QPUtil")
+	//static void QP_ScreenFullWindowed();
+
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+	static void QP_ScreenResolution(float percentage = 0.9f);
 	// Return true if the object is usable : non-null and not pending kill
 	UFUNCTION(BlueprintPure, Category = "QPUtil")
 	static FIntPoint QP_GetFullScreenResolution(float percentage = 1.0f);
