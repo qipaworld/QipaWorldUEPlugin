@@ -2,13 +2,13 @@
 
 
 
-#define QP_ADD_TYPE_FUN(funType,funValue,typeKey,typeValue,typeEnumK,typeEnumV,NameEx) void UQPData::QP_Add##NameEx (typeKey key, funValue v, bool sync)\
+#define QP_ADD_TYPE_FUN(funType,funValue,typeKey,typeValue,typeEnumK,typeEnumV,NameEx) void UQPData::QP_Add##NameEx (typeKey key, funValue v, EQPDataBroadcastType bType)\
 {\
 	if (!qp_ValueMap.FindOrAdd(typeEnumK).Contains(typeEnumV)) {\
 		qp_ValueMap[typeEnumK].Emplace(typeEnumV, new QPBaseData<typeKey, typeValue>(typeEnumV,typeEnumK));\
 	}\
-	((QPBaseData<typeKey, typeValue>*)qp_ValueMap[typeEnumK][typeEnumV])->QP_AddValue(key, v);\
-	QP_needSyncBroadcast(sync);\
+	((QPBaseData<typeKey, typeValue>*)qp_ValueMap[typeEnumK][typeEnumV])->QP_AddValue(key, v, bType);\
+	QP_needSyncBroadcast(bType);\
 }\
 funType UQPData::QP_Get##NameEx (typeKey key)\
 {\
@@ -20,17 +20,17 @@ funType UQPData::QP_Get##NameEx (typeKey key)\
 bool UQPData::QP_Contains##NameEx (typeKey key) {\
 	return QP_Contains<typeKey,typeValue>(key,typeEnumV,typeEnumK);\
 }\
-void UQPData::QP_Remove##NameEx (typeKey key, bool sync)\
+void UQPData::QP_Remove##NameEx (typeKey key, EQPDataBroadcastType bType)\
 {\
-	QP_RemoveValue<typeKey,typeValue>(key,typeEnumV,typeEnumK,sync);\
+	QP_RemoveValue<typeKey,typeValue>(key,typeEnumV,typeEnumK,bType);\
 }\
-void UQPData::QP_Clear##NameEx ( bool sync) {\
-	QP_ClearValue<typeKey,typeValue>(typeEnumV,typeEnumK,sync);\
+void UQPData::QP_Clear##NameEx ( EQPDataBroadcastType bType) {\
+	QP_ClearValue<typeKey,typeValue>(typeEnumV,typeEnumK,bType);\
 }
 
-#define QP_ADD_TYPE_FUN_QPDATA(typeKey,typeEnumK,NameEx) void UQPData::QP_Add##NameEx (typeKey key, UQPData* v, bool sync)\
+#define QP_ADD_TYPE_FUN_QPDATA(typeKey,typeEnumK,NameEx) void UQPData::QP_Add##NameEx (typeKey key, UQPData* v, EQPDataBroadcastType bType)\
 {\
-	QP_AddValue<typeKey, UQPData*>(key,v,EQPDataValueType::UQPDATA,typeEnumK,sync);\
+	QP_AddValue<typeKey, UQPData*>(key,v,EQPDataValueType::UQPDATA,typeEnumK,bType);\
 }\
 UQPData* UQPData::QP_Get##NameEx (typeKey key)\
 {\
@@ -39,12 +39,12 @@ UQPData* UQPData::QP_Get##NameEx (typeKey key)\
 bool UQPData::QP_Contains##NameEx (typeKey key) {\
 return QP_Contains<typeKey, UQPData*>(key,EQPDataValueType::UQPDATA,typeEnumK);\
 }\
-bool UQPData::QP_Remove##NameEx (typeKey key, bool sync)\
+bool UQPData::QP_Remove##NameEx (typeKey key, EQPDataBroadcastType bType)\
 {\
-	return QP_RemoveValue<typeKey, UQPData*>(key,EQPDataValueType::UQPDATA,typeEnumK,sync);\
+	return QP_RemoveValue<typeKey, UQPData*>(key,EQPDataValueType::UQPDATA,typeEnumK,bType);\
 }\
-void UQPData::QP_Clear##NameEx ( bool sync) {\
-	QP_ClearValue<typeKey, UQPData*>(EQPDataValueType::UQPDATA,typeEnumK,sync);\
+void UQPData::QP_Clear##NameEx ( EQPDataBroadcastType bType) {\
+	QP_ClearValue<typeKey, UQPData*>(EQPDataValueType::UQPDATA,typeEnumK,bType);\
 }
 
 #include "Data/QPData.h"
@@ -111,15 +111,29 @@ void UQPData::QP_RemoveBroadcastToDataManager()
 	UQPGIM_Data::qp_staticObject->QP_RemoveBroadcastUQPData(this);
 }
 
-void UQPData::QP_needSyncBroadcast(bool sync)
+void UQPData::QP_needSyncBroadcast(EQPDataBroadcastType bType)
 {
-	if (sync) {
-		QP_BroadcastAll(); 
+	switch (bType)
+	{
+	case EQPDataBroadcastType::DEFAULT: 
+	{
+		if (!qp_isAddToManager) {
+			QP_AddBroadcastToDataManager();
+		}
+		break;
+	}
+	case EQPDataBroadcastType::SYNC:
+	{
+		QP_BroadcastAll();
 		QP_RemoveBroadcastToDataManager();
+		break;
 	}
-	else if (!qp_isAddToManager) {
-		QP_AddBroadcastToDataManager();
+	case EQPDataBroadcastType::NONE:
+		break;
+	default:
+		break;
 	}
+	
 }
 void UQPData::QP_BroadcastNow() {
 	QP_BroadcastAll();

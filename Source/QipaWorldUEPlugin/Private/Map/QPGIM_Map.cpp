@@ -53,7 +53,7 @@ void UQPGIM_Map::QP_LoadMap(const FString& MapName, const FVector& Location, con
 void UQPGIM_Map::QP_OpenMap(FName LevelName)
 {
 	//qp_loadMapName = LevelName;
-	qp_mapData->QP_AddFName("changeLevelName", LevelName, true);
+	qp_mapData->QP_AddFName("changeLevelName", LevelName, EQPDataBroadcastType::SYNC);
 	UGameplayStatics::OpenLevel(GetWorld(), LevelName);
 	qp_mapData->QP_AddFName("baseLevelName", LevelName);
 }
