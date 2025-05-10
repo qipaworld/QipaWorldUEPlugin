@@ -41,6 +41,7 @@ public:
 
 
 
+
 	template<typename T>
 	static void QP_LOG_EX(const FString& m,const T& Value)
 	{

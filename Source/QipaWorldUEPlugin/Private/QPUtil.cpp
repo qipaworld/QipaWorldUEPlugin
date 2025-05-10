@@ -6,8 +6,25 @@
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/GameUserSettings.h"
+//#include "EditorUtilitySubsystem.h"
+//#include "Editor.h"
+//#include "WidgetBlueprint.h"
+//#include "Blueprint/UserWidget.h"
+//#include "Blueprint/UserWidget.h"
+//#include "Blueprint/UserWidget.h"
+//#include "Blueprint/WidgetTree.h"
+//#include "Components/TextBlock.h"
+//#include "Widget/QPTextBlock.h"
+//#include "AssetRegistry/AssetRegistryModule.h"
+//#include "AssetRegistryModule.h"
+//#include "EditorUtilitySubsystem.h"
+//#include "Editor.h"
+
 #include "Data/QPGIM_BaseData.h"
 DEFINE_LOG_CATEGORY(LOGQipaWorld);
+
+
+
 
 //void UQPUtil::QP_ScreenFullWindowed() {
 //	if (UGameUserSettings* Settings = GEngine->GetGameUserSettings())

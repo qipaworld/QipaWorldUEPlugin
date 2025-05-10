@@ -12,7 +12,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 UQPTextBlock::UQPTextBlock() {
-
+	//Super();
 	if (UQPGIM_Localization::qp_staticObject != nullptr) {
 		const FLatentActionInfo LatentInfo(0, FMath::Rand(), TEXT("QP_Init"), this);
 		UKismetSystemLibrary::Delay(this, 0.1f, LatentInfo);

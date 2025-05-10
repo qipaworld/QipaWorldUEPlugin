@@ -16,7 +16,7 @@ class QIPAWORLDUEPLUGIN_API UQPDA_Character : public UQPDataAsset
 {
 	GENERATED_BODY()
 	public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	TSubclassOf<AQPCharacter> qp_character;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	TMap<FName, class UAnimMontage*> qp_montage;

@@ -57,8 +57,10 @@ public:
 		qp_valueType = vt;
 		qp_keyType = kt;
 	}
+	bool qp_isRemoveLog = false;
 	TMap<K, EQPDataChangeType> qp_changeMap;
 	TMap<K, V> qp_ValueMap;
+	
 	virtual ~QPBaseData()override {
 		if constexpr (std::is_same<V, UQPData>::value) {
 			for (auto v : qp_ValueMap) {
@@ -122,7 +124,10 @@ public:
 	inline bool QP_Contains(K k) {
 		return qp_ValueMap.Contains(k);
 	}
-	inline bool QP_Remove(K k, EQPDataBroadcastType bType, bool isLog = false) {
+	inline bool QP_SetRemoveLog(bool b) {
+		qp_isRemoveLog = b;
+	}
+	inline bool QP_Remove(K k, EQPDataBroadcastType bType) {
 
 		if (qp_ValueMap.Contains(k)) {
 			if (bType != EQPDataBroadcastType::NONE_EX) {
@@ -132,7 +137,7 @@ public:
 			return true;
 		}
 		else {
-			if (isLog) {
+			if (qp_isRemoveLog) {
 				UQPUtil::QP_LOG_EX<K>("QPBaseData QP_Remove is not have key ", k);
 			}
 
