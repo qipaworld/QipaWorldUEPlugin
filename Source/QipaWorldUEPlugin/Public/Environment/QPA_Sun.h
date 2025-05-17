@@ -18,7 +18,7 @@ public:
 	// Sets default values for this actor's properties
 	AQPA_Sun();
 
-protected:
+//protected:
 	//太阳的移动速度
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSun")
 	float qp_speed = 10.0f;
