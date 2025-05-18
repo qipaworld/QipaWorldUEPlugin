@@ -39,7 +39,7 @@ void UQPGIM_Actor::Deinitialize()
 
 }
 
-void UQPGIM_Actor::QP_AddActor(FString key, AActor* actor, bool ishid)
+void UQPGIM_Actor::QP_AddActor(const FName& key, AActor* actor, bool ishid)
 {
 	if (!qp_actorData.Contains(key)) {
 		qp_actorData.Emplace(key, TArray<AActor*>());
@@ -53,7 +53,7 @@ void UQPGIM_Actor::QP_AddActor(FString key, AActor* actor, bool ishid)
 }
 
 
-AActor* UQPGIM_Actor::QP_PopActor(FString key, bool isshow)
+AActor* UQPGIM_Actor::QP_PopActor(const FName& key, bool isshow)
 {
 	AActor* actor = nullptr;
 	if (qp_actorData.Contains(key)) {

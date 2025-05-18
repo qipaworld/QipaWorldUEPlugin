@@ -58,7 +58,7 @@ public:
 
 	/**输入名称*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FString qp_assetDataName = "assetDataName";
+	FName qp_assetDataName = "assetDataName";
 
 	/**输入名称*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")

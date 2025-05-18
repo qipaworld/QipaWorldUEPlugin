@@ -9,7 +9,7 @@
 #include "AssetRegistry/AssetRegistryModule.h"
 
 #include "Widget/QPTextBlock.h"
-
+#include "UObject/SavePackage.h"
 
 #include "Blueprint/WidgetTree.h"
 #include "Widget/QPTextBlock.h"
@@ -46,11 +46,11 @@ void UQPEditorUtils::QP_ReplaceTextBlocksWithCustomSubclass()
 							
 					
 						NewTextBlock->SetText(OldTextBlock->GetText());
-						NewTextBlock->SetColorAndOpacity(OldTextBlock->ColorAndOpacity);
-						NewTextBlock->SetFont(OldTextBlock->Font);
+						NewTextBlock->SetColorAndOpacity(OldTextBlock->GetColorAndOpacity());
+						NewTextBlock->SetFont(OldTextBlock->GetFont());
 						//NewTextBlock->SetJustification(OldTextBlock->GetJustification());
-						NewTextBlock->SetShadowColorAndOpacity(OldTextBlock->ShadowColorAndOpacity);
-						NewTextBlock->SetShadowOffset(OldTextBlock->ShadowOffset);
+						NewTextBlock->SetShadowColorAndOpacity(OldTextBlock->GetShadowColorAndOpacity());
+						NewTextBlock->SetShadowOffset(OldTextBlock->GetShadowOffset());
 						//NewTextBlock->SetAutoWrapText(OldTextBlock->gettextwidg);
 						
 						if (UPanelWidget* Parent = Cast<UPanelWidget>(OldTextBlock->GetParent()))
@@ -68,7 +68,10 @@ void UQPEditorUtils::QP_ReplaceTextBlocksWithCustomSubclass()
 				UPackage* Package = WidgetBP->GetOutermost();
 				FString PackageFileName = FPackageName::LongPackageNameToFilename(Package->GetName(), FPackageName::GetAssetPackageExtension());
 
-				UPackage::SavePackage(Package, WidgetBP, EObjectFlags::RF_Public | EObjectFlags::RF_Standalone, *PackageFileName);
+				FSavePackageArgs SaveArgs;
+				SaveArgs.TopLevelFlags = RF_Public | RF_Standalone;
+
+				UPackage::SavePackage(Package, WidgetBP, *PackageFileName, SaveArgs);
 				
 			
 		}

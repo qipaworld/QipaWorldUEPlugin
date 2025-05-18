@@ -28,7 +28,7 @@ public:
 	virtual void Deinitialize();
 
 public:
-	TMap<FString, TArray<AActor*>> qp_actorData;
+	TMap<FName, TArray<AActor*>> qp_actorData;
 
 	/**把用不到的对象放到这个里面，里面是个数组。
 	* @param key - 对象类型。
@@ -38,7 +38,7 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
 	//void QP_CollectActor(FString key, AActor* actor);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
-	void QP_AddActor(FString key, AActor* actor,bool ishid = false);
+	void QP_AddActor(const FName& key, AActor* actor,bool ishid = false);
 	//int32 qp_getNum = 0;
 	/**通过类型在这里面取出对象
 	* @param key - 对象类型。
@@ -47,7 +47,7 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
 	//AActor* QP_GetActor(FString key);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
-	AActor* QP_PopActor(FString key, bool isshow = false);
+	AActor* QP_PopActor(const FName& key, bool isshow = false);
 
 	void QP_BindMapData(class UQPData* data);
 

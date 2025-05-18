@@ -1,63 +1,134 @@
 const fs = require('fs');
-// 格式化字符串的函数
-function formatStr(fileName,template, params) {
-    fs.writeFileSync(fileName, template.replace(/{(\w+)}/g, (_, key) => params[key] ?? ''), 'utf8');
-}
+const path = require('path');
+const os = require('os');
 
-// 示例：将模板字符串中的占位符 `{}` 替换为相应的值
-const template = `
+
+
+const templateH = `
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_Add{funname}(FName key, {addvalue} v, bool sync = false);
-UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_Add{funname}ExI(int32 key, {addvalue} v, bool sync = false);
-UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_Add{funname}ExO(UObject* key, {addvalue} v, bool sync = false);
+void QP_Add{funName}{exName}({funKey} key, {funValue} v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
 
 UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
-bool QP_Contains{funname}ExI(int32 key);
-UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
-bool QP_Contains{funname}ExO(UObject* key);
-UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
-bool QP_Contains{funname}(FName key);
+bool QP_Contains{funName}{exName}({funKey} key);
 
 UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
-{returnvalue} QP_Get{funname}(FName key);
-UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
-{returnvalue} QP_Get{funname}ExI(int32 key);
-UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
-{returnvalue} QP_Get{funname}ExO(UObject* k = nullptr);
+{returnValue} QP_Get{funName}{exName}({funKey} key);
 
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_Remove{funname}ExO(UObject* key, bool sync = false);
-UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_Remove{funname}(FName key, bool sync = false);
-UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_Remove{funname}ExI(int32 key, bool sync = false);
+bool QP_Remove{funName}{exName}({funKey} key, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
 
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_Clear{funname}ExI( bool sync = false);
-UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_Clear{funname}ExO( bool sync = false);
-UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_Clear{funname}( bool sync = false);
-
-QP_ADD_TYPE_FUN({returnvalue}, {addvalue}, int32, {valuetype}, EQPDataKeyType::INT32, {valueenum}, {funname}ExI)
-QP_ADD_TYPE_FUN({returnvalue}, {addvalue}, UObject*, {valuetype}, EQPDataKeyType::VOID, {valueenum}, {funname}ExO)
-QP_ADD_TYPE_FUN({returnvalue}, {addvalue}, FName, {valuetype}, EQPDataKeyType::FNAME, {valueenum}, {funname})
+void QP_Clear{funName}{exName}( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
 
 `;
 
-formatStr('output/double.txt',template, { funname: 'double', 
-                                    addvalue: 'double', 
-                                    returnvalue: 'double', 
-                                    valuetype: 'double', 
-                                    valueenum: 'EQPDataValueType::DOUBLE' });
+const templateCPP = `
+void UQPData::QP_Add{funName}{exName}({funKey} key, {funValue} v, EQPDataBroadcastType bType)
+{
+    QP_AddValue<{keyType}, {valueType}>(key,v,{enumV},{enumK},bType);
+}
 
-formatStr('output/int64.txt',template, { funname: 'int64', 
-                                    addvalue: 'int64', 
-                                    returnvalue: 'int64', 
-                                    valuetype: 'int64', 
-                                    valueenum: 'EQPDataValueType::INT64' });
+bool UQPData::QP_Contains{funName}{exName}({funKey} key)
+{
+    return QP_Contains<{keyType},{valueType}>(key,{enumV},{enumK});
+}
 
+{returnValue} UQPData::QP_Get{funName}{exName}({funKey} key)
+{
+    return QP_GetValue<{keyType}, {valueType}>(key,{enumV},{enumK});
+}
 
-//console.log(result);  // 输出: Hello, my name is John and I am 30 years old.
+bool UQPData::QP_Remove{funName}{exName}({funKey} key, EQPDataBroadcastType bType)
+{
+    return QP_RemoveValue<{keyType},{valueType}>(key,{enumV},{enumK},bType);
+}
+
+void UQPData::QP_Clear{funName}{exName}( EQPDataBroadcastType bType)
+{
+    QP_ClearValue<{keyType},{valueType}>({enumV},{enumK},bType);
+}
+
+`;
+
+var hStr = "";
+var cppStr = "";
+function formatStr(params) {
+    params.exName = "";
+    params.funKey = "FName ";
+    params.keyType = "FName ";
+    params.enumK = "EQPDataKeyType::FNAME ";
+    hStr = hStr + templateH.replace(/{(\w+)}/g, (_, key) => params[key] ?? '');
+    cppStr = cppStr + templateCPP.replace(/{(\w+)}/g, (_, key) => params[key] ?? '');
+
+    params.exName = "ExI";
+    params.funKey = "int32 ";
+    params.keyType = "int32 ";
+    params.enumK = "EQPDataKeyType::INT32 ";
+    hStr = hStr + templateH.replace(/{(\w+)}/g, (_, key) => params[key] ?? '');
+    cppStr = cppStr + templateCPP.replace(/{(\w+)}/g, (_, key) => params[key] ?? '');
+
+    params.exName = "ExO";
+    params.funKey = "UObject* ";
+    params.keyType = "UObject* ";
+    params.enumK = "EQPDataKeyType::VOID ";
+
+    hStr = hStr + templateH.replace(/{(\w+)}/g, (_, key) => params[key] ?? '');
+    cppStr = cppStr + templateCPP.replace(/{(\w+)}/g, (_, key) => params[key] ?? '');
+
+    
+}
+
+var dataList = 
+[
+    {funName: 'double',funValue: 'double',valueType: 'double',returnValue: 'double',enumV: 'EQPDataValueType::DOUBLE' },
+    {funName: 'int64',funValue: 'int64',valueType: 'int64',returnValue: 'int64',enumV: 'EQPDataValueType::INT64' },
+    {funName: 'FVector',funValue: 'const FVector&',valueType: 'FVector',returnValue: 'FVector&',enumV: 'EQPDataValueType::FVECTOR' },
+    {funName: 'FName',funValue: 'const FName&',valueType: 'FName',returnValue: 'FName&',enumV: 'EQPDataValueType::FNAME' },
+    {funName: 'FText',funValue: 'const FText&',valueType: 'FText',returnValue: 'FText&',enumV: 'EQPDataValueType::FTEXT' },
+    {funName: 'FString',funValue: 'const FString&',valueType: 'FString',returnValue: 'FString&',enumV: 'EQPDataValueType::FSTRING' },
+    {funName: 'bool',funValue: 'bool',valueType: 'bool',returnValue: 'bool',enumV: 'EQPDataValueType::BOOL' },
+    {funName: 'float',funValue: 'float',valueType: 'float',returnValue: 'float',enumV: 'EQPDataValueType::FLOAT' },
+    {funName: 'int32',funValue: 'int32',valueType: 'int32',returnValue: 'int32',enumV: 'EQPDataValueType::INT32' },
+    {funName: 'UObject',funValue: 'UObject*',valueType: 'UObject*',returnValue: 'UObject*',enumV: 'EQPDataValueType::UOBJECT' },
+    {funName: 'UQPData',funValue: 'UQPData*',valueType: 'UQPData*',returnValue: 'UQPData*',enumV: 'EQPDataValueType::UQPDATA' },
+]
+
+function writeFile(path,str){
+    const startMarker = '//------------auto generator start';
+    const endMarker = '//------------auto generator end';
+
+    let fileData = fs.readFileSync(path, 'utf8');
+
+    
+    updated = fileData.replace(
+      new RegExp(`${startMarker}[\\s\\S]*?${endMarker}`, 'g'),
+      `${startMarker}\n${str}\n${endMarker}`
+    );
+    updated = updated.replace(/\r?\n/g, os.EOL);
+    fs.writeFileSync(path, updated, 'utf8');
+}
+function start(){
+    for (let i = 0; i < dataList.length; i++) 
+    {
+        formatStr(dataList[i]);
+    }
+
+    // const filePath = "output/" + params["valueType"] + ".txt";
+    // const dir = path.dirname(filePath);
+
+    
+    // if (!fs.existsSync(dir)) {
+    //     fs.mkdirSync(dir, { recursive: true });
+    // }
+
+    const hFilePath ="../Source/QipaWorldUEPlugin/Public/Data/QPData.h"; 
+    const cppFilePath = "../Source/QipaWorldUEPlugin/Private/Data/QPData.cpp" ; 
+     
+    writeFile(hFilePath,hStr);
+    writeFile(cppFilePath,cppStr);
+
+    // fs.writeFileSync( filePath, v1H+v2H+v3H+v1CPP+v2CPP+v3CPP , 'utf8');
+}
+
+start();
+
