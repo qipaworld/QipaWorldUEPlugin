@@ -53,7 +53,7 @@ FIntPoint UQPUtil::QP_GetFullScreenResolution(float percentage) {
 	return FIntPoint(FMath::RoundToInt(resolutions.Last().X * percentage), FMath::RoundToInt(resolutions.Last().Y * percentage));
 	//return resolutions[resolutions.Num() - 1] * percentage;
 }
-void UQPUtil::QP_UpdateMouse(bool b, APlayerController* controller) {
+void UQPUtil::QP_UpdateMouse(bool b, APlayerController* controller, UWidget* InWidgetToFocus, EMouseLockMode InMouseLockMode, bool bHideCursorDuringCapture, const bool bFlushInput) {
 	if (!controller) {
 		//UE_LOG(LogTemp, Warning, TEXT("Update Mouse Error , Context is Null"));
 		//return;
@@ -62,10 +62,10 @@ void UQPUtil::QP_UpdateMouse(bool b, APlayerController* controller) {
 	
 	controller->SetShowMouseCursor(b);
 	if (b) {
-		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(controller);
+		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(controller, InWidgetToFocus, InMouseLockMode, bHideCursorDuringCapture, bFlushInput);
 	}
 	else {
-		UWidgetBlueprintLibrary::SetInputMode_GameOnly(controller);
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(controller, bFlushInput);
 	}
 
 }

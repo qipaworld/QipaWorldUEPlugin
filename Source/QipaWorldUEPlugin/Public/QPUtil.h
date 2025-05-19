@@ -33,7 +33,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "QPUtil")
 
-	static void QP_UpdateMouse(bool show, APlayerController* controller = nullptr);
+	static void QP_UpdateMouse(bool show, APlayerController* controller = nullptr, class UWidget* InWidgetToFocus = nullptr, EMouseLockMode InMouseLockMode = EMouseLockMode::DoNotLock, bool bHideCursorDuringCapture = true, const bool bFlushInput = false);
 
 	UFUNCTION(BlueprintCallable, Category = "QPUtil")
 
