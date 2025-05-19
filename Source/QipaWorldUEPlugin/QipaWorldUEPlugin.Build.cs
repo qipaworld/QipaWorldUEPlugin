@@ -50,7 +50,7 @@ public class QipaWorldUEPlugin : ModuleRules
                 "NavigationSystem",
                 "AppFramework",
                 "AudioModulation",
-                //"ShaderCore",
+                "AIModule",
                 //"RHI",
 				// ... add private dependencies that you statically link with here ...	
 			}
