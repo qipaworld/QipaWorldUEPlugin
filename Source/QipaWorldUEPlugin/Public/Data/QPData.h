@@ -161,6 +161,12 @@ public:
 	inline EQPDataChangeType QP_GetChangeType(const K& k) {
 		return qp_changeMap.FindOrAdd(k);
 	}
+	void QP_LoopData(std::function<void(K&,V&)> func) {
+		for (auto& data: qp_ValueMap)
+		{
+			func(data.Key,data.Value);
+		}
+	}
 };
 
 
