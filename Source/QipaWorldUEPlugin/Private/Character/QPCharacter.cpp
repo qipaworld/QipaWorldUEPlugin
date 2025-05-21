@@ -68,6 +68,7 @@ void AQPCharacter::BeginPlay()
 	qp_movementC->MaxWalkSpeed = qp_walkSpeed;
 	qp_isFixedCamera = false;
 	qp_isRun = false;
+	qp_maxSpeed = qp_walkSpeed;
 	qp_characterData->QP_GetUQPData(UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyEvent);
 	
 	if (!qp_assetData) {
@@ -80,6 +81,7 @@ void AQPCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	qp_deltaTime = DeltaTime;
+
 	if (qp_isAutoCameraLength) {
 		
 		if (qp_springArm->TargetArmLength>= qp_targetCameraLength) {
@@ -105,6 +107,7 @@ void AQPCharacter::Tick(float DeltaTime)
 			}
 		}
 	}
+	QP_UpdateMaxSpeed();
 }
 
 // Called to bind functionality to input
@@ -112,6 +115,7 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis(qp_mouseWhellAxis, this, &AQPCharacter::QP_MouseWheelAxis);
 	PlayerInputComponent->BindAxis(qp_moveForWard, this, &AQPCharacter::QP_MoveForward);
 	PlayerInputComponent->BindAxis(qp_moveRight, this, &AQPCharacter::QP_MoveRight);
 	PlayerInputComponent->BindAxis(qp_turn, this, &APawn::AddControllerYawInput);
@@ -119,7 +123,7 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction(qp_jump, IE_Pressed, this, &AQPCharacter::QP_JumpStart);
 	PlayerInputComponent->BindAction(qp_jump, IE_Released, this, &AQPCharacter::QP_JumpEnd);
 	PlayerInputComponent->BindAction(qp_run, IE_Pressed, this, &AQPCharacter::QP_Run);
-	//PlayerInputComponent->BindAction("Run", IE_Released, this, &AQPC_Slime::QP_RunEnd);
+	PlayerInputComponent->BindAction(qp_sneak, IE_Released, this, &AQPCharacter::QP_Sneak);
 	PlayerInputComponent->BindAction(qp_attack, IE_Pressed, this, &AQPCharacter::QP_AttackStart);
 	PlayerInputComponent->BindAction(qp_attack, IE_Released, this, &AQPCharacter::QP_AttackEnd);
 	PlayerInputComponent->BindAction(qp_fixedCamera, IE_Pressed, this, &AQPCharacter::QP_FixedCamera);
@@ -127,7 +131,10 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction(qp_attackTwo, IE_Released, this, &AQPCharacter::QP_AttackTwoEnd);
 	PlayerInputComponent->BindAction(qp_mouseWheelUp, IE_Pressed, this, &AQPCharacter::QP_mouseWheelUp);
 	PlayerInputComponent->BindAction(qp_mouseWheelDown, IE_Pressed, this, &AQPCharacter::QP_mouseWheelDown);
-
+	PlayerInputComponent->BindAction(qp_changeCharacter, IE_Pressed, this, &AQPCharacter::QP_ChangeCharacter);
+	
+		
+		
 }
 //void AQPCharacter::QP_InitQPData() {
 //	
@@ -150,17 +157,18 @@ UQPData* AQPCharacter::QP_GetQPData(){
 	}
 	return qp_characterData;
  }
+//virtual void QP_MouseWheelAxis(float value);
 
-void AQPCharacter::QP_UpdateMaxSpeed() 
+void AQPCharacter::QP_MouseWheelAxis(float value)
 {
-	GetCharacterMovement()->MaxWalkSpeed = FMath::FInterpTo(GetCharacterMovement()->MaxWalkSpeed, qp_maxSpeed , GetWorld()->GetDeltaSeconds(), 0.5f);
+	
 }
 
 void AQPCharacter::QP_MoveForward(float value)
 {
 	 qp_forwardV = value;
 	if (value != 0) {
-		QP_UpdateMaxSpeed();
+		
 		FRotator rotator = GetControlRotation();
 		rotator.Roll = 0.0f;
 		rotator.Pitch = 0.0f;
@@ -175,7 +183,7 @@ void AQPCharacter::QP_MoveRight(float value)
 {
 	qp_rightV = value;
 	if (value != 0) {
-		QP_UpdateMaxSpeed();
+		
 		FRotator rotator = GetControlRotation();
 		rotator.Roll = 0.0f;
 		rotator.Pitch = 0.0f;
@@ -183,6 +191,25 @@ void AQPCharacter::QP_MoveRight(float value)
 		FVector rightVector = FRotationMatrix(rotator).GetScaledAxis(EAxis::Y);
 		AddMovementInput(rightVector, value);
 	}
+}
+
+//前行的切换
+void AQPCharacter::QP_Sneak() {
+	qp_isRun = !qp_isRun;
+	if (qp_isRun) {
+		QP_SneakStart();
+	}
+	else {
+		QP_SneakEnd();
+	}
+}
+void AQPCharacter::QP_SneakStart(){
+	qp_maxSpeed = qp_sneakSpeed;
+	qp_movementC->MaxAcceleration = qp_sneakMaxAcceleration;
+}
+void AQPCharacter::QP_SneakEnd(){
+	qp_maxSpeed = qp_walkSpeed;
+	qp_movementC->MaxAcceleration = qp_walkMaxAcceleration;
 }
 
 void AQPCharacter::QP_Run() 
@@ -200,12 +227,15 @@ void AQPCharacter::QP_Run()
  {
 	 qp_maxSpeed = qp_runSpeed;
 	 qp_movementC->MaxAcceleration = qp_runMaxAcceleration;
+	 //qp_movementC->MaxWalkSpeed = qp_maxSpeed;
 
  }
  void AQPCharacter::QP_RunEnd()
  {
 	 qp_maxSpeed = qp_walkSpeed;
 	 qp_movementC->MaxAcceleration = qp_walkMaxAcceleration;
+	 //qp_movementC->MaxWalkSpeed = qp_maxSpeed;
+
 
  }
  //脱离玩家控制时调用
@@ -259,6 +289,7 @@ void AQPCharacter::QP_ReReset() {
 	 qp_isFixedCamera = !qp_isFixedCamera;
 	 qp_movementC->bOrientRotationToMovement = !qp_isFixedCamera;
 	 qp_movementC->bUseControllerDesiredRotation = qp_isFixedCamera;
+
 	 if (qp_isFixedCamera) {
 		 QP_FixedCameraStart();
 	 }
@@ -328,7 +359,7 @@ void AQPCharacter::QP_ReReset() {
 	 //AutoPossessPlayer = EAutoReceiveInput::Type::Disabled;
 
 	 //UQPGIM_Character::qp_staticObject->QP_GetCharacter("FlySlime")->AutoPossessPlayer = EAutoReceiveInput::Type::Player0;
-	 UQPGIM_Character::qp_staticObject->QP_Possess(GetController(), "FlySlime");
+	 UQPGIM_Character::qp_staticObject->QP_Possess(GetController(), qp_changeCharacterName, qp_unchangeMovementMode);
 	 //->Possess(QP_GetCharacter());
  //GetController()->Possess(UQPGIM_Character::qp_staticObject->QP_GetCharacter("FlySlime"));
  //GetController()->SetPawn(UQPGIM_Character::qp_staticObject->QP_GetCharacter("FlySlime"));
@@ -378,8 +409,6 @@ void AQPCharacter::QP_ReReset() {
 			qp_characterData->QP_AddFString("characterAttack", "start");
 		}
 	}
-	 
-	 
 	 
  }
 

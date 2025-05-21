@@ -80,16 +80,16 @@ void AQPFlyCharacter::QP_MoveUp(float value)
 
 	}
 }
-void AQPFlyCharacter::QP_UpdateMaxSpeed() {
-
-	GetCharacterMovement()->MaxFlySpeed = FMath::FInterpTo(GetCharacterMovement()->MaxFlySpeed, qp_maxSpeed, GetWorld()->GetDeltaSeconds(), 0.5f);
-}
+//void AQPFlyCharacter::QP_UpdateMaxSpeed() {
+//
+//	GetCharacterMovement()->MaxFlySpeed = FMath::FInterpTo(GetCharacterMovement()->MaxFlySpeed, qp_maxSpeed, GetWorld()->GetDeltaSeconds(), 0.5f);
+//}
 void AQPFlyCharacter::QP_MoveForward(float value)
 {
 	qp_forwardV = value;
 
 	if (value != 0) {
-		QP_UpdateMaxSpeed();
+	
 		FRotator rotator = GetControlRotation();
 		//rotator.Roll = 0.0f;
 		//rotator.Pitch = 0.0f;
@@ -105,7 +105,7 @@ void AQPFlyCharacter::QP_MoveRight(float value)
 {
 	qp_rightV = value;
 	if (value != 0) {
-		QP_UpdateMaxSpeed();
+	
 		FRotator rotator = GetControlRotation();
 		//rotator.Roll = 0.0f;
 		//rotator.Pitch = 0.0f;

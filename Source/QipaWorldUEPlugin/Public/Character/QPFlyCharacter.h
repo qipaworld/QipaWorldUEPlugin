@@ -47,6 +47,10 @@ public:
 
 	virtual void QP_MoveUp(float value);
 	/**更新移动速度，大了就跑，小了就走*/
-	virtual void QP_UpdateMaxSpeed()override;
+	virtual  inline void QP_UpdateMaxSpeed()override {
+		if (qp_movementC->MaxFlySpeed != qp_maxSpeed) {
+			qp_movementC->MaxFlySpeed = FMath::FInterpTo(qp_movementC->MaxFlySpeed, qp_maxSpeed, GetWorld()->GetDeltaSeconds(), qp_moveInterpSpeed);
+		}
+	}
 
 };

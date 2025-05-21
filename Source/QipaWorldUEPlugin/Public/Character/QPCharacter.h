@@ -14,6 +14,7 @@
 #include "Interface/QPI_GetQPData.h"
 #include "Animation/QPC_PlayMontage.h"
 #include "Animation/QPC_MaterialAutoRestore.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "QPCharacter.generated.h"
 
@@ -60,6 +61,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	FName qp_assetDataName = "assetDataName";
 
+	
+	/**输入名称*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	FName qp_mouseWhellAxis = "MouseWhell";
+	/**输入名称*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	FName qp_changeCharacter = "ChangeCharacter";
 	/**输入名称*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		FName qp_moveForWard = "MoveForWard";
@@ -80,7 +88,10 @@ public:
 		FName qp_run = "Run";
 	/**输入名称*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_attack = "Attack";
+	FName qp_attack = "Attack";
+		/**输入名称*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	FName qp_sneak = "Sneak";
 	/**输入名称*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		FName qp_mouseWheelUp = "MouseWheelUp";
@@ -124,14 +135,24 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		float qp_walkSpeed = 250.0f;
 
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+		float qp_sneakSpeed = 150.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		float qp_runSpeed = 600.0f;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+		float qp_sneakMaxAcceleration = 150.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		float qp_walkMaxAcceleration = 250.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		float qp_runMaxAcceleration = 600.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+		FName qp_changeCharacterName;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+		bool qp_unchangeMovementMode = true;
 	/**最大速度是run就是跑，是walk就是走路*/
 	float qp_maxSpeed = 250.0f;
 
@@ -158,6 +179,13 @@ public:
 	/**是否固定相机*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		bool qp_isFixedCamera = false;
+
+		/**是否在前行*/
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+		bool qp_isSneak = false;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+		float qp_moveInterpSpeed = 5.0f;
 
 	bool qp_isFixedCameraLast = false;
 	bool qp_isRunLast = false;
@@ -190,6 +218,8 @@ public:
 	//进入玩家控制时调用
 	virtual void QP_PlayerEnter();
 
+	virtual void QP_MouseWheelAxis(float value);
+
 	virtual void QP_MoveForward(float value);
 	virtual void QP_MoveRight(float value);
 	//跳跃开始
@@ -201,6 +231,11 @@ public:
 	
 	virtual void QP_RunStart();
 	virtual void QP_RunEnd();
+
+	//前行的切换
+	virtual void QP_Sneak();
+	virtual void QP_SneakStart();
+	virtual void QP_SneakEnd();
 
 	virtual void QP_ChangeCharacter();
 
@@ -226,7 +261,11 @@ public:
 	virtual void QP_mouseWheelDown();
 
 	/**更新移动速度，大了就跑，小了就走*/
-	virtual void QP_UpdateMaxSpeed();
+	virtual inline void QP_UpdateMaxSpeed() {
+		if (qp_movementC->MaxWalkSpeed != qp_maxSpeed) {
+			qp_movementC->MaxWalkSpeed = FMath::FInterpTo(qp_movementC->MaxWalkSpeed, qp_maxSpeed, GetWorld()->GetDeltaSeconds(), qp_moveInterpSpeed);
+		}
+	}
 
 	/**创建魔法技能*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPCharacter")
