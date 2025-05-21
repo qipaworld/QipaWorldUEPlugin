@@ -228,7 +228,8 @@ class QIPAWORLDUEPLUGIN_API UQPData : public UObject
 {
 	GENERATED_BODY()
 public:
-	TMap<EQPDataKeyType, TMap<EQPDataValueType,void*>> qp_ValueMap;
+	TMap<int16, void*> qp_ValueMap;
+	//TMap<EQPDataKeyType, TMap<EQPDataValueType,void*>> qp_ValueMap;
 
 	
 	/** 这个是C++用的代理，---
@@ -248,6 +249,17 @@ public:
 	bool qp_isAddToManager = false;
 
 	virtual void BeginDestroy() override;
+
+	inline int16 QP_EncodeKey(EQPDataKeyType keyE, EQPDataValueType valueE)
+	{
+		return (static_cast<int8>(keyE)) | (static_cast<int8>(valueE) << 8);
+	} 
+
+	inline void QP_DecodeKey(int16 Encoded, EQPDataKeyType& OutKey, EQPDataValueType& OutValue)
+	{
+		OutKey = static_cast<EQPDataKeyType>(Encoded & 0xFF);       // 低8位
+		OutValue = static_cast<EQPDataValueType>((Encoded >> 8) & 0xFF); // 高8位
+	}
 
 	inline UQPData* QP_Init() {
 		AddToRoot();
@@ -274,24 +286,21 @@ public:
 
 	template<typename K, typename V>
 	inline bool QP_IsChange(const K& k,EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME ) {
-		if (qp_ValueMap.FindOrAdd(kt).Contains(vt)) {
-			return ((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_IsChange(k);
-		}
-
-		return false;
+		QP_CheckQPBaseData<K, V>(vt, kt);
+		return ((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->QP_IsChange(k);
+		
 	}
 	template<typename K, typename V>
 	inline EQPDataChangeType QP_GetChangeType(const K& k,EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME ) {
-		if (qp_ValueMap.FindOrAdd(kt).Contains(vt)) {
-			return ((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_GetChangeType(k);
-		}
-		return EQPDataChangeType::NOT;
+		QP_CheckQPBaseData<K, V>(vt, kt);
+		return ((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->QP_GetChangeType(k);
+		
 	}
 
 	template<typename K, typename V>
 	inline void QP_CheckQPBaseData(EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME) {
-		if (!qp_ValueMap.FindOrAdd(kt).Contains(vt)) {
-			qp_ValueMap[kt].Emplace(vt, new QPBaseData<K, V>(vt, kt));
+		if (!qp_ValueMap.Contains(QP_EncodeKey(kt, vt))) {
+			qp_ValueMap.Emplace(QP_EncodeKey(kt, vt), new QPBaseData<K, V>(vt, kt));
 		}
 	}
 	
@@ -301,16 +310,17 @@ public:
 		QP_CheckQPBaseData<K, V>(vt, kt); 
 		if constexpr (std::is_same<V, UQPData*>::value) {
 				
-			if (((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Contains(k)) {
-				UQPUtil::QP_LOG_EX<K>("QPData QP_AddUQPData do not repeat add key ! ", k); 
+			if (((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->QP_Contains(k)) {
+				UQPUtil::QP_LOG_EX<K>("QPData QP_AddUQPData do not repeat add key ! ", k);
+				return;
 			}
 			if (v == nullptr)
 			{
-				((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_AddValue(k, NewObject<UQPData>()->QP_Init(), bType);
+				((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->QP_AddValue(k, NewObject<UQPData>()->QP_Init(), bType);
 			}
 		}
 		else {
-			((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_AddValue(k, v, bType);
+			((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->QP_AddValue(k, v, bType);
 		}
 		QP_needSyncBroadcast(bType); 
 	}
@@ -322,46 +332,36 @@ public:
 		QP_CheckQPBaseData<K, V>(vt, kt); 
 		if constexpr (std::is_same<V, UQPData*>::value) 
 		{
-			if (!((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Contains(k))
+			if (!((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->QP_Contains(k))
 			{
-				QP_AddValue<K, V>(k, nullptr, vt, kt); 
+				QP_AddValue<K, V>(k, nullptr, vt, kt);
 			}
-			return ((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_GetValue(k); 
 		}
-		else {
-			return ((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_GetValue(k); 
-		}
+		return ((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->QP_GetValue(k);
 	}
 	
 
 
 	template<typename K, typename V>
 	bool QP_Contains(const K& k, EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME) {
-		if (qp_ValueMap.FindOrAdd(kt).Contains(vt)) {
-			return ((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Contains(k);
-		}
-		return false;
+		QP_CheckQPBaseData<K, V>(vt, kt);
+		return ((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->QP_Contains(k);
 	}
 	
 	template<typename K, typename V>
 	bool QP_RemoveValue(const K& k, EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT)
 	{
-		if (qp_ValueMap.FindOrAdd(kt).Contains(vt)) {
-			if constexpr (std::is_same<V, UQPData*>::value) {
-				if (((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Contains(k)) {
-
-					((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_GetValue(k)->RemoveFromRoot();
-					((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Remove(k, bType);
-					QP_needSyncBroadcast(bType);
-					return true;
-				}
+		QP_CheckQPBaseData<K, V>(vt, kt);
+		
+		int16 mK = QP_EncodeKey(kt, vt);
+		if (((QPBaseData<K, V>*)qp_ValueMap[mK])->QP_Contains(k)) {
+			if constexpr (std::is_same<V, UQPData*>::value) 
+			{
+				((QPBaseData<K, V>*)qp_ValueMap[mK])->QP_GetValue(k)->RemoveFromRoot();
 			}
-			else {
-				if (((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Remove(k, bType)) {
-					QP_needSyncBroadcast(bType);
-					return true;
-				}
-			}
+			((QPBaseData<K, V>*)qp_ValueMap[mK])->QP_Remove(k, bType);
+			QP_needSyncBroadcast(bType);
+			return true;
 		}
 
 		UQPUtil::QP_LOG_EX<K>("QPData QP_Remove is not have key ", k);
@@ -370,16 +370,26 @@ public:
 	}
 	template<typename K, typename V>
 	void QP_ClearValue(EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT) {
-		if (qp_ValueMap.FindOrAdd(kt).Contains(vt)) {
-			if constexpr (std::is_same<V, UQPData*>::value) {
-				for (auto v : ((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->qp_ValueMap) {
-					v.Value->RemoveFromRoot();
-				}
+		QP_CheckQPBaseData<K, V>(vt, kt);
+		int16 mK = QP_EncodeKey(kt, vt);
+		if constexpr (std::is_same<V, UQPData*>::value) {
+			for (auto v : ((QPBaseData<K, V>*)qp_ValueMap[mK])->qp_ValueMap) {
+				v.Value->RemoveFromRoot();
 			}
-			((QPBaseData<K, V>*)qp_ValueMap[kt][vt])->QP_Clear( bType);
-
 		}
+		((QPBaseData<K, V>*)qp_ValueMap[mK])->QP_Clear( bType);
 		QP_needSyncBroadcast(bType);
+	}
+	template<typename K, typename V>
+	QPBaseData<K,V>* QP_GetBaseData(EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME) {
+		QP_CheckQPBaseData<K, V>(vt, kt);
+		return  ((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)]);
+	}
+
+	template<typename K, typename V>
+	TMap<K, EQPDataChangeType>& QP_GetChangeMap(EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME) {
+		QP_CheckQPBaseData<K, V>(vt, kt);
+		return  ((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->qp_changeMap;
 	}
 
 

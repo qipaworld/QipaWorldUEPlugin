@@ -113,8 +113,8 @@ public:
 		
 		UQPObject* obj = nullptr;
 		TArray<K> keys;
-		data->QP_CheckQPBaseData<K, V>(vt, t);
-		((IQPBaseData*)data->qp_ValueMap[t][vt])->QP_GetMapKeys(keys);
+		//data->QP_CheckQPBaseData<K, V>(vt, t);
+		((IQPBaseData*)data->QP_GetBaseData<K,V>(vt,t))->QP_GetMapKeys(keys);
 		for (auto v : keys) {
 			obj = NewObject<UQPObject>(view, itemClass);
 
@@ -139,7 +139,7 @@ public:
 			}
 			UQPObject* obj = nullptr;
 
-			for (auto v : ((QPBaseData<K, V>*)lambData->qp_ValueMap[t][vt])->qp_changeMap) {
+			for (auto v : (lambData->QP_GetChangeMap<K,V>(vt,t))) {
 				if (v.Value == EQPDataChangeType::REMOVE) {
 					view->RemoveItem((*items)[v.Key]);
 					items->Remove(v.Key);

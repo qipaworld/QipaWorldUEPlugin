@@ -10,9 +10,9 @@ void UQPData::BeginDestroy()
 	Super::BeginDestroy();
 
 	for (auto v : qp_ValueMap) {
-		for (auto v2 : v.Value) {
-			delete v2.Value;
-		}
+		//for (auto v2 : v.Value) {
+			delete v.Value;
+		//}
 	}
 }
 
@@ -36,9 +36,9 @@ void UQPData::QP_BroadcastAll()
 	QP_DelegateBroadcast();
 	QP_DynamicDelegateBroadcast();
 	for (auto v : qp_ValueMap) {
-		for (auto v2 : v.Value) {
-			((IQPBaseData*)v2.Value)->QP_RestChangeMap();
-		}
+		//for (auto v2 : v.Value) {
+			((IQPBaseData*)v.Value)->QP_RestChangeMap();
+		//}
 	}
 	qp_isAddToManager = false;
 }
