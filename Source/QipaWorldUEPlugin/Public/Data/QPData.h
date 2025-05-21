@@ -229,8 +229,6 @@ class QIPAWORLDUEPLUGIN_API UQPData : public UObject
 	GENERATED_BODY()
 public:
 	TMap<int16, void*> qp_ValueMap;
-	//TMap<EQPDataKeyType, TMap<EQPDataValueType,void*>> qp_ValueMap;
-
 	
 	/** 这个是C++用的代理，---
 	 *把你监听这个数据的方法绑定上，数据改变时会自动调用-----
