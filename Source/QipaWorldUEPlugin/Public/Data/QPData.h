@@ -315,14 +315,14 @@ public:
 			if (v == nullptr)
 			{
 				((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->QP_AddValue(k, NewObject<UQPData>()->QP_Init(), bType);
+				QP_needSyncBroadcast(bType);
+				return;
 			}
 		}
-		else {
-			((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->QP_AddValue(k, v, bType);
-		}
+		
+		((QPBaseData<K, V>*)qp_ValueMap[QP_EncodeKey(kt, vt)])->QP_AddValue(k, v, bType);
 		QP_needSyncBroadcast(bType); 
 	}
-		
 
 	template<typename K, typename V>
 	V& QP_GetValue(const K& k, EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME)

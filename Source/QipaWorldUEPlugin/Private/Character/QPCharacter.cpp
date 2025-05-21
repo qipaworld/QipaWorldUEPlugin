@@ -401,10 +401,10 @@ void AQPCharacter::QP_ReReset() {
  void AQPCharacter::QP_AnimNotifyEvent(UQPData* data) {
 	 //GLog->Log("QP_AnimNotifyFire");
 	
-	if (data->QP_IsChange<FName, FName>(QP_AnimNotifyFireName, EQPDataValueType::FNAME)) {
+	if (data->QP_IsChange<FName, bool>(QP_AnimNotifyFireName, EQPDataValueType::FNAME)) {
 		QP_Fire();
 	}
-	else if (data->QP_IsChange<FName, FName>(QP_AnimNotifyJunmEndName, EQPDataValueType::FNAME)) {
+	else if (data->QP_IsChange<FName, bool>(QP_AnimNotifyJunmEndName, EQPDataValueType::FNAME)) {
 		if (qp_characterData->QP_GetFString("characterAttack") == "start") {
 			qp_characterData->QP_AddFString("characterAttack", "start");
 		}
