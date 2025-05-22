@@ -14,12 +14,14 @@
 #include "Data/QPGIM_Data.h"
 #include "UObject/UnrealType.h"
 #include "Data/QPData.h"
+#include "QPUtil.h"
+
 #include "Character/QPGIM_Character.h"
 
 #include "Notify/QPGIM_AnimNotifyData.h"
 
 // Sets default values
-int AQPCharacter::qp_characterMaxNum = 1;
+
 
 AQPCharacter::AQPCharacter()
 {
@@ -27,7 +29,7 @@ AQPCharacter::AQPCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 
-	qp_characterMaxNum++;
+	
 	qp_camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	qp_springArm = CreateDefaultSubobject<USpringArmComponent>("springArm");
 	qp_springArm->bUsePawnControlRotation = true;
@@ -54,7 +56,7 @@ AQPCharacter::AQPCharacter()
 void AQPCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	QP_GetQPData();
+	
 
 	//QP_InitQPData();
 	//if (qp_characterData == nullptr) {
@@ -104,6 +106,7 @@ void AQPCharacter::Tick(float DeltaTime)
 		if (qp_characterData->QP_GetFString("characterJump") != "start") {
 			if (qp_characterData->QP_GetFString("characterFall") != "start") {
 				qp_characterData->QP_AddFString("characterFall", "start");
+				QP_PlayAnim("characterFall");
 			}
 		}
 	}
@@ -118,8 +121,8 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis(qp_mouseWhellAxis, this, &AQPCharacter::QP_MouseWheelAxis);
 	PlayerInputComponent->BindAxis(qp_moveForWard, this, &AQPCharacter::QP_MoveForward);
 	PlayerInputComponent->BindAxis(qp_moveRight, this, &AQPCharacter::QP_MoveRight);
-	PlayerInputComponent->BindAxis(qp_turn, this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis(qp_lookUp, this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis(qp_turn, this, &AQPCharacter::QP_TrunAxis);
+	PlayerInputComponent->BindAxis(qp_lookUp, this, &AQPCharacter::QP_LookUpAxis);
 	PlayerInputComponent->BindAction(qp_jump, IE_Pressed, this, &AQPCharacter::QP_JumpStart);
 	PlayerInputComponent->BindAction(qp_jump, IE_Released, this, &AQPCharacter::QP_JumpEnd);
 	PlayerInputComponent->BindAction(qp_run, IE_Pressed, this, &AQPCharacter::QP_Run);
@@ -149,16 +152,14 @@ void AQPCharacter::QP_SetMatAmount(float amount)
 	
 
 }
-UQPData* AQPCharacter::QP_GetQPData(){
 
-	if (!qp_characterData) {
-		qp_characterData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("AQPCharacter")->QP_GetUQPData("qp_Character" + qp_characterMaxNum);
-
-	}
-	return qp_characterData;
- }
 //virtual void QP_MouseWheelAxis(float value);
-
+void AQPCharacter::QP_TrunAxis(float value) {
+	AddControllerYawInput(value);
+}
+ void AQPCharacter::QP_LookUpAxis(float value){
+	 AddControllerPitchInput(value);
+}
 void AQPCharacter::QP_MouseWheelAxis(float value)
 {
 	
@@ -167,11 +168,13 @@ void AQPCharacter::QP_MouseWheelAxis(float value)
 void AQPCharacter::QP_MoveForward(float value)
 {
 	 qp_forwardV = value;
+
 	if (value != 0) {
 		
 		FRotator rotator = GetControlRotation();
 		rotator.Roll = 0.0f;
 		rotator.Pitch = 0.0f;
+
 		AddMovementInput(rotator.Vector(), value);
 
 	}
@@ -321,6 +324,7 @@ void AQPCharacter::QP_ReReset() {
 	 //如果是真的话，角色跳跃
 	 bPressedJump = true;
 	 qp_characterData->QP_AddFString("characterJump", "start");
+	 QP_PlayAnim("characterJump");
 
  }
  void AQPCharacter::QP_JumpEnd()
@@ -334,7 +338,9 @@ void AQPCharacter::QP_ReReset() {
  void AQPCharacter::Landed(const FHitResult& Hit) {
 	 Super::Landed(Hit);
 	 qp_characterData->QP_AddFString("characterJump", "end");
-	 qp_characterData->QP_AddFString("characterFall", "notPlay");
+	 //qp_characterData->QP_AddFString("characterFall", "notPlay");
+	 QP_PlayAnim("characterJump", "end");
+
 
  }
 
@@ -342,13 +348,18 @@ void AQPCharacter::QP_ReReset() {
  void AQPCharacter::QP_AttackStart()
  {
 	 qp_characterData->QP_AddFString("characterAttack", "start");
+	 QP_PlayAnim("characterAttack");
 
+	 qp_isAttacking = true;
  }
 
  void AQPCharacter::QP_AttackEnd()
  {
 	 qp_characterData->QP_AddFString("characterAttack", "end");
-
+	 QP_PlayAnim("characterAttack", "end");
+	 
+	 
+	 qp_isAttacking = false;
  }
 
  void AQPCharacter::QP_ChangeCharacter()
@@ -401,12 +412,14 @@ void AQPCharacter::QP_ReReset() {
  void AQPCharacter::QP_AnimNotifyEvent(UQPData* data) {
 	 //GLog->Log("QP_AnimNotifyFire");
 	
-	if (data->QP_IsChange<FName, bool>(QP_AnimNotifyFireName, EQPDataValueType::FNAME)) {
+	if (data->QP_IsChange<FName, bool>(QP_AnimNotifyFireName, EQPDataValueType::BOOL)) {
 		QP_Fire();
 	}
-	else if (data->QP_IsChange<FName, bool>(QP_AnimNotifyJunmEndName, EQPDataValueType::FNAME)) {
+	else if (data->QP_IsChange<FName, bool>(QP_AnimNotifyJunmEndName, EQPDataValueType::BOOL)) {
 		if (qp_characterData->QP_GetFString("characterAttack") == "start") {
-			qp_characterData->QP_AddFString("characterAttack", "start");
+			//qp_characterData->QP_AddFString("characterAttack", "start");
+			QP_PlayAnim("characterAttack");
+
 		}
 	}
 	 

@@ -11,9 +11,10 @@
 #include "Skill/QPS_CollisionMovement.h"
 #include "Component/QPSComponent.h"
 #include "Data/QPGIM_BaseData.h"
-#include "Interface/QPI_GetQPData.h"
-#include "Animation/QPC_PlayMontage.h"
+
+
 #include "Animation/QPC_MaterialAutoRestore.h"
+#include "Monster/QPMonster.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "QPCharacter.generated.h"
@@ -24,11 +25,11 @@ class UAnimMontage;
 class UQPData;
 class UAnimInstance;
 UCLASS()
-class QIPAWORLDUEPLUGIN_API AQPCharacter : public ACharacter,public IQPI_GetQPData
+class QIPAWORLDUEPLUGIN_API AQPCharacter : public AQPMonster
 {
 	GENERATED_BODY()
 
-	static int qp_characterMaxNum;
+	
 public:
 	// Sets default values for this character's properties
 	AQPCharacter();
@@ -53,13 +54,11 @@ public:
 	//virtual void QP_InitQPData() override;
 	/**获得数据*/
 	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "QipaWorld|QPInterface")
-	virtual class UQPData* QP_GetQPData() override;
+	
 
 public:
 
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	FName qp_assetDataName = "assetDataName";
+	
 
 	
 	/**输入名称*/
@@ -105,56 +104,29 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		FName qp_fixedCamera = "FixedCamera";
 
-	/**数据名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_playerDataKey = "qp_playerData";
+	
 
-	/**发射魔法炮弹的事件名字*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName QP_AnimNotifyFireName = "QP_AnimNotifyFireName";
-	/**结束跳跃的事件名字*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName QP_AnimNotifyJunmEndName = "qp_slimeJunmEnd";
+	
 
 
-	/**玩家数据*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		UQPData* qp_characterData = nullptr;
+	
 	/**玩家移动模式，切换玩家时用的*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		TEnumAsByte<EMovementMode> qp_movementMode = MOVE_Walking;
 	/**攻击动画*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	UQPC_PlayMontage* qp_playMontage;
+	
 	/**跳跃动画*/
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		//UQPC_PlayMontage* qp_playJumpAnim;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		//bool  qp_unchangeMovementMode = false;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		float qp_walkSpeed = 250.0f;
-
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		float qp_sneakSpeed = 150.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		float qp_runSpeed = 600.0f;
-
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		float qp_sneakMaxAcceleration = 150.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		float qp_walkMaxAcceleration = 250.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		float qp_runMaxAcceleration = 600.0f;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		FName qp_changeCharacterName;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		bool qp_unchangeMovementMode = true;
-	/**最大速度是run就是跑，是walk就是走路*/
-	float qp_maxSpeed = 250.0f;
+	
 
 	/*是否自动弹簧臂长度*/
 	bool qp_isAutoCameraLength = false;
@@ -173,25 +145,19 @@ public:
 	/**鼠标滚轮改变相机距离的速度*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		float qp_changeCameraLengthSpeed = 20.0f;
-	/**是否在跑*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		bool qp_isRun = false;
+	
 	/**是否固定相机*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		bool qp_isFixedCamera = false;
 
-		/**是否在前行*/
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		bool qp_isSneak = false;
-
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		float qp_moveInterpSpeed = 5.0f;
+		
 
 	bool qp_isFixedCameraLast = false;
 	bool qp_isRunLast = false;
 
 	bool qp_isReset = false;
 	bool qp_isExit = false;
+	
 
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPCharacter")
 		UCameraComponent* qp_camera;
@@ -199,15 +165,11 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPCharacter")
 		USpringArmComponent* qp_springArm;
 
-	UCharacterMovementComponent* qp_movementC;
+	
 
-	float qp_forwardV = 0.0f;
-	float qp_rightV = 0.0f;
-	float qp_deltaTime = 0.f;
+	
 
-	class UQPDA_Character* qp_assetData = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	class UQPC_MaterialAutoRestore* qp_materialAutoRestore = nullptr;
+	
 public:
 	//简单的重置一下
 	virtual void QP_Reset();
@@ -219,6 +181,8 @@ public:
 	virtual void QP_PlayerEnter();
 
 	virtual void QP_MouseWheelAxis(float value);
+	virtual void QP_TrunAxis(float value);
+	virtual void QP_LookUpAxis(float value);
 
 	virtual void QP_MoveForward(float value);
 	virtual void QP_MoveRight(float value);

@@ -16,7 +16,7 @@ void AQPC_Quadruped::QP_RestorSlime() {
 void AQPC_Quadruped::QP_AnimNotifyEvent(UQPData* data) {
 	Super::QP_AnimNotifyEvent(data);
 	
-		if (data->QP_IsChange<FName, bool>("qp_flySlimeReduceEnd", EQPDataValueType::FNAME)) {
+		if (data->QP_IsChange<FName, bool>("qp_flySlimeReduceEnd", EQPDataValueType::BOOL)) {
 			qp_targetCameraLength = qp_springArm->TargetArmLength;
 			qp_springArm->TargetArmLength = UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Getfloat("flyCameraLength");
 			qp_isAutoCameraLength = true;
