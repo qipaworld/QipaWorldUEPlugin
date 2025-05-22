@@ -29,7 +29,7 @@ public:
 public:
 
 	//void QP_AnimNotifySwitchPlayer(UQPData* data);
-	virtual void QP_AnimNotifyEvent(UQPData* data);
+	virtual void QP_AnimNotify(const FName& n);
 
 
 	/**创建魔法技能*/

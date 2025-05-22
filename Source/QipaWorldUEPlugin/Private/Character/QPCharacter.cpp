@@ -71,7 +71,7 @@ void AQPCharacter::BeginPlay()
 	qp_isFixedCamera = false;
 	qp_isRun = false;
 	qp_maxSpeed = qp_walkSpeed;
-	qp_characterData->QP_GetUQPData(UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyEvent);
+	//qp_characterData->QP_GetUQPData(UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyEvent);
 	
 	if (!qp_assetData) {
 		UQPGIM_Character::qp_staticObject->QP_InitCharacterData(this);
@@ -409,13 +409,13 @@ void AQPCharacter::QP_ReReset() {
 	 }
  }
 
- void AQPCharacter::QP_AnimNotifyEvent(UQPData* data) {
+ void AQPCharacter::QP_AnimNotify(const FName& n) {
 	 //GLog->Log("QP_AnimNotifyFire");
 	
-	if (data->QP_IsChange<FName, bool>(QP_AnimNotifyFireName, EQPDataValueType::BOOL)) {
+	if ( n== QP_AnimNotifyFireName) {
 		QP_Fire();
 	}
-	else if (data->QP_IsChange<FName, bool>(QP_AnimNotifyJunmEndName, EQPDataValueType::BOOL)) {
+	else if( n == QP_AnimNotifyJunmEndName) {
 		if (qp_characterData->QP_GetFString("characterAttack") == "start") {
 			//qp_characterData->QP_AddFString("characterAttack", "start");
 			QP_PlayAnim("characterAttack");

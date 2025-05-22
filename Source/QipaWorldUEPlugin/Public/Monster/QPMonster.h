@@ -7,10 +7,12 @@
 #include "Interface/QPI_GetQPData.h"
 #include "Animation/QPC_PlayMontage.h"
 #include "Interface/QPI_GetAnimData.h"
+#include "Interface/QP_AnimNotify.h"
+
 #include "QPMonster.generated.h"
 
 UCLASS()
-class QIPAWORLDUEPLUGIN_API AQPMonster : public ACharacter, public IQPI_GetQPData, public IQPI_GetAnimData
+class QIPAWORLDUEPLUGIN_API AQPMonster : public ACharacter, public IQPI_GetQPData, public IQPI_GetAnimData , public IQP_AnimNotify
 {
 	GENERATED_BODY()
 public:
@@ -92,6 +94,7 @@ public:
 
 	virtual class UQPData* QP_GetQPData() override;
 	virtual class UQPData* QP_GetAnimData() override;
+	virtual void QP_AnimNotify(const FName& k) override;
 	virtual void QP_PlayAnim(FName name, FName StartSectionName = NAME_None);
 
 };

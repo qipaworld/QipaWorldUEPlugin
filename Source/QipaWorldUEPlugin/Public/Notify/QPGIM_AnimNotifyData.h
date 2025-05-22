@@ -19,7 +19,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_AnimNotifyData : public UGameInstanceSubsyste
 	//FString qp_animNotifyDataName = "qp_animNotifyDataName";
 public:
 	static UQPGIM_AnimNotifyData* QP_UQPGIM_AnimNotifyData;
-	static FName QP_DATA_BASE_NAME;
+	//static FName QP_DATA_BASE_NAME;
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
 
@@ -46,7 +46,7 @@ public:
 	UQPData* QP_GetNotifyData(FName name);
 
 	/** 添加数据，实际你直接get就行，他会自动添加*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPAnimNotifyData")
-	UQPData* QP_AddNotifyData(FName name);
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPAnimNotifyData")
+	//UQPData* QP_AddNotifyData(FName name);
 
 };

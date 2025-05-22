@@ -46,7 +46,9 @@ UQPData* AQPMonster::QP_GetQPData() {
 	}
 	return qp_characterData;
 }
+void AQPMonster::QP_AnimNotify(const FName& k) {
 
+}
 UQPData* AQPMonster::QP_GetAnimData() {
 
 	if (!qp_animData) {
