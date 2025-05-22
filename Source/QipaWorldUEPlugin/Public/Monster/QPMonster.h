@@ -65,6 +65,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	float qp_moveInterpSpeed = 5.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 
 	bool qp_isAttacking = false;
 	UCharacterMovementComponent* qp_movementC;
