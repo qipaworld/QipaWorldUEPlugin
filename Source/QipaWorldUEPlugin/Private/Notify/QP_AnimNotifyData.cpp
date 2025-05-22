@@ -21,3 +21,10 @@ void UQP_AnimNotifyData::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceB
 	//	UQPGIM_AnimNotifyData::QP_UQPGIM_AnimNotifyData->QP_AddNotifyData(qp_animNotifyName);
 	//}
 }
+FString UQP_AnimNotifyData::GetNotifyName_Implementation() const
+{
+	return TEXT("QP Anim Notify");
+}
+//FString UQP_AnimNotifyData::GetNotifyName() const {
+//	
+//}
