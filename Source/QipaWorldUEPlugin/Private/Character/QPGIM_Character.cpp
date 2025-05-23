@@ -5,6 +5,8 @@
 #include "Animation/QPC_PlayMontage.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Actor/QPGIM_Actor.h"
+#include "Map/QPGIM_Map.h"
+
 #include "Character/QPDA_Character.h"
 
 UQPGIM_Character* UQPGIM_Character::qp_staticObject = nullptr;
@@ -20,7 +22,8 @@ void UQPGIM_Character::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
-
+	Collection.InitializeDependency(UQPGIM_Map::StaticClass());
+	UQPGIM_Map::qp_staticObject->QP_GetMapData()->qp_dataDelegate.AddUObject(this, &UQPGIM_Character::QP_BindMapData);
 	qp_staticObject = this;
 
 
@@ -118,4 +121,11 @@ void UQPGIM_Character::QP_CollectCharacter(const FName& key, ACharacter* charact
 ACharacter* UQPGIM_Character::QP_ChangeMainCharacter(const FName& collkey, ACharacter* character, const FName& qp_name, FTransform T) {
 	UQPGIM_Actor::qp_staticObject->QP_AddActor(collkey, character,true);
 	return QP_GetNewCharacter(qp_name, T);
+}
+
+void UQPGIM_Character::QP_BindMapData(UQPData* data)
+{
+	if (data->QP_IsChange<FName, FName>("changeLevelName", EQPDataValueType::FNAME)) {
+		qp_characterMap.Reset();
+	}
 }

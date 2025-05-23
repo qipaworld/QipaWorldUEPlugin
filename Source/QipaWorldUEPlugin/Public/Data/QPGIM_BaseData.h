@@ -56,6 +56,11 @@ public:
 	UQPData* QP_GetGameStatusData();
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetUIEventData();
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UQPData* QP_GetKeyBoardEventData();
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UQPData* QP_GetSoundData();
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	//class UQPDS_DataAsset* QP_GetDefaultSettingDataAsset();
 	void QP_InitDefaultSetting();
@@ -79,7 +84,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void QP_SetTipKey(const FString& k, bool v);
 
-
+	UFUNCTION()
+	void QP_OnPostLoadMap(UWorld* LoadedWorld);
 
 	//void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
 

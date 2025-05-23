@@ -1,4 +1,4 @@
-// QIPAWORLD
+ï»¿// QIPAWORLD
 
 #pragma once
 
@@ -19,27 +19,32 @@ public:
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	TSoftObjectPtr<UWorld> QP_DefaultStartMap;
-	/**´ø¼ÓÔØ½ø¶ÈÌõµÄµØÍ¼Â·¾¶*/
+	/**å¸¦åŠ è½½è¿›åº¦æ¡çš„åœ°å›¾è·¯å¾„*/
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	TSoftObjectPtr<UWorld> QP_DefaultLoadingMap;
-	/**Ä¬ÈÏµÄuiÀ¶Í¼Â·¾¶*/
+	/**é»˜è®¤çš„uiè“å›¾è·¯å¾„*/
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	TSoftClassPtr<UUserWidget> QP_DefaultMainUserInterface ;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting", meta = ( LongPackageName))
 	FDirectoryPath QP_DefaultCharacterDataPath;
 
-	/*Õâ¸öÊÇÄ¬ÈÏµÄµ¯³öui¶¯×÷µÄkey£¬Äã¿ÉÒÔÔÚ¶¯×÷¹ÜÀíÆ÷Àï¼ÓÈëÕâ¸öÊÂ¼ş£¬²¢ÇÒ°ó¶¨°´¼ü¡£Ëû»á×Ô¶¯µ¯³öºÍ¹Ø±Õui*/
+	/*è¿™ä¸ªæ˜¯é»˜è®¤çš„å¼¹å‡ºuiåŠ¨ä½œçš„keyï¼Œä½ å¯ä»¥åœ¨åŠ¨ä½œç®¡ç†å™¨é‡ŒåŠ å…¥è¿™ä¸ªäº‹ä»¶ï¼Œå¹¶ä¸”ç»‘å®šæŒ‰é”®ã€‚ä»–ä¼šè‡ªåŠ¨å¼¹å‡ºå’Œå…³é—­ui*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	FString QP_DefaultUserInterfaceActionKey = "DefaultUserInterfaceAction";
-	/*Èç¹ûÕâ¸öÎªÕæ£¬ÉÏÃæµÄkeyÉúĞ§*/
+	/*å¦‚æœè¿™ä¸ªä¸ºçœŸï¼Œä¸Šé¢çš„keyç”Ÿæ•ˆ*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	bool QP_UserInterfaceAutoPop = true;
 
-	/*Ä¬ÈÏÒôĞ§ÅäÖÃ*/
+	/*é»˜è®¤éŸ³æ•ˆé…ç½®*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	TSoftObjectPtr<USoundControlBusMix> QP_DefaultUserAudioSetting ;
 
+
+	///*é»˜è®¤éŸ³æ•ˆé…ç½®*/
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	//TArray<TSoftObjectPtr<USoundControlBus>> QP_DefaultSoundControlBus;
+	
 	/*Open UE DynamicResolutionEnabled*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	bool QP_DynamicResolutionEnabled = true;

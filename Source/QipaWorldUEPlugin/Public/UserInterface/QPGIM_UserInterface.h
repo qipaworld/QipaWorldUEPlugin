@@ -87,7 +87,7 @@ public:
 	/*清空ui数据，但是不会删除ui*/
 	void QP_ResetUIData();
 	/**获得player0 然后监听默认的ui键盘事件*/
-	void QP_BindKeyBoard();
+	void QP_BindKeyBoard(UQPData* data);
 
 	void QP_BindMapData(UQPData* data);
 	/**控制鼠标显示与隐藏*/

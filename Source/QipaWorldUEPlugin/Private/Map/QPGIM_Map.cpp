@@ -57,6 +57,7 @@ void UQPGIM_Map::QP_OpenMap(FName LevelName)
 	UGameplayStatics::OpenLevel(GetWorld(), LevelName);
 	qp_mapData->QP_AddFName("baseLevelName", LevelName);
 }
+//frist go to loading level -> and next  go to game level
 void UQPGIM_Map::QP_LoadingAndOpenMap(FName MapName)
 {
 	qp_readyOpenMapName = MapName;

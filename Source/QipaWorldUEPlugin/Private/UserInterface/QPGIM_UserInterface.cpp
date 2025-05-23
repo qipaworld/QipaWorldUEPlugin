@@ -30,7 +30,7 @@ void UQPGIM_UserInterface::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_Map::StaticClass());
 	UQPGIM_Map::qp_staticObject->QP_GetMapData()->qp_dataDelegate.AddUObject(this, &UQPGIM_UserInterface::QP_BindMapData);
-
+	UQPGIM_BaseData::qp_staticObject->QP_GetKeyBoardEventData()->qp_dataDelegate.AddUObject(this, &UQPGIM_UserInterface::QP_BindKeyBoard);
 	qp_staticObject = this;
 	//UQPDS_Default* devSetting = UQPDS_Default::QP_GET();
 	
@@ -175,15 +175,12 @@ void UQPGIM_UserInterface::QP_KeyBoardEvent()
 int32 UQPGIM_UserInterface::QP_GetPopUINum() {
 	return qp_UIData.Num();
 }
-void UQPGIM_UserInterface::QP_BindKeyBoard()
+void UQPGIM_UserInterface::QP_BindKeyBoard(UQPData* data)
 {
-	 
-	if (UQPGIM_BaseData::qp_staticObject-> qp_defaultDataAsset->QP_UserInterfaceAutoPop) {
-
-		APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		controller->InputComponent->BindAction(*(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultUserInterfaceActionKey), IE_Released, this, &UQPGIM_UserInterface::QP_KeyBoardEvent);
-
+	if (data->QP_IsChange<FName, bool>("autoPushAndPopUI", EQPDataValueType::BOOL)) {
+		QP_KeyBoardEvent();
 	}
+	
 }
 void UQPGIM_UserInterface::QP_ResetUIData()
 {
@@ -203,10 +200,7 @@ void UQPGIM_UserInterface::QP_BindMapData(UQPData* data)
 		if (data->QP_IsChange<FName, FName>("changeLevelName", EQPDataValueType::FNAME)) {
 			QP_ResetUIData();
 		}
-		else if (data->QP_IsChange<FName, FName>("baseLevelName", EQPDataValueType::FNAME)) {
-			QP_BindKeyBoard();
-		}
-	//}
+		
 	
 }
 void UQPGIM_UserInterface::QP_ListViewBindData(FName key, UListView* view,  TSubclassOf<UQPObject> itemClass, UQPData* data, EQPDataKeyType t, EQPDataValueType vt, bool isUpdateChange) {

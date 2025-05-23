@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Setting/QPDS_Default.h"
 #include "Components/AudioComponent.h"
+#include "AudioModulationStatics.h"
 //#include "Sound/QPSG_Sound.h"
 #include "MetasoundSource.h"
 //#include "UObject/ConstructorHelpers.h"
@@ -30,7 +31,7 @@ void UQPGIM_Sound::Initialize(FSubsystemCollectionBase& Collection)
 
 	qp_staticObject = this;
 
-	qp_soundData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_Sound");
+	qp_soundData = UQPGIM_BaseData::qp_staticObject->QP_GetSoundData();
 	
 	QP_LoadSoundData();
 	
@@ -145,10 +146,17 @@ void UQPGIM_Sound::QP_Play2DSoundBySound(USoundBase* sound)
 {
 	UGameplayStatics::PlaySound2D(GetWorld(), sound);
 }
-
+void UQPGIM_Sound::QP_UpdateControlBusMix(int32 i,float v) {
+	if (IsValid(qp_busMix)) {
+		qp_busMix->MixStages[i].Value.TargetValue = v;
+		UAudioModulationStatics::UpdateMix(GetWorld(), qp_busMix, qp_busMix->MixStages);
+	}
+}
 void UQPGIM_Sound::QP_SetAllVolume(float v)
 {
 	qp_soundData->QP_Addfloat("allVolume",v);
+	QP_UpdateControlBusMix(1, v);
+
 }
 
 float UQPGIM_Sound::QP_GetAllVolume()
@@ -159,6 +167,7 @@ float UQPGIM_Sound::QP_GetAllVolume()
 void UQPGIM_Sound::QP_SetMusicVolume(float v)
 {
 	qp_soundData->QP_Addfloat("musicVolume", v);
+	QP_UpdateControlBusMix(0,v);
 }
 
 float UQPGIM_Sound::QP_GetMusicVolume()
@@ -170,6 +179,8 @@ float UQPGIM_Sound::QP_GetMusicVolume()
 void UQPGIM_Sound::QP_SetEffectVolume(float v)
 {
 	qp_soundData->QP_Addfloat("effectVolume", v);
+	QP_UpdateControlBusMix(4, v);
+
 }
 
 float UQPGIM_Sound::QP_GetEffectVolume()
@@ -181,6 +192,8 @@ float UQPGIM_Sound::QP_GetEffectVolume()
 void UQPGIM_Sound::QP_SetUIVolume(float v)
 {
 	qp_soundData->QP_Addfloat("UIVolume", v);
+	QP_UpdateControlBusMix(2, v);
+
 }
 
 float UQPGIM_Sound::QP_GetUIVolume()
@@ -192,6 +205,8 @@ float UQPGIM_Sound::QP_GetUIVolume()
 void UQPGIM_Sound::QP_SetEnvironmentVolume(float v)
 {
 	qp_soundData->QP_Addfloat("environmentVolume", v);
+	QP_UpdateControlBusMix(3, v);
+
 }
 
 float UQPGIM_Sound::QP_GetEnvironmentVolume()
@@ -215,6 +230,27 @@ void UQPGIM_Sound::QP_SoundDataChange(UQPData* data)
 	//	//qp_UISound->SetPitchMultiplier(qp_pitch);
 	//	qp_UISound->SetVolumeMultiplier(QP_GetSoundVolume());
 	//}
+	if (data->QP_IsChange<FName, bool>("ActivateBusMix", EQPDataValueType::BOOL)) {
+		if (!IsValid(qp_busMix)) {
+			qp_busMix = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultUserAudioSetting.LoadSynchronous();
+			qp_busMix->AddToRoot();
+		}
+		if (IsValid(qp_busMix))
+		{
+			if (!UAudioModulationStatics::IsControlBusMixActive(GetWorld(), qp_busMix)) {
+				
+				qp_busMix->MixStages[0].Value.TargetValue = QP_GetMusicVolume();
+				qp_busMix->MixStages[1].Value.TargetValue = QP_GetAllVolume();
+				qp_busMix->MixStages[2].Value.TargetValue = QP_GetUIVolume();
+				qp_busMix->MixStages[3].Value.TargetValue = QP_GetEnvironmentVolume();
+				qp_busMix->MixStages[4].Value.TargetValue = QP_GetEffectVolume();
+				UAudioModulationStatics::ActivateBusMix(GetWorld(), qp_busMix);
+			}
+		}
+		else {
+			UQPUtil::QP_LOG("load Control Bus Mix Error");
+		}
+	}
 }
 
 void UQPGIM_Sound::QP_SaveSoundData()
@@ -239,6 +275,28 @@ void UQPGIM_Sound::QP_SaveSoundData()
 		// 启动异步保存进程。
 		//UGameplayStatics::AsyncSaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName,qp_UserIndex, qp_SavedDelegate);
 	}
+	//if (IsValid(qp_busMix))
+	//{
+	//	if (UAudioModulationStatics::IsControlBusMixActive(GetWorld(), qp_busMix)) {
+	//		//UAudioModulationStatics::mix
+	//		//UAudioModulationStatics::UpdateMix(,);
+	//		UE_LOG(LogTemp, Log, TEXT("qp_busMix->MixStages.Num() = %d"), qp_busMix->MixStages.Num());
+	//		FTimerHandle Handle;
+	//		GetWorld()->GetTimerManager().SetTimer(Handle, [this]()
+	//			{
+	//				UAudioModulationStatics::SaveMixToProfile(GetWorld(), qp_busMix, 0);
+	//				UE_LOG(LogTemp, Log, TEXT("Saved Mix to Profile"));
+	//			}, 0.1f, false);
+	//		//UAudioModulationStatics::SaveMixToProfile(GetWorld(), qp_busMix, 0);
+	//	}
+	//	else {
+	//		UQPUtil::QP_LOG("save Control Bus Mix Error");
+	//	}
+	//}
+	//else {
+	//	UQPUtil::QP_LOG("save Control Bus Mix Error");
+	//}
+	
 }
 
 //void UQPGIM_Sound::QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess)

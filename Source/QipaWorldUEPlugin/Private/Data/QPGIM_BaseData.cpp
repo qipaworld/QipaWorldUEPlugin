@@ -8,6 +8,8 @@
 #include "AudioDevice.h"
 #include "Data/QPGIM_Data.h"
 
+//#include "Engine/Engine.h"
+
 #include "AudioModulationStatics.h"
 #include "QPUtil.h"
 
@@ -25,6 +27,7 @@ void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 	//UQPUtil::QP_LOG("????????_____AAA_____????????????");
 
 	Super::Initialize(Collection);
+
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 
 	qp_staticObject = this;
@@ -35,7 +38,11 @@ void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 	
 	
 	qp_baseDataSave->AddToRoot();
-
+	//if (UWorld* World = GetWorld())
+	//{
+		//QP_OnPostLoadMap(World); 
+	//}
+	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UQPGIM_BaseData::QP_OnPostLoadMap);
 	//QP_LoadSoundData();
 
 	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
@@ -166,16 +173,7 @@ void UQPGIM_BaseData::QP_InitDefaultSetting() {
 		GEngine->SetDynamicResolutionUserSetting(true);
 	}
 	
-	USoundControlBusMix* LoadedBusMix = qp_defaultDataAsset->QP_DefaultUserAudioSetting.LoadSynchronous();
-	if (LoadedBusMix)
-	{
-		//UAudioModulationStatics::ActivateBusMix();
-		//UE_LOG(LogTemp, Log, TEXT("³É¹¦¼ÓÔØ Control Bus Mix: %s"), *LoadedBusMix->GetName());
-		UAudioModulationStatics::ActivateBusMix(GetWorld(), LoadedBusMix);
-	}
-	else {
-		UQPUtil::QP_LOG("load Control Bus Mix Error");
-	}
+	
 	
 	//UQPData* qpData = QP_GetDefaultSetting();
 	//qpData->QP_AddFString("QP_DefaultStartMap", qp_defaultDataAsset->QP_DefaultStartMap);
@@ -189,6 +187,23 @@ void UQPGIM_BaseData::QP_InitDefaultSetting() {
 		//qpuuid->QP_Addint32(uuid.Key, uuid.Value);
 	//}
 	
+}
+void UQPGIM_BaseData::QP_OnPostLoadMap(UWorld* LoadedWorld)
+{
+	if (LoadedWorld)
+	{
+		/*USoundControlBusMix* LoadedBusMix = qp_defaultDataAsset->QP_DefaultUserAudioSetting.LoadSynchronous();
+		if (LoadedBusMix)
+		{
+			UAudioModulationStatics::ActivateBusMix(LoadedWorld, LoadedBusMix);
+			if (!UAudioModulationStatics::IsControlBusMixActive(LoadedWorld, LoadedBusMix)) {
+				UQPUtil::QP_LOG("load Control Bus Mix Error");
+			}
+		}
+		else {
+			UQPUtil::QP_LOG("load Control Bus Mix Error");
+		}*/
+	}
 }
 int32 UQPGIM_BaseData::QP_GetUUID(const FString& key) {
 	if (qp_defaultDataAsset->QP_UUID.Contains(key)) {
@@ -214,6 +229,18 @@ UQPData* UQPGIM_BaseData::QP_GetUIEventData() {
 	return qp_gameBaseData->QP_GetUQPData("QP_GetUIEventData");
 
 }
+UQPData* UQPGIM_BaseData::QP_GetKeyBoardEventData() {
+	return qp_gameBaseData->QP_GetUQPData("QP_GetKeyBoardEventData");
+
+}
+UQPData* UQPGIM_BaseData::QP_GetSoundData() {
+	return qp_gameBaseData->QP_GetUQPData("QP_GetSoundData");
+
+}
+
+
+
+
 
 //UQPData* QP_GetUIEventData();
 

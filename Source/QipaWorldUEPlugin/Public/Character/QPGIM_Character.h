@@ -80,4 +80,5 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
 	void QP_InitCharacterData(AQPCharacter* c);
 
+	void QP_BindMapData(class UQPData* data);
 };
