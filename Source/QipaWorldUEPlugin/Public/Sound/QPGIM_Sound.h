@@ -58,7 +58,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
 	void QP_BeginPlayInit();
 
-	void QP_UpdateControlBusMix(int32 i,float v);
+	//void QP_UpdateControlBusMix(int32 i,float v);
 	
 	/** 用路径设置背景音乐*/
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
@@ -110,42 +110,42 @@ public:
 	void QP_Play2DSoundBySound(USoundBase* sound);
 
 	/** 设置音效大小*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
-	void QP_SetAllVolume(float v);
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
+	//void QP_SetAllVolume(float v);
 
 	/** 获得音效大小*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
-	float QP_GetAllVolume();
+	float QP_GetVolumeByIndex(int32 i);
 
 	/** 设置音乐大小*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
-		void QP_SetMusicVolume(float v);
+		void QP_SetVolumeByIndex(int32 i,float v);
 
 	/** 获得音乐大小*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
-		float QP_GetMusicVolume();
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
+	//	float QP_GetMusicVolume();
 
-	/** 设置音乐大小*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
-		void QP_SetEffectVolume(float v);
+	///** 设置音乐大小*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
+	//	void QP_SetEffectVolume(float v);
 
-	/** 获得音乐大小*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
-		float QP_GetEffectVolume();
-	/** 设置音乐大小*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
-		void QP_SetUIVolume(float v);
+	///** 获得音乐大小*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
+	//	float QP_GetEffectVolume();
+	///** 设置音乐大小*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
+	//	void QP_SetUIVolume(float v);
 
-	/** 获得音乐大小*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
-		float QP_GetUIVolume();
-	/** 设置音乐大小*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
-		void QP_SetEnvironmentVolume(float v);
+	///** 获得音乐大小*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
+	//	float QP_GetUIVolume();
+	///** 设置音乐大小*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
+	//	void QP_SetEnvironmentVolume(float v);
 
-	/** 获得音乐大小*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
-		float QP_GetEnvironmentVolume();
+	///** 获得音乐大小*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
+	//	float QP_GetEnvironmentVolume();
 	//void QP_CreateAudioComponent(UAudioComponent*& audio,float volume, USoundBase* sound);
 	/**音量变化的时候设置背景音乐和音效的音量*/
 	void QP_SoundDataChange(UQPData* data);

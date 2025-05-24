@@ -146,73 +146,81 @@ void UQPGIM_Sound::QP_Play2DSoundBySound(USoundBase* sound)
 {
 	UGameplayStatics::PlaySound2D(GetWorld(), sound);
 }
-void UQPGIM_Sound::QP_UpdateControlBusMix(int32 i,float v) {
+//void UQPGIM_Sound::QP_UpdateControlBusMix(int32 i,float v) {
+//	if (IsValid(qp_busMix)) {
+//		qp_busMix->MixStages[i].Value.TargetValue = v;
+//		UAudioModulationStatics::UpdateMix(GetWorld(), qp_busMix, qp_busMix->MixStages);
+//	}
+//}
+void UQPGIM_Sound::QP_SetVolumeByIndex(int32 i,float v)
+{
 	if (IsValid(qp_busMix)) {
 		qp_busMix->MixStages[i].Value.TargetValue = v;
 		UAudioModulationStatics::UpdateMix(GetWorld(), qp_busMix, qp_busMix->MixStages);
 	}
+	//qp_soundData->QP_AddfloatExI(i,v);
+	//QP_UpdateControlBusMix(1, v);
+
 }
-void UQPGIM_Sound::QP_SetAllVolume(float v)
+
+float UQPGIM_Sound::QP_GetVolumeByIndex(int32 i)
 {
-	qp_soundData->QP_Addfloat("allVolume",v);
-	QP_UpdateControlBusMix(1, v);
-
+	if (IsValid(qp_busMix)) {
+		return qp_busMix->MixStages[i].Value.TargetValue ;
+		//UAudioModulationStatics::UpdateMix(GetWorld(), qp_busMix, qp_busMix->MixStages);
+	}
+	return 0;
 }
 
-float UQPGIM_Sound::QP_GetAllVolume()
-{
-	return qp_soundData->QP_Getfloat("allVolume");
-}
-
-void UQPGIM_Sound::QP_SetMusicVolume(float v)
-{
-	qp_soundData->QP_Addfloat("musicVolume", v);
-	QP_UpdateControlBusMix(0,v);
-}
-
-float UQPGIM_Sound::QP_GetMusicVolume()
-{
-	return qp_soundData->QP_Getfloat("musicVolume");
-}
-
-
-void UQPGIM_Sound::QP_SetEffectVolume(float v)
-{
-	qp_soundData->QP_Addfloat("effectVolume", v);
-	QP_UpdateControlBusMix(4, v);
-
-}
-
-float UQPGIM_Sound::QP_GetEffectVolume()
-{
-	return qp_soundData->QP_Getfloat("effectVolume");
-}
-
-
-void UQPGIM_Sound::QP_SetUIVolume(float v)
-{
-	qp_soundData->QP_Addfloat("UIVolume", v);
-	QP_UpdateControlBusMix(2, v);
-
-}
-
-float UQPGIM_Sound::QP_GetUIVolume()
-{
-	return qp_soundData->QP_Getfloat("UIVolume");
-}
-
-
-void UQPGIM_Sound::QP_SetEnvironmentVolume(float v)
-{
-	qp_soundData->QP_Addfloat("environmentVolume", v);
-	QP_UpdateControlBusMix(3, v);
-
-}
-
-float UQPGIM_Sound::QP_GetEnvironmentVolume()
-{
-	return qp_soundData->QP_Getfloat("environmentVolume");
-}
+//void UQPGIM_Sound::QP_SetMusicVolume(float v)
+//{
+//	qp_soundData->QP_Addfloat("musicVolume", v);
+//	QP_UpdateControlBusMix(0,v);
+//}
+//
+//float UQPGIM_Sound::QP_GetMusicVolume()
+//{
+//	return qp_soundData->QP_Getfloat("musicVolume");
+//}
+//
+//
+//void UQPGIM_Sound::QP_SetEffectVolume(float v)
+//{
+//	qp_soundData->QP_Addfloat("effectVolume", v);
+//	QP_UpdateControlBusMix(4, v);
+//
+//}
+//
+//float UQPGIM_Sound::QP_GetEffectVolume()
+//{
+//	return qp_soundData->QP_Getfloat("effectVolume");
+//}
+//
+//
+//void UQPGIM_Sound::QP_SetUIVolume(float v)
+//{
+//	qp_soundData->QP_Addfloat("UIVolume", v);
+//	QP_UpdateControlBusMix(2, v);
+//
+//}
+//
+//float UQPGIM_Sound::QP_GetUIVolume()
+//{
+//	return qp_soundData->QP_Getfloat("UIVolume");
+//}
+//
+//
+//void UQPGIM_Sound::QP_SetEnvironmentVolume(float v)
+//{
+//	qp_soundData->QP_Addfloat("environmentVolume", v);
+//	QP_UpdateControlBusMix(3, v);
+//
+//}
+//
+//float UQPGIM_Sound::QP_GetEnvironmentVolume()
+//{
+//	return qp_soundData->QP_Getfloat("environmentVolume");
+//}
 //void UQPGIM_Sound::QP_CreateAudioComponent(UAudioComponent*& audio,float volume,USoundBase* sound) {
 	//audio = UGameplayStatics::CreateSound2D(GetWorld(), sound, volume, 1.0f, 0.0f, nullptr, true);
 	//audio->AddToRoot();
@@ -238,12 +246,10 @@ void UQPGIM_Sound::QP_SoundDataChange(UQPData* data)
 		if (IsValid(qp_busMix))
 		{
 			if (!UAudioModulationStatics::IsControlBusMixActive(GetWorld(), qp_busMix)) {
+				for (int i = 0; i < qp_busMix->MixStages.Num(); ++i) {
+					qp_busMix->MixStages[i].Value.TargetValue = qp_soundSaveGame->QP_GetValue(i);
+				}
 				
-				qp_busMix->MixStages[0].Value.TargetValue = QP_GetMusicVolume();
-				qp_busMix->MixStages[1].Value.TargetValue = QP_GetAllVolume();
-				qp_busMix->MixStages[2].Value.TargetValue = QP_GetUIVolume();
-				qp_busMix->MixStages[3].Value.TargetValue = QP_GetEnvironmentVolume();
-				qp_busMix->MixStages[4].Value.TargetValue = QP_GetEffectVolume();
 				UAudioModulationStatics::ActivateBusMix(GetWorld(), qp_busMix);
 			}
 		}
@@ -264,12 +270,15 @@ void UQPGIM_Sound::QP_SaveSoundData()
 		//FAsyncSaveGameToSlotDelegate qp_SavedDelegate;
 		// USomeUObjectClass::SaveGameDelegateFunction is a void function that takes the following parameters: const FString& SlotName, const int32 UserIndex, bool bSuccess
 		//qp_SavedDelegate.BindUObject(this, &UQPGIM_Sound::QP_SavedDelegate);
-		
-		qp_soundSaveGame->qp_musicVolume = QP_GetMusicVolume();
+		for (int i = 0; i < qp_busMix->MixStages.Num(); ++i) {
+			//qp_busMix->MixStages[i].Value.TargetValue = qp_soundSaveGame->QP_GetValue(i);
+			qp_soundSaveGame->QP_SetValue(i, qp_busMix->MixStages[i].Value.TargetValue);
+		}
+		/*qp_soundSaveGame->qp_musicVolume = QP_GetMusicVolume();
 		qp_soundSaveGame->qp_allVolume = QP_GetAllVolume();
 		qp_soundSaveGame->qp_UIVolume = QP_GetUIVolume();
 		qp_soundSaveGame->qp_effectVolume = QP_GetEffectVolume();
-		qp_soundSaveGame->qp_environmentVolume = QP_GetEnvironmentVolume();
+		qp_soundSaveGame->qp_environmentVolume = QP_GetEnvironmentVolume();*/
 		qp_soundSaveGame->QP_AsyncSave();
 		//UGameplayStatics::SaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName, qp_UserIndex);
 		// 启动异步保存进程。
@@ -312,11 +321,11 @@ void UQPGIM_Sound::QP_LoadSoundData()
 	/*if (qp_soundSaveGame)
 	{*/
 
-	QP_SetMusicVolume(qp_soundSaveGame->qp_musicVolume);
-	QP_SetAllVolume(qp_soundSaveGame->qp_allVolume);
-	QP_SetEffectVolume(qp_soundSaveGame->qp_effectVolume);
-	QP_SetUIVolume(qp_soundSaveGame->qp_UIVolume);
-	QP_SetEnvironmentVolume(qp_soundSaveGame->qp_environmentVolume) ;
+	//QP_SetMusicVolume(qp_soundSaveGame->qp_musicVolume);
+	//QP_SetAllVolume(qp_soundSaveGame->qp_allVolume);
+	//QP_SetEffectVolume(qp_soundSaveGame->qp_effectVolume);
+	//QP_SetUIVolume(qp_soundSaveGame->qp_UIVolume);
+	//QP_SetEnvironmentVolume(qp_soundSaveGame->qp_environmentVolume) ;
 	/*}
 	else 
 	{
