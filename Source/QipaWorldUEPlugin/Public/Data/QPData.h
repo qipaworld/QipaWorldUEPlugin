@@ -42,10 +42,15 @@ class IQPBaseData {
 public:
 	EQPDataValueType qp_valueType;
 	EQPDataKeyType qp_keyType;
+	bool qp_isRemoveLog = false;
+	bool qp_isSave = true;
+
 	virtual void QP_RestChangeMap() = 0;
 	virtual void QP_GetMapKeys(TArray<FName>& qp_outArray) = 0;
 	virtual void QP_GetMapKeys(TArray<FString>& qp_outArray) = 0;
 	virtual void QP_GetMapKeys(TArray<int32>& qp_outArray) = 0;
+	virtual void Serialize(FArchive& Ar)=0;
+
 	IQPBaseData(EQPDataValueType vt, EQPDataKeyType kt)
 		: qp_valueType(vt)
 		, qp_keyType(kt)
@@ -54,10 +59,10 @@ public:
 	virtual ~IQPBaseData() = default;
 };
 template<typename K, typename V>
-class QPBaseData:IQPBaseData {
+class QPBaseData: public IQPBaseData {
 public:
 	using IQPBaseData::IQPBaseData;
-	bool qp_isRemoveLog = false;
+	
 	TMap<K, EQPDataChangeType> qp_changeMap;
 	TMap<K, V> qp_ValueMap;
 	
@@ -65,6 +70,21 @@ public:
 		if constexpr (std::is_same<V, UQPData*>::value) {
 			for (auto v : qp_ValueMap) {
 				v.Value->RemoveFromRoot();
+			}
+		}
+	};
+	TMap<K, V>& QP_GetTMap() {
+		return qp_ValueMap;
+	}
+	virtual void Serialize(FArchive& Ar) override {
+		//Ar << qp_valueType;
+		//Ar << qp_keyType;
+		if constexpr (!std::is_same<K, void*>::value) {
+
+			if constexpr (!std::is_same<V, void*>::value || !std::is_same<V, UQPData*>::value || !std::is_same<V, std::string>::value || !std::is_same<V, UObject*>::value) {
+				Ar << qp_isRemoveLog;
+				Ar << qp_isSave;
+				Ar << qp_ValueMap;
 			}
 		}
 	};
@@ -122,9 +142,9 @@ public:
 	inline bool QP_Contains(const K& k) {
 		return qp_ValueMap.Contains(k);
 	}
-	inline bool QP_SetRemoveLog(bool b) {
+	/*inline bool QP_SetRemoveLog(bool b) {
 		qp_isRemoveLog = b;
-	}
+	}*/
 	inline bool QP_Remove(const K& k, EQPDataBroadcastType bType) {
 
 		if (qp_ValueMap.Contains(k)) {
@@ -173,7 +193,7 @@ public:
 UENUM(BlueprintType, Category = "QipaWorld|Data")
 enum class EQPDataKeyType :uint8
 {
-	INT32               UMETA(DisplayName = "Init32"),
+	INT32               UMETA(DisplayName = "Int32"),
 	FNAME               UMETA(DisplayName = "FName"),
 	//FSTRING               UMETA(DisplayName = "FString"),
 	VOID               UMETA(DisplayName = "Void*"),
@@ -183,7 +203,7 @@ enum class EQPDataKeyType :uint8
 UENUM(BlueprintType, Category = "QipaWorld|Data")
 enum class EQPDataValueType :uint8
 {
-	INT32              UMETA(DisplayName = "Init32"),
+	INT32              UMETA(DisplayName = "Int32"),
 	FNAME              UMETA(DisplayName = "FName"),
 	FSTRING            UMETA(DisplayName = "FString"),
 	UQPDATA            UMETA(DisplayName = "UQPData"),
@@ -193,6 +213,9 @@ enum class EQPDataValueType :uint8
 	FTEXT              UMETA(DisplayName = "FText"),
 	TARRAY               UMETA(DisplayName = "TArray"),
 	FVECTOR               UMETA(DisplayName = "FVector"),
+	FROTATOR               UMETA(DisplayName = "FRotator"),
+	FTRANSFORM              UMETA(DisplayName = "FTransform"),
+	FQUAT              UMETA(DisplayName = "FQuat"),
 
 	VOID               UMETA(DisplayName = "void*"),
 	INT8               UMETA(DisplayName = "int8"),
@@ -229,7 +252,7 @@ class QIPAWORLDUEPLUGIN_API UQPData : public UObject
 	GENERATED_BODY()
 public:
 	TMap<int16, void*> qp_ValueMap;
-	
+	//TArray<int16> qp_keys;
 	/** 这个是C++用的代理，---
 	 *把你监听这个数据的方法绑定上，数据改变时会自动调用-----
 	 *数据内容包括是否是初始化，更改的内容的key，以及数据本身。----
@@ -239,12 +262,14 @@ public:
 	 *把你监听这个数据的方法绑定上，数据改变时会自动调用----
 	 *数据内容包括是否是初始化，更改的内容的key，以及数据本身。----
 	 */
-	UPROPERTY(BlueprintAssignable, Category = "QipaWorld|QPData")
+	UPROPERTY(Transient ,BlueprintAssignable, Category = "QipaWorld|QPData")
 	FQP_DataDynamicDelegate qp_dataDynamicDelegate;
 
 	//FName qp_dataName = "No settings";
 	
 	bool qp_isAddToManager = false;
+
+	virtual void Serialize(FArchive& Ar) override;
 
 	virtual void BeginDestroy() override;
 
@@ -279,8 +304,16 @@ public:
 	//如果需要立刻发送，则立刻发送事件。----
 	void QP_needSyncBroadcast(EQPDataBroadcastType bType);
 	
+
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_BroadcastNow();
+
+	
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	void QP_SaveData(const FString& name );
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	void QP_LoadData(const FString& name);
 
 	template<typename K, typename V>
 	inline bool QP_IsChange(const K& k,EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME ) {
@@ -919,6 +952,150 @@ bool QP_RemoveUQPDataExO(UObject*  key, EQPDataBroadcastType bType = EQPDataBroa
 
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 void QP_ClearUQPDataExO( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_AddFRotator(FName  key, const FRotator& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_ContainsFRotator(FName  key);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+FRotator& QP_GetFRotator(FName  key);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+bool QP_RemoveFRotator(FName  key, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_ClearFRotator( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_AddFRotatorExI(int32  key, const FRotator& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_ContainsFRotatorExI(int32  key);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+FRotator& QP_GetFRotatorExI(int32  key);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+bool QP_RemoveFRotatorExI(int32  key, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_ClearFRotatorExI( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_AddFRotatorExO(UObject*  key, const FRotator& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_ContainsFRotatorExO(UObject*  key);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+FRotator& QP_GetFRotatorExO(UObject*  key);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+bool QP_RemoveFRotatorExO(UObject*  key, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_ClearFRotatorExO( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_AddFTransform(FName  key, const FTransform& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_ContainsFTransform(FName  key);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+FTransform& QP_GetFTransform(FName  key);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+bool QP_RemoveFTransform(FName  key, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_ClearFTransform( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_AddFTransformExI(int32  key, const FTransform& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_ContainsFTransformExI(int32  key);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+FTransform& QP_GetFTransformExI(int32  key);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+bool QP_RemoveFTransformExI(int32  key, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_ClearFTransformExI( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_AddFTransformExO(UObject*  key, const FTransform& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_ContainsFTransformExO(UObject*  key);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+FTransform& QP_GetFTransformExO(UObject*  key);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+bool QP_RemoveFTransformExO(UObject*  key, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_ClearFTransformExO( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_AddFQuat(FName  key, const FQuat& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_ContainsFQuat(FName  key);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+FQuat& QP_GetFQuat(FName  key);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+bool QP_RemoveFQuat(FName  key, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_ClearFQuat( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_AddFQuatExI(int32  key, const FQuat& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_ContainsFQuatExI(int32  key);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+FQuat& QP_GetFQuatExI(int32  key);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+bool QP_RemoveFQuatExI(int32  key, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_ClearFQuatExI( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_AddFQuatExO(UObject*  key, const FQuat& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+bool QP_ContainsFQuatExO(UObject*  key);
+
+UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
+FQuat& QP_GetFQuatExO(UObject*  key);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+bool QP_RemoveFQuatExO(UObject*  key, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+
+UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+void QP_ClearFQuatExO( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
 
 
 //------------auto generator end

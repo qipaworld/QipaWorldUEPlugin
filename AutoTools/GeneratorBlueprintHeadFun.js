@@ -91,6 +91,9 @@ var dataList =
     {funName: 'int32',funValue: 'int32',valueType: 'int32',returnValue: 'int32',enumV: 'EQPDataValueType::INT32' },
     {funName: 'UObject',funValue: 'UObject*',valueType: 'UObject*',returnValue: 'UObject*',enumV: 'EQPDataValueType::UOBJECT' },
     {funName: 'UQPData',funValue: 'UQPData*',valueType: 'UQPData*',returnValue: 'UQPData*',enumV: 'EQPDataValueType::UQPDATA' },
+    {funName: 'FRotator',funValue: 'const FRotator&',valueType: 'FRotator',returnValue: 'FRotator&',enumV: 'EQPDataValueType::FROTATOR' },
+    {funName: 'FTransform',funValue: 'const FTransform&',valueType: 'FTransform',returnValue: 'FTransform&',enumV: 'EQPDataValueType::FTRANSFORM' },
+    {funName: 'FQuat',funValue: 'const FQuat&',valueType: 'FQuat',returnValue: 'FQuat&',enumV: 'EQPDataValueType::FQUAT' },
 ]
 
 function writeFile(path,str){

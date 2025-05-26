@@ -8,8 +8,12 @@
 #include "QPUtil.h"
 //FString UQPSaveGame::qp_save_ = "NONE";
 
-FString UQPSaveGame::QP_GetSaveType() {
-	return UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType;
+FString UQPSaveGame::QP_GenerateSaveKey(const FString& key) {
+	if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType == "NONE") {
+		return key;
+	}
+	return UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType + key;
+	
 }
 void UQPSaveGame::QP_SetSaveKey(const FString& v) {
 	//if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType == "NONE") {

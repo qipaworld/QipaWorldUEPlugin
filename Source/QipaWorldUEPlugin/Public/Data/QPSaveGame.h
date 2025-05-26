@@ -22,11 +22,11 @@ class QIPAWORLDUEPLUGIN_API UQPSaveGame : public USaveGame
 
 	//static FString qp_save_;
 public:
-	static FString QP_GetSaveType();
+	//static FString QP_GetSaveKey();
+	static FString QP_GenerateSaveKey(const FString& key);
 	template<typename T>
 	static T* QP_LoadSaveData(const FString& key,int32 index = 0) {
-		FString saveType = QP_GetSaveType();
-		FString k = saveType == "NONE" ? key : saveType + key;
+		FString k = QP_GenerateSaveKey(key);
 		T* saveData = Cast<T>(UGameplayStatics::LoadGameFromSlot(k, index));
 		if (!IsValid(saveData)) {
 			saveData = Cast<T>(UGameplayStatics::CreateSaveGameObject(T::StaticClass()));

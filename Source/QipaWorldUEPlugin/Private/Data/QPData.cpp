@@ -3,8 +3,348 @@
 
 #include "Data/QPData.h"
 #include <Kismet/GameplayStatics.h>
+#include "Data/QPSG_QPData.h"
+#include "Serialization/BufferArchive.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
+#include "Serialization/MemoryReader.h"
+#include "Serialization/MemoryWriter.h"
 #include "Data/QPGIM_Data.h"
 
+#define QP_LOAD_CELL(type) if (kT == EQPDataKeyType::FNAME) {\
+    QPBaseData<FName, type>* bd = new QPBaseData<FName, type>(vT, kT);\
+    bd->Serialize(Ar); \
+    qp_ValueMap.Emplace(v, bd);}\
+else {\
+    QPBaseData<int32, type>* bd = new QPBaseData<int32, type>(vT, kT);\
+    bd->Serialize(Ar); \
+    qp_ValueMap.Emplace(v, bd);}
+
+#define QP_SAVE_CELL(type) if (kT == EQPDataKeyType::FNAME) {\
+    QPBaseData<FName, type>* bd = (QPBaseData<FName, type>*)bd_;\
+    bd->Serialize(Ar);}\
+else {\
+    QPBaseData<int32, type>* bd = (QPBaseData<int32, type>*)bd_;\
+    bd->Serialize(Ar); }
+
+void UQPData::Serialize(FArchive& Ar)
+{
+    //Super::Serialize(Ar); // 保证父类序列化也执行
+
+    //Ar << Health;
+    //Ar << Speed;
+    TArray<int16> qp_keys;
+    if (Ar.IsSaving()) {
+        qp_ValueMap.GetKeys(qp_keys);
+        Ar << qp_keys;
+        for (auto v : qp_keys) {
+            IQPBaseData* bd_ = (IQPBaseData*)qp_ValueMap[v];
+            EQPDataKeyType kT = bd_->qp_keyType;
+
+            if (kT != EQPDataKeyType::VOID) {
+                EQPDataValueType vT = bd_->qp_valueType;
+
+                switch (vT)
+                {
+                case EQPDataValueType::INT32:
+                {
+                    QP_SAVE_CELL(int32)
+                        break;
+                }
+                case EQPDataValueType::FSTRING:
+                {
+                    QP_SAVE_CELL(FString)
+                        break;
+                }
+                case EQPDataValueType::FNAME:
+                {
+                    QP_SAVE_CELL(FName)
+                        break;
+                }
+                case EQPDataValueType::FLOAT:
+                {
+                    QP_SAVE_CELL(float)
+                        break;
+                }
+                case EQPDataValueType::BOOL:
+                {
+                    QP_SAVE_CELL(bool)
+                        break;
+                }
+                case EQPDataValueType::FVECTOR:
+                {
+                    QP_SAVE_CELL(FVector)
+                        break;
+                }
+                case EQPDataValueType::FROTATOR:
+                {
+                    QP_SAVE_CELL(FRotator)
+                        break;
+                }
+                case EQPDataValueType::FTRANSFORM:
+                {
+                    QP_SAVE_CELL(FTransform)
+                        break;
+                }
+                case EQPDataValueType::FQUAT:
+                {
+                    QP_SAVE_CELL(FQuat)
+                        break;
+                }
+                case EQPDataValueType::UQPDATA:
+                {
+                    if (kT == EQPDataKeyType::FNAME) {
+                        TArray<FName> tmpK;
+                        TMap< FName, UQPData*>& tmpM = ((QPBaseData<FName, UQPData*>*)bd_)->qp_ValueMap;
+                        tmpM.GetKeys(tmpK);
+                        Ar << tmpK;
+                        for (auto vv : tmpK)
+                        {
+                            tmpM[vv]->Serialize(Ar);
+                        }
+                    }
+                    else {
+                        TArray<int32> tmpK;
+                        TMap< int32, UQPData*>& tmpM = ((QPBaseData<int32, UQPData*>*)bd_)->qp_ValueMap;
+                        tmpM.GetKeys(tmpK);
+                        Ar << tmpK;
+                        for (auto vv : tmpK)
+                        {
+                            tmpM[vv]->Serialize(Ar);
+                        }
+                    }
+
+                    break;
+                }
+                case EQPDataValueType::FTEXT:
+                {
+                    QP_SAVE_CELL(FText)
+                        break;
+                }
+
+                case EQPDataValueType::INT8:
+                {
+                    QP_SAVE_CELL(int8)
+                        break;
+                }
+                case EQPDataValueType::INT16:
+                {
+                    QP_SAVE_CELL(int16)
+                        break;
+                }
+                case EQPDataValueType::INT64:
+                {
+                    QP_SAVE_CELL(int64)
+                        break;
+                }
+                case EQPDataValueType::UINT8:
+                {
+                    QP_SAVE_CELL(uint8)
+                        break;
+                }
+                case EQPDataValueType::UINT16:
+                {
+                    QP_SAVE_CELL(uint16)
+                        break;
+                }
+                case EQPDataValueType::UINT32:
+                {
+                    QP_SAVE_CELL(uint32)
+                        break;
+                }
+                case EQPDataValueType::UINT64:
+                {
+                    QP_SAVE_CELL(uint64)
+                        break;
+                }
+                case EQPDataValueType::DOUBLE:
+                {
+                    QP_SAVE_CELL(double)
+                        break;
+                }
+                case EQPDataValueType::VOID:
+                    break;
+                case EQPDataValueType::STRING:
+                    break;
+                case EQPDataValueType::UOBJECT:
+                    break;
+                case EQPDataValueType::TARRAY:
+                {
+                    break;
+                }
+                default:
+                    break;
+                }
+            }
+        }
+    }
+    else {
+        Ar << qp_keys;
+        for (auto v : qp_keys) {
+            EQPDataKeyType kT ;
+            EQPDataValueType vT ;
+
+            QP_DecodeKey(v, kT, vT);
+            //IQPBaseData* bd = (IQPBaseData*)qp_ValueMap[v];
+
+            if (kT != EQPDataKeyType::VOID) {
+                switch (vT)
+                {
+                case EQPDataValueType::INT32:
+                {
+                    QP_LOAD_CELL(int32)
+                    break;
+                }
+                case EQPDataValueType::FSTRING:
+                {
+                    QP_LOAD_CELL(FString)
+                        break;
+                }
+                case EQPDataValueType::FNAME:
+                {
+                    QP_LOAD_CELL(FName)
+                        break;
+                }
+                case EQPDataValueType::FLOAT:
+                {
+                    QP_LOAD_CELL(float)
+                        break;
+                }
+                case EQPDataValueType::BOOL:
+                {
+                    QP_LOAD_CELL(bool)
+                        break;
+                }
+                case EQPDataValueType::FVECTOR:
+                {
+                    QP_LOAD_CELL(FVector)
+                        break;
+                }
+                case EQPDataValueType::FROTATOR:
+                {
+                    QP_LOAD_CELL(FRotator)
+                        break;
+                }
+                case EQPDataValueType::FTRANSFORM:
+                {
+                    QP_LOAD_CELL(FTransform)
+                        break;
+                }
+                case EQPDataValueType::FQUAT:
+                {
+                    QP_LOAD_CELL(FQuat)
+                        break;
+                }
+                case EQPDataValueType::UQPDATA:
+                {
+                    if (kT == EQPDataKeyType::FNAME) {
+                        QP_CheckQPBaseData<FName, UQPData*>(vT, kT);
+                        TArray<FName> tmpK;
+                        Ar << tmpK;
+                        for (auto vv : tmpK)
+                        {
+                            QP_GetUQPData(vv)->Serialize(Ar);
+                        }
+                    }
+                    else {
+                        QP_CheckQPBaseData<int32, UQPData*>(vT, kT);
+
+                        TArray<int32> tmpK;
+                        Ar << tmpK;
+                        for (auto vv : tmpK)
+                        {
+                            QP_GetUQPDataExI(vv)->Serialize(Ar);
+                        }
+                    }
+                    break;
+                }
+                case EQPDataValueType::FTEXT:
+                {
+                    QP_LOAD_CELL(FText)
+                        break;
+                }
+                
+                case EQPDataValueType::INT8:
+                {
+                    QP_LOAD_CELL(int8)
+                        break;
+                }
+                case EQPDataValueType::INT16:
+                {
+                    QP_LOAD_CELL(int16)
+                        break;
+                }
+                case EQPDataValueType::INT64:
+                {
+                    QP_LOAD_CELL(int64)
+                        break;
+                }
+                case EQPDataValueType::UINT8:
+                {
+                    QP_LOAD_CELL(uint8)
+                        break;
+                }
+                case EQPDataValueType::UINT16:
+                {
+                    QP_LOAD_CELL(uint16)
+                        break;
+                }
+                case EQPDataValueType::UINT32:
+                {
+                    QP_LOAD_CELL(uint32)
+                        break;
+                }
+                case EQPDataValueType::UINT64:
+                {
+                    QP_LOAD_CELL(uint64)
+                        break;
+                }
+                case EQPDataValueType::DOUBLE:
+                {
+                    QP_LOAD_CELL(double)
+                        break;
+                }
+                case EQPDataValueType::VOID:
+                    break;
+                case EQPDataValueType::STRING:
+                    break;
+                case EQPDataValueType::UOBJECT:
+                    break;
+                case EQPDataValueType::TARRAY:
+                {
+                    break;
+                }
+                default:
+                    break;
+                }
+                
+
+            }
+        }
+
+    }
+}
+
+void UQPData::QP_SaveData(const FString& name) {
+    
+    FBufferArchive BinaryData;
+    FObjectAndNameAsStringProxyArchive Ar(BinaryData, false);
+    Serialize(Ar);
+    BinaryData.Close();
+
+    FFileHelper::SaveArrayToFile(BinaryData, *(FPaths::ProjectSavedDir() + UQPSaveGame::QP_GenerateSaveKey(name)));
+}
+void UQPData::QP_LoadData(const FString& name) {
+
+    TArray<uint8> FileData;
+    if (FFileHelper::LoadFileToArray(FileData, *(FPaths::ProjectSavedDir() + UQPSaveGame::QP_GenerateSaveKey(name))))
+    {
+        FMemoryReader  FromBinary(FileData, true);
+        FromBinary.Seek(0);
+        FObjectAndNameAsStringProxyArchive Ar(FromBinary, true); // true = loading
+        Serialize(Ar);
+        FromBinary.Close();
+    }
+}
 void UQPData::BeginDestroy()
 {
 	Super::BeginDestroy();
@@ -996,6 +1336,240 @@ bool UQPData::QP_RemoveUQPDataExO(UObject*  key, EQPDataBroadcastType bType)
 void UQPData::QP_ClearUQPDataExO( EQPDataBroadcastType bType)
 {
     QP_ClearValue<UObject* ,UQPData*>(EQPDataValueType::UQPDATA,EQPDataKeyType::VOID ,bType);
+}
+
+
+void UQPData::QP_AddFRotator(FName  key, const FRotator& v, EQPDataBroadcastType bType)
+{
+    QP_AddValue<FName , FRotator>(key,v,EQPDataValueType::FROTATOR,EQPDataKeyType::FNAME ,bType);
+}
+
+bool UQPData::QP_ContainsFRotator(FName  key)
+{
+    return QP_Contains<FName ,FRotator>(key,EQPDataValueType::FROTATOR,EQPDataKeyType::FNAME );
+}
+
+FRotator& UQPData::QP_GetFRotator(FName  key)
+{
+    return QP_GetValue<FName , FRotator>(key,EQPDataValueType::FROTATOR,EQPDataKeyType::FNAME );
+}
+
+bool UQPData::QP_RemoveFRotator(FName  key, EQPDataBroadcastType bType)
+{
+    return QP_RemoveValue<FName ,FRotator>(key,EQPDataValueType::FROTATOR,EQPDataKeyType::FNAME ,bType);
+}
+
+void UQPData::QP_ClearFRotator( EQPDataBroadcastType bType)
+{
+    QP_ClearValue<FName ,FRotator>(EQPDataValueType::FROTATOR,EQPDataKeyType::FNAME ,bType);
+}
+
+
+void UQPData::QP_AddFRotatorExI(int32  key, const FRotator& v, EQPDataBroadcastType bType)
+{
+    QP_AddValue<int32 , FRotator>(key,v,EQPDataValueType::FROTATOR,EQPDataKeyType::INT32 ,bType);
+}
+
+bool UQPData::QP_ContainsFRotatorExI(int32  key)
+{
+    return QP_Contains<int32 ,FRotator>(key,EQPDataValueType::FROTATOR,EQPDataKeyType::INT32 );
+}
+
+FRotator& UQPData::QP_GetFRotatorExI(int32  key)
+{
+    return QP_GetValue<int32 , FRotator>(key,EQPDataValueType::FROTATOR,EQPDataKeyType::INT32 );
+}
+
+bool UQPData::QP_RemoveFRotatorExI(int32  key, EQPDataBroadcastType bType)
+{
+    return QP_RemoveValue<int32 ,FRotator>(key,EQPDataValueType::FROTATOR,EQPDataKeyType::INT32 ,bType);
+}
+
+void UQPData::QP_ClearFRotatorExI( EQPDataBroadcastType bType)
+{
+    QP_ClearValue<int32 ,FRotator>(EQPDataValueType::FROTATOR,EQPDataKeyType::INT32 ,bType);
+}
+
+
+void UQPData::QP_AddFRotatorExO(UObject*  key, const FRotator& v, EQPDataBroadcastType bType)
+{
+    QP_AddValue<UObject* , FRotator>(key,v,EQPDataValueType::FROTATOR,EQPDataKeyType::VOID ,bType);
+}
+
+bool UQPData::QP_ContainsFRotatorExO(UObject*  key)
+{
+    return QP_Contains<UObject* ,FRotator>(key,EQPDataValueType::FROTATOR,EQPDataKeyType::VOID );
+}
+
+FRotator& UQPData::QP_GetFRotatorExO(UObject*  key)
+{
+    return QP_GetValue<UObject* , FRotator>(key,EQPDataValueType::FROTATOR,EQPDataKeyType::VOID );
+}
+
+bool UQPData::QP_RemoveFRotatorExO(UObject*  key, EQPDataBroadcastType bType)
+{
+    return QP_RemoveValue<UObject* ,FRotator>(key,EQPDataValueType::FROTATOR,EQPDataKeyType::VOID ,bType);
+}
+
+void UQPData::QP_ClearFRotatorExO( EQPDataBroadcastType bType)
+{
+    QP_ClearValue<UObject* ,FRotator>(EQPDataValueType::FROTATOR,EQPDataKeyType::VOID ,bType);
+}
+
+
+void UQPData::QP_AddFTransform(FName  key, const FTransform& v, EQPDataBroadcastType bType)
+{
+    QP_AddValue<FName , FTransform>(key,v,EQPDataValueType::FTRANSFORM,EQPDataKeyType::FNAME ,bType);
+}
+
+bool UQPData::QP_ContainsFTransform(FName  key)
+{
+    return QP_Contains<FName ,FTransform>(key,EQPDataValueType::FTRANSFORM,EQPDataKeyType::FNAME );
+}
+
+FTransform& UQPData::QP_GetFTransform(FName  key)
+{
+    return QP_GetValue<FName , FTransform>(key,EQPDataValueType::FTRANSFORM,EQPDataKeyType::FNAME );
+}
+
+bool UQPData::QP_RemoveFTransform(FName  key, EQPDataBroadcastType bType)
+{
+    return QP_RemoveValue<FName ,FTransform>(key,EQPDataValueType::FTRANSFORM,EQPDataKeyType::FNAME ,bType);
+}
+
+void UQPData::QP_ClearFTransform( EQPDataBroadcastType bType)
+{
+    QP_ClearValue<FName ,FTransform>(EQPDataValueType::FTRANSFORM,EQPDataKeyType::FNAME ,bType);
+}
+
+
+void UQPData::QP_AddFTransformExI(int32  key, const FTransform& v, EQPDataBroadcastType bType)
+{
+    QP_AddValue<int32 , FTransform>(key,v,EQPDataValueType::FTRANSFORM,EQPDataKeyType::INT32 ,bType);
+}
+
+bool UQPData::QP_ContainsFTransformExI(int32  key)
+{
+    return QP_Contains<int32 ,FTransform>(key,EQPDataValueType::FTRANSFORM,EQPDataKeyType::INT32 );
+}
+
+FTransform& UQPData::QP_GetFTransformExI(int32  key)
+{
+    return QP_GetValue<int32 , FTransform>(key,EQPDataValueType::FTRANSFORM,EQPDataKeyType::INT32 );
+}
+
+bool UQPData::QP_RemoveFTransformExI(int32  key, EQPDataBroadcastType bType)
+{
+    return QP_RemoveValue<int32 ,FTransform>(key,EQPDataValueType::FTRANSFORM,EQPDataKeyType::INT32 ,bType);
+}
+
+void UQPData::QP_ClearFTransformExI( EQPDataBroadcastType bType)
+{
+    QP_ClearValue<int32 ,FTransform>(EQPDataValueType::FTRANSFORM,EQPDataKeyType::INT32 ,bType);
+}
+
+
+void UQPData::QP_AddFTransformExO(UObject*  key, const FTransform& v, EQPDataBroadcastType bType)
+{
+    QP_AddValue<UObject* , FTransform>(key,v,EQPDataValueType::FTRANSFORM,EQPDataKeyType::VOID ,bType);
+}
+
+bool UQPData::QP_ContainsFTransformExO(UObject*  key)
+{
+    return QP_Contains<UObject* ,FTransform>(key,EQPDataValueType::FTRANSFORM,EQPDataKeyType::VOID );
+}
+
+FTransform& UQPData::QP_GetFTransformExO(UObject*  key)
+{
+    return QP_GetValue<UObject* , FTransform>(key,EQPDataValueType::FTRANSFORM,EQPDataKeyType::VOID );
+}
+
+bool UQPData::QP_RemoveFTransformExO(UObject*  key, EQPDataBroadcastType bType)
+{
+    return QP_RemoveValue<UObject* ,FTransform>(key,EQPDataValueType::FTRANSFORM,EQPDataKeyType::VOID ,bType);
+}
+
+void UQPData::QP_ClearFTransformExO( EQPDataBroadcastType bType)
+{
+    QP_ClearValue<UObject* ,FTransform>(EQPDataValueType::FTRANSFORM,EQPDataKeyType::VOID ,bType);
+}
+
+
+void UQPData::QP_AddFQuat(FName  key, const FQuat& v, EQPDataBroadcastType bType)
+{
+    QP_AddValue<FName , FQuat>(key,v,EQPDataValueType::FQUAT,EQPDataKeyType::FNAME ,bType);
+}
+
+bool UQPData::QP_ContainsFQuat(FName  key)
+{
+    return QP_Contains<FName ,FQuat>(key,EQPDataValueType::FQUAT,EQPDataKeyType::FNAME );
+}
+
+FQuat& UQPData::QP_GetFQuat(FName  key)
+{
+    return QP_GetValue<FName , FQuat>(key,EQPDataValueType::FQUAT,EQPDataKeyType::FNAME );
+}
+
+bool UQPData::QP_RemoveFQuat(FName  key, EQPDataBroadcastType bType)
+{
+    return QP_RemoveValue<FName ,FQuat>(key,EQPDataValueType::FQUAT,EQPDataKeyType::FNAME ,bType);
+}
+
+void UQPData::QP_ClearFQuat( EQPDataBroadcastType bType)
+{
+    QP_ClearValue<FName ,FQuat>(EQPDataValueType::FQUAT,EQPDataKeyType::FNAME ,bType);
+}
+
+
+void UQPData::QP_AddFQuatExI(int32  key, const FQuat& v, EQPDataBroadcastType bType)
+{
+    QP_AddValue<int32 , FQuat>(key,v,EQPDataValueType::FQUAT,EQPDataKeyType::INT32 ,bType);
+}
+
+bool UQPData::QP_ContainsFQuatExI(int32  key)
+{
+    return QP_Contains<int32 ,FQuat>(key,EQPDataValueType::FQUAT,EQPDataKeyType::INT32 );
+}
+
+FQuat& UQPData::QP_GetFQuatExI(int32  key)
+{
+    return QP_GetValue<int32 , FQuat>(key,EQPDataValueType::FQUAT,EQPDataKeyType::INT32 );
+}
+
+bool UQPData::QP_RemoveFQuatExI(int32  key, EQPDataBroadcastType bType)
+{
+    return QP_RemoveValue<int32 ,FQuat>(key,EQPDataValueType::FQUAT,EQPDataKeyType::INT32 ,bType);
+}
+
+void UQPData::QP_ClearFQuatExI( EQPDataBroadcastType bType)
+{
+    QP_ClearValue<int32 ,FQuat>(EQPDataValueType::FQUAT,EQPDataKeyType::INT32 ,bType);
+}
+
+
+void UQPData::QP_AddFQuatExO(UObject*  key, const FQuat& v, EQPDataBroadcastType bType)
+{
+    QP_AddValue<UObject* , FQuat>(key,v,EQPDataValueType::FQUAT,EQPDataKeyType::VOID ,bType);
+}
+
+bool UQPData::QP_ContainsFQuatExO(UObject*  key)
+{
+    return QP_Contains<UObject* ,FQuat>(key,EQPDataValueType::FQUAT,EQPDataKeyType::VOID );
+}
+
+FQuat& UQPData::QP_GetFQuatExO(UObject*  key)
+{
+    return QP_GetValue<UObject* , FQuat>(key,EQPDataValueType::FQUAT,EQPDataKeyType::VOID );
+}
+
+bool UQPData::QP_RemoveFQuatExO(UObject*  key, EQPDataBroadcastType bType)
+{
+    return QP_RemoveValue<UObject* ,FQuat>(key,EQPDataValueType::FQUAT,EQPDataKeyType::VOID ,bType);
+}
+
+void UQPData::QP_ClearFQuatExO( EQPDataBroadcastType bType)
+{
+    QP_ClearValue<UObject* ,FQuat>(EQPDataValueType::FQUAT,EQPDataKeyType::VOID ,bType);
 }
 
 
