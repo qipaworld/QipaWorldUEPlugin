@@ -35,6 +35,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	UQPData* qp_animData = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	UQPData* qp_saveData = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	FString qp_saveName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	UQPC_PlayMontage* qp_playMontage;
@@ -84,6 +88,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:	
 	// Called every frame
@@ -94,6 +99,9 @@ public:
 
 	virtual class UQPData* QP_GetQPData() override;
 	virtual class UQPData* QP_GetAnimData() override;
+	//if you want set save data,rewrite this function
+	virtual void QP_ChangeSaveData();
+	void QP_InitSaveData();
 	virtual void QP_AnimNotify(const FName& k) override;
 	virtual void QP_PlayAnim(FName name, FName StartSectionName = NAME_None);
 
