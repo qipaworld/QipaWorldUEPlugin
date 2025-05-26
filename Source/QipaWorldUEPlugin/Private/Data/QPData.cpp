@@ -19,12 +19,7 @@ else {\
     bd->Serialize(Ar); \
     qp_ValueMap.Emplace(v, bd);}
 
-#define QP_SAVE_CELL(type) if (kT == EQPDataKeyType::FNAME) {\
-    QPBaseData<FName, type>* bd = (QPBaseData<FName, type>*)bd_;\
-    bd->Serialize(Ar);}\
-else {\
-    QPBaseData<int32, type>* bd = (QPBaseData<int32, type>*)bd_;\
-    bd->Serialize(Ar); }
+#define QP_SAVE_CELL(type) bd_i->Serialize(Ar);
 
 void UQPData::Serialize(FArchive& Ar)
 {
@@ -37,142 +32,146 @@ void UQPData::Serialize(FArchive& Ar)
         qp_ValueMap.GetKeys(qp_keys);
         Ar << qp_keys;
         for (auto v : qp_keys) {
-            IQPBaseData* bd_ = (IQPBaseData*)qp_ValueMap[v];
-            EQPDataKeyType kT = bd_->qp_keyType;
+            IQPBaseData* bd_i = (IQPBaseData*)qp_ValueMap[v];
+            EQPDataKeyType kT = bd_i->qp_keyType;
+            if (bd_i->qp_isSave) 
+            {
+                if (kT != EQPDataKeyType::VOID)
+                {
+                    EQPDataValueType vT = bd_i->qp_valueType;
 
-            if (kT != EQPDataKeyType::VOID) {
-                EQPDataValueType vT = bd_->qp_valueType;
-
-                switch (vT)
-                {
-                case EQPDataValueType::INT32:
-                {
-                    QP_SAVE_CELL(int32)
-                        break;
-                }
-                case EQPDataValueType::FSTRING:
-                {
-                    QP_SAVE_CELL(FString)
-                        break;
-                }
-                case EQPDataValueType::FNAME:
-                {
-                    QP_SAVE_CELL(FName)
-                        break;
-                }
-                case EQPDataValueType::FLOAT:
-                {
-                    QP_SAVE_CELL(float)
-                        break;
-                }
-                case EQPDataValueType::BOOL:
-                {
-                    QP_SAVE_CELL(bool)
-                        break;
-                }
-                case EQPDataValueType::FVECTOR:
-                {
-                    QP_SAVE_CELL(FVector)
-                        break;
-                }
-                case EQPDataValueType::FROTATOR:
-                {
-                    QP_SAVE_CELL(FRotator)
-                        break;
-                }
-                case EQPDataValueType::FTRANSFORM:
-                {
-                    QP_SAVE_CELL(FTransform)
-                        break;
-                }
-                case EQPDataValueType::FQUAT:
-                {
-                    QP_SAVE_CELL(FQuat)
-                        break;
-                }
-                case EQPDataValueType::UQPDATA:
-                {
-                    if (kT == EQPDataKeyType::FNAME) {
-                        TArray<FName> tmpK;
-                        TMap< FName, UQPData*>& tmpM = ((QPBaseData<FName, UQPData*>*)bd_)->qp_ValueMap;
-                        tmpM.GetKeys(tmpK);
-                        Ar << tmpK;
-                        for (auto vv : tmpK)
-                        {
-                            tmpM[vv]->Serialize(Ar);
-                        }
+                    switch (vT)
+                    {
+                    case EQPDataValueType::INT32:
+                    {
+                        QP_SAVE_CELL(int32)
+                            break;
                     }
-                    else {
-                        TArray<int32> tmpK;
-                        TMap< int32, UQPData*>& tmpM = ((QPBaseData<int32, UQPData*>*)bd_)->qp_ValueMap;
-                        tmpM.GetKeys(tmpK);
-                        Ar << tmpK;
-                        for (auto vv : tmpK)
-                        {
-                            tmpM[vv]->Serialize(Ar);
+                    case EQPDataValueType::FSTRING:
+                    {
+                        QP_SAVE_CELL(FString)
+                            break;
+                    }
+                    case EQPDataValueType::FNAME:
+                    {
+                        QP_SAVE_CELL(FName)
+                            break;
+                    }
+                    case EQPDataValueType::FLOAT:
+                    {
+                        QP_SAVE_CELL(float)
+                            break;
+                    }
+                    case EQPDataValueType::BOOL:
+                    {
+                        QP_SAVE_CELL(bool)
+                            break;
+                    }
+                    case EQPDataValueType::FVECTOR:
+                    {
+                        QP_SAVE_CELL(FVector)
+                            break;
+                    }
+                    case EQPDataValueType::FROTATOR:
+                    {
+                        QP_SAVE_CELL(FRotator)
+                            break;
+                    }
+                    case EQPDataValueType::FTRANSFORM:
+                    {
+                        QP_SAVE_CELL(FTransform)
+                            break;
+                    }
+                    case EQPDataValueType::FQUAT:
+                    {
+                        QP_SAVE_CELL(FQuat)
+                            break;
+                    }
+                    case EQPDataValueType::UQPDATA:
+                    {
+                        if (kT == EQPDataKeyType::FNAME) {
+                            TArray<FName> tmpK;
+                            TMap< FName, UQPData*>& tmpM = ((QPBaseData<FName, UQPData*>*)bd_i)->qp_ValueMap;
+                            tmpM.GetKeys(tmpK);
+                            Ar << tmpK;
+                            for (auto vv : tmpK)
+                            {
+                                tmpM[vv]->Serialize(Ar);
+                            }
                         }
+                        else {
+                            TArray<int32> tmpK;
+                            TMap< int32, UQPData*>& tmpM = ((QPBaseData<int32, UQPData*>*)bd_i)->qp_ValueMap;
+                            tmpM.GetKeys(tmpK);
+                            Ar << tmpK;
+                            for (auto vv : tmpK)
+                            {
+                                tmpM[vv]->Serialize(Ar);
+                            }
+                        }
+
+                        break;
+                    }
+                    case EQPDataValueType::FTEXT:
+                    {
+                        QP_SAVE_CELL(FText)
+                            break;
                     }
 
-                    break;
-                }
-                case EQPDataValueType::FTEXT:
-                {
-                    QP_SAVE_CELL(FText)
+                    case EQPDataValueType::INT8:
+                    {
+                        QP_SAVE_CELL(int8)
+                            break;
+                    }
+                    case EQPDataValueType::INT16:
+                    {
+                        QP_SAVE_CELL(int16)
+                            break;
+                    }
+                    case EQPDataValueType::INT64:
+                    {
+                        QP_SAVE_CELL(int64)
+                            break;
+                    }
+                    case EQPDataValueType::UINT8:
+                    {
+                        QP_SAVE_CELL(uint8)
+                            break;
+                    }
+                    case EQPDataValueType::UINT16:
+                    {
+                        QP_SAVE_CELL(uint16)
+                            break;
+                    }
+                    case EQPDataValueType::UINT32:
+                    {
+                        QP_SAVE_CELL(uint32)
+                            break;
+                    }
+                    case EQPDataValueType::UINT64:
+                    {
+                        QP_SAVE_CELL(uint64)
+                            break;
+                    }
+                    case EQPDataValueType::DOUBLE:
+                    {
+                        QP_SAVE_CELL(double)
+                            break;
+                    }
+                    case EQPDataValueType::VOID:
                         break;
-                }
-
-                case EQPDataValueType::INT8:
-                {
-                    QP_SAVE_CELL(int8)
+                    case EQPDataValueType::STRING:
                         break;
-                }
-                case EQPDataValueType::INT16:
-                {
-                    QP_SAVE_CELL(int16)
+                    case EQPDataValueType::UOBJECT:
                         break;
-                }
-                case EQPDataValueType::INT64:
-                {
-                    QP_SAVE_CELL(int64)
+                    case EQPDataValueType::TARRAY:
+                    {
+                        QP_SAVE_CELL(TArray);
                         break;
-                }
-                case EQPDataValueType::UINT8:
-                {
-                    QP_SAVE_CELL(uint8)
+                    }
+                    default:
                         break;
-                }
-                case EQPDataValueType::UINT16:
-                {
-                    QP_SAVE_CELL(uint16)
-                        break;
-                }
-                case EQPDataValueType::UINT32:
-                {
-                    QP_SAVE_CELL(uint32)
-                        break;
-                }
-                case EQPDataValueType::UINT64:
-                {
-                    QP_SAVE_CELL(uint64)
-                        break;
-                }
-                case EQPDataValueType::DOUBLE:
-                {
-                    QP_SAVE_CELL(double)
-                        break;
-                }
-                case EQPDataValueType::VOID:
-                    break;
-                case EQPDataValueType::STRING:
-                    break;
-                case EQPDataValueType::UOBJECT:
-                    break;
-                case EQPDataValueType::TARRAY:
-                {
-                    break;
-                }
-                default:
-                    break;
+                    }
                 }
             }
         }
