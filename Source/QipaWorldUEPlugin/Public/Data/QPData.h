@@ -310,10 +310,17 @@ public:
 
 	
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_SaveData(const FString& name );
+	bool QP_SaveData(const FString& name );
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	void QP_LoadData(const FString& name);
+	bool QP_LoadData(const FString& name);
+
+	
+	void QP_AsyncSaveData(const FString& name, std::function<void(bool /*bSuccess*/)> Callback = nullptr);
+
+	
+	void QP_AsyncLoadData(const FString& name, std::function<void(bool /*bSuccess*/)> Callback = nullptr);
+
 
 	template<typename K, typename V>
 	inline bool QP_IsChange(const K& k,EQPDataValueType vt, EQPDataKeyType kt = EQPDataKeyType::FNAME ) {

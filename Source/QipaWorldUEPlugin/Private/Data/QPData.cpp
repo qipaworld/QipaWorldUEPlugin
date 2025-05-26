@@ -323,16 +323,16 @@ void UQPData::Serialize(FArchive& Ar)
     }
 }
 
-void UQPData::QP_SaveData(const FString& name) {
+bool UQPData::QP_SaveData(const FString& name) {
     
     FBufferArchive BinaryData;
     FObjectAndNameAsStringProxyArchive Ar(BinaryData, false);
     Serialize(Ar);
     BinaryData.Close();
 
-    FFileHelper::SaveArrayToFile(BinaryData, *(FPaths::ProjectSavedDir() + UQPSaveGame::QP_GenerateSaveKey(name)));
+    return FFileHelper::SaveArrayToFile(BinaryData, *(FPaths::ProjectSavedDir() + UQPSaveGame::QP_GenerateSaveKey(name)));
 }
-void UQPData::QP_LoadData(const FString& name) {
+bool UQPData::QP_LoadData(const FString& name) {
 
     TArray<uint8> FileData;
     if (FFileHelper::LoadFileToArray(FileData, *(FPaths::ProjectSavedDir() + UQPSaveGame::QP_GenerateSaveKey(name))))
@@ -342,8 +342,38 @@ void UQPData::QP_LoadData(const FString& name) {
         FObjectAndNameAsStringProxyArchive Ar(FromBinary, true); // true = loading
         Serialize(Ar);
         FromBinary.Close();
+        return true;
     }
+    return false;
 }
+
+void UQPData::QP_AsyncSaveData(const FString& name, std::function<void(bool /*bSuccess*/)> Callback)
+{
+
+    Async(EAsyncExecution::Thread, [name,this, Callback]()
+    {
+        if (Callback) {
+            Callback(QP_SaveData(name));
+        }
+        else {
+            QP_SaveData(name);
+        }
+        
+    });
+}
+void UQPData::QP_AsyncLoadData(const FString& name, std::function<void(bool /*bSuccess*/)> Callback) {
+    Async(EAsyncExecution::Thread, [name, this, Callback]()
+    {
+        if (Callback)
+        {
+            Callback(QP_LoadData(name));
+        }
+        else {
+            QP_LoadData(name);
+        }
+    });
+}
+
 void UQPData::BeginDestroy()
 {
 	Super::BeginDestroy();
