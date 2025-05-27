@@ -8,6 +8,7 @@
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 #include "Serialization/MemoryReader.h"
 #include "Serialization/MemoryWriter.h"
+#include "QPUtil.h"
 #include "Data/QPGIM_Data.h"
 
 #define QP_LOAD_CELL(type) if (kT == EQPDataKeyType::FNAME) {\
@@ -166,7 +167,7 @@ void UQPData::Serialize(FArchive& Ar)
                         break;
                     case EQPDataValueType::TARRAY:
                     {
-                        QP_SAVE_CELL(TArray);
+                       // QP_SAVE_CELL(TArray);  TODO
                         break;
                     }
                     default:
@@ -310,6 +311,7 @@ void UQPData::Serialize(FArchive& Ar)
                     break;
                 case EQPDataValueType::TARRAY:
                 {
+                    // TODO
                     break;
                 }
                 default:
@@ -325,25 +327,27 @@ void UQPData::Serialize(FArchive& Ar)
 
 bool UQPData::QP_SaveData(const FString& name) {
     
-    FBufferArchive BinaryData;
-    FObjectAndNameAsStringProxyArchive Ar(BinaryData, false);
+    TArray<uint8> BinaryData;
+    FMemoryWriter Ar(BinaryData, false);
     Serialize(Ar);
-    BinaryData.Close();
 
-    return FFileHelper::SaveArrayToFile(BinaryData, *(FPaths::ProjectSavedDir() + UQPSaveGame::QP_GenerateSaveKey(name)));
+    if (FFileHelper::SaveArrayToFile(BinaryData, *(FPaths::Combine(FPaths::ProjectSavedDir(), UQPSaveGame::QP_GenerateSaveKey(name)))))
+    {
+        return true;
+    }
+    UQPUtil::QP_LOG("Failed to save to file: " + name);
+    return false;
 }
 bool UQPData::QP_LoadData(const FString& name) {
 
     TArray<uint8> FileData;
-    if (FFileHelper::LoadFileToArray(FileData, *(FPaths::ProjectSavedDir() + UQPSaveGame::QP_GenerateSaveKey(name))))
+    if (FFileHelper::LoadFileToArray(FileData, *(FPaths::Combine(FPaths::ProjectSavedDir(), UQPSaveGame::QP_GenerateSaveKey(name)))))
     {
-        FMemoryReader  FromBinary(FileData, true);
-        FromBinary.Seek(0);
-        FObjectAndNameAsStringProxyArchive Ar(FromBinary, true); // true = loading
+        FMemoryReader  Ar(FileData, true);
         Serialize(Ar);
-        FromBinary.Close();
         return true;
     }
+    UQPUtil::QP_LOG("Failed to load to file: " + name);
     return false;
 }
 

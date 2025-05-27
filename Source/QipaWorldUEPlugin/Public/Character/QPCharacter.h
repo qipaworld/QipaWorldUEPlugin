@@ -79,6 +79,8 @@ public:
 	/**输入名称*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		FName qp_lookUp = "LookUp";
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	FName qp_switchMouseShow = "SwitchMouseShow";
 	/**输入名称*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		FName qp_jump = "Jump";
@@ -223,6 +225,9 @@ public:
 	virtual void QP_mouseWheelUp();
 	//相机远离角色
 	virtual void QP_mouseWheelDown();
+
+	
+	virtual void QP_SwitchMouseShow();
 
 	/**更新移动速度，大了就跑，小了就走*/
 	virtual inline void QP_UpdateMaxSpeed() {

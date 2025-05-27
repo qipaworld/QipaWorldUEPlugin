@@ -18,6 +18,10 @@ void AQPPlayerController::SetupInputComponent()
 
     if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_UserInterfaceAutoPop) {
         InputComponent->BindAction(*(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultUserInterfaceActionKey), IE_Released, this, &AQPPlayerController::QP_OnAutoUIKeyPressed);
+        if (GIsEditor)
+        {
+            InputComponent->BindAction("DebugDefaultUserInterfaceAction", IE_Released, this, &AQPPlayerController::QP_OnAutoUIKeyPressed);
+        }
     }
 }
 

@@ -135,7 +135,12 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction(qp_mouseWheelUp, IE_Pressed, this, &AQPCharacter::QP_mouseWheelUp);
 	PlayerInputComponent->BindAction(qp_mouseWheelDown, IE_Pressed, this, &AQPCharacter::QP_mouseWheelDown);
 	PlayerInputComponent->BindAction(qp_changeCharacter, IE_Pressed, this, &AQPCharacter::QP_ChangeCharacter);
-	
+	PlayerInputComponent->BindAction(qp_switchMouseShow, IE_Pressed, this, &AQPCharacter::QP_SwitchMouseShow);
+
+	if (GIsEditor)
+	{
+		PlayerInputComponent->BindAction("DebugSwitchMouseShow", IE_Pressed, this, &AQPCharacter::QP_SwitchMouseShow);
+	}
 		
 		
 }
@@ -143,6 +148,9 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 //	
 //	
 //}
+void AQPCharacter::QP_SwitchMouseShow() {
+	UQPUtil::QP_SwitchMouseShow(Cast<APlayerController>(Controller));
+}
 
 void AQPCharacter::QP_SetMatAmount(float amount)
 {
@@ -168,7 +176,6 @@ void AQPCharacter::QP_MouseWheelAxis(float value)
 void AQPCharacter::QP_MoveForward(float value)
 {
 	 qp_forwardV = value;
-
 	if (value != 0) {
 		
 		FRotator rotator = GetControlRotation();

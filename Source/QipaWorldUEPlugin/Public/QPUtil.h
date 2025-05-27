@@ -37,9 +37,22 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "QPUtil")
 
+	static void QP_SwitchMouseShow(APlayerController* controller = nullptr, class UWidget* InWidgetToFocus = nullptr, EMouseLockMode InMouseLockMode = EMouseLockMode::DoNotLock, bool bHideCursorDuringCapture = true, const bool bFlushInput = false);
+
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+
 	static void QP_LOG(const FString& Message, const FColor& Color = FColor::Yellow, float Duration = 5.0f);
 
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+	static void QP_ReplaceActionKey(const FName& ActionName, const FInputChord& OldKey, const FInputChord& NewKey);
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+	static  FInputChord QP_GetKeyForAction( const FName& ActionName);
 
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+	static void QP_ReplaceAxisKey( FName AxisName, const FKey& OldKey, const FKey& NewKey);
+
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+	static  FKey QP_GetKeyForAxis( FName AxisName, float ScaleSign, bool bExactMatch);
 
 
 	template<typename T>
