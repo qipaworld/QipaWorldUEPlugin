@@ -52,6 +52,9 @@ public:
 	static void QP_ReplaceAxisKey( FName AxisName, const FKey& OldKey, const FKey& NewKey);
 
 	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+	static void QP_AutoSetingGameQuality();
+
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
 	static  FKey QP_GetKeyForAxis( FName AxisName, float ScaleSign, bool bExactMatch);
 
 

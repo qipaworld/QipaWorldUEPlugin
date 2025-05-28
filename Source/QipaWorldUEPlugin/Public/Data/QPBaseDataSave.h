@@ -7,7 +7,7 @@
 #include "QPBaseDataSave.generated.h"
 
 /**
- * 
+ *  ·ÏÆú
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPBaseDataSave : public UQPSaveGame

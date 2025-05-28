@@ -36,7 +36,7 @@ public:
 
 public:
 	UPROPERTY()
-	TObjectPtr<UQPBaseDataSave> qp_baseDataSave;
+	TObjectPtr<UQPData> qp_baseDataSave;
 	
 	/**数据*/
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPData")
@@ -72,21 +72,25 @@ public:
 	void QP_SetVersion(float v);
 	//  is init key completed ?
 	UFUNCTION(BlueprintCallable)
-	bool QP_IsInitKey(const FString& k);
+	bool QP_IsInitKey(const FName& k);
 	//  set init key completed
 	UFUNCTION(BlueprintCallable)
-	void QP_SetInitKey(const FString& k ,bool v);
+	void QP_SetInitKey(const FName& k ,bool v);
 
 	//  is tip key completed ?
-	UFUNCTION(BlueprintCallable)
-	bool QP_IsTipKey(const FString& k);
+	//UFUNCTION(BlueprintCallable)
+	//bool QP_IsTipKey(const FString& k);
 	//  set tip key completed
-	UFUNCTION(BlueprintCallable)
-	void QP_SetTipKey(const FString& k, bool v);
+	//UFUNCTION(BlueprintCallable)
+	//void QP_SetTipKey(const FString& k, bool v);
 
 	UFUNCTION()
 	void QP_OnPostLoadMap(UWorld* LoadedWorld);
 
+	void QP_SaveData();
+
+	//UFUNCTION()
+	//void QP_Set(UWorld* LoadedWorld);
 	//void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
 
 };

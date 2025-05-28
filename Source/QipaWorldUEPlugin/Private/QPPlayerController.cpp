@@ -3,11 +3,21 @@
 
 #include "QPPlayerController.h"
 #include "Data/QPGIM_Data.h"
+#include "QPUtil.h"
+#include "GameFramework/GameUserSettings.h"
 #include "Data/QPGIM_BaseData.h"
 
 void AQPPlayerController::BeginPlay() {
     Super::BeginPlay();
+    if (!UQPGIM_BaseData::qp_staticObject->QP_IsInitKey("QP_AutoSetingGameQuality")) {
+        UGameUserSettings* Settings = GEngine->GetGameUserSettings();
+        Settings->SetDynamicResolutionEnabled(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DynamicResolutionEnabled); 
+        Settings->ApplySettings(false);               
+        Settings->SaveSettings();                     
 
+        UQPUtil::QP_AutoSetingGameQuality();
+        UQPGIM_BaseData::qp_staticObject->QP_SetInitKey("QP_AutoSetingGameQuality", true);
+    }
     UQPGIM_BaseData::qp_staticObject->QP_GetSoundData()->QP_Addbool("ActivateBusMix", true);
 }
 void AQPPlayerController::SetupInputComponent()

@@ -70,6 +70,18 @@ void UQPUtil::QP_UpdateMouse(bool b, APlayerController* controller, UWidget* InW
 	}
 
 }
+void UQPUtil::QP_AutoSetingGameQuality() {
+
+	UGameUserSettings* Settings = GEngine->GetGameUserSettings();
+	if (Settings)
+	{
+		Settings->RunHardwareBenchmark();
+		Settings->ApplyHardwareBenchmarkResults();
+		Settings->ApplySettings(false);  
+		Settings->SaveSettings();        
+	}
+
+}
 void UQPUtil::QP_SwitchMouseShow( APlayerController* controller, UWidget* InWidgetToFocus, EMouseLockMode InMouseLockMode, bool bHideCursorDuringCapture, const bool bFlushInput) {
 	if (!controller) {
 		//UE_LOG(LogTemp, Warning, TEXT("Update Mouse Error , Context is Null"));
