@@ -49,6 +49,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	bool QP_DynamicResolutionEnabled = true;
 
+	/* AutoSetingGameQuality ?*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	bool QP_AutoSetingGameQuality = true;
+
 	/**UUID*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	TMap<FString, int32> QP_UUID;

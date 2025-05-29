@@ -44,6 +44,7 @@ void UQPUtil::QP_ScreenResolution(float percentage) {
 		Settings->SetFullscreenMode(EWindowMode::Windowed);
 
 		Settings->ApplySettings(false);
+		Settings->SaveSettings();
 	}
 }
 

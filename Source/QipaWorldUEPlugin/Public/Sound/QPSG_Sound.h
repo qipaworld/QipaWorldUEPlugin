@@ -12,7 +12,7 @@ struct FQPSoundSaveData
 	GENERATED_BODY()
 
 	UPROPERTY()
-	float qp_value;
+	float qp_value = 1;
 };
 /**
  * 保存音乐设置数据的类 根据情况，看看以后是否保留
@@ -28,7 +28,7 @@ public:
 	inline void QP_CheckValue(int32 i) {
 		while (!qp_soundDatas.IsValidIndex(i))
 		{
-			qp_soundDatas.Emplace(1);
+			qp_soundDatas.Emplace(FQPSoundSaveData());
 		}
 	}
 	inline float QP_GetValue(int32 i) {

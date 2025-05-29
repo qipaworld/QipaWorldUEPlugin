@@ -15,7 +15,9 @@ void AQPPlayerController::BeginPlay() {
         Settings->ApplySettings(false);               
         Settings->SaveSettings();                     
 
-        UQPUtil::QP_AutoSetingGameQuality();
+        if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_AutoSetingGameQuality) {
+            UQPUtil::QP_AutoSetingGameQuality();
+        }
         UQPGIM_BaseData::qp_staticObject->QP_SetInitKey("QP_AutoSetingGameQuality", true);
     }
     UQPGIM_BaseData::qp_staticObject->QP_GetSoundData()->QP_Addbool("ActivateBusMix", true);
