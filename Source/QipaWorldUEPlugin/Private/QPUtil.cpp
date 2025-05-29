@@ -48,11 +48,9 @@ void UQPUtil::QP_ScreenResolution(float percentage) {
 }
 
 FIntPoint UQPUtil::QP_GetFullScreenResolution(float percentage) {
-	TArray<FIntPoint> resolutions;
-	UKismetSystemLibrary::GetSupportedFullscreenResolutions(resolutions);
-	//resolutions.Last().X;
-	return FIntPoint(FMath::RoundToInt(resolutions.Last().X * percentage), FMath::RoundToInt(resolutions.Last().Y * percentage));
-	//return resolutions[resolutions.Num() - 1] * percentage;
+	if (UGameUserSettings* Settings = GEngine->GetGameUserSettings()) {
+	return FIntPoint(FMath::RoundToInt(Settings->GetDesktopResolution().X * percentage), FMath::RoundToInt(Settings->GetDesktopResolution().Y * percentage));
+	}
 }
 void UQPUtil::QP_UpdateMouse(bool b, APlayerController* controller, UWidget* InWidgetToFocus, EMouseLockMode InMouseLockMode, bool bHideCursorDuringCapture, const bool bFlushInput) {
 	if (!controller) {
