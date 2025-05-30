@@ -26,6 +26,7 @@ void UQPGIM_Assets::Initialize(FSubsystemCollectionBase& Collection)
 void UQPGIM_Assets::Deinitialize()
 {
 	Super::Deinitialize();
+	qp_staticObject = nullptr;
 }
 //UPackage* UQPGIM_Assets::QP_ReloadPackage(UPackage* InPackageToReload, const uint32 InLoadFlags) {
 	//TArray<UPackage*> LoadedPackages;

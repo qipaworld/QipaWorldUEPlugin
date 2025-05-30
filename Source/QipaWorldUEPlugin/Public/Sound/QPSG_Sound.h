@@ -15,7 +15,7 @@ struct FQPSoundSaveData
 	float qp_value = 1;
 };
 /**
- * 保存音乐设置数据的类 根据情况，看看以后是否保留
+ * 保存音乐设置数据的类 废弃
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPSG_Sound : public UQPSaveGame

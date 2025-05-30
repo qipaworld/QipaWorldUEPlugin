@@ -44,6 +44,7 @@ void UQPGIM_UserInterface::Initialize(FSubsystemCollectionBase& Collection)
 void UQPGIM_UserInterface::Deinitialize()
 {
 	Super::Deinitialize();
+	qp_staticObject = nullptr;
 }
 
 UUserWidget* UQPGIM_UserInterface::QP_AddMainUserInterface(const FString& key)

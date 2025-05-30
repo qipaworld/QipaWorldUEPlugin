@@ -43,6 +43,7 @@ void UQPGIM_Map::Initialize(FSubsystemCollectionBase& Collection)
 void UQPGIM_Map::Deinitialize()
 {
 	Super::Deinitialize();
+	qp_staticObject = nullptr;
 }
 
 void UQPGIM_Map::QP_LoadMap(const FString& MapName, const FVector& Location, const FRotator& Rotation)

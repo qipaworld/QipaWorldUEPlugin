@@ -39,6 +39,7 @@ void UQPGIM_Helper::Deinitialize()
 	//qp_soundData->qp_dataDelegate.Remove(qp_handle);
 	//QP_SaveSoundData();
 	Super::Deinitialize();
+	qp_staticObject = nullptr;
 }
 
 

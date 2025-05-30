@@ -32,7 +32,8 @@ void UQPGIM_Sound::Initialize(FSubsystemCollectionBase& Collection)
 	qp_staticObject = this;
 
 	qp_soundData = UQPGIM_BaseData::qp_staticObject->QP_GetSoundData();
-	
+	qp_soundData->QP_LoadData("UQPGIM_Sound");
+	qp_soundVolumeData = qp_soundData->QP_GetUQPData("qp_soundVolumeData");
 	QP_LoadSoundData();
 	
 	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
@@ -44,7 +45,9 @@ void UQPGIM_Sound::Deinitialize()
 		//qp_bgSound->Stop();
 	//}
 	//qp_soundData->qp_dataDelegate.Remove(qp_handle);
-//	QP_SaveSoundData();
+	//QP_SaveSoundData();
+	
+
 	Super::Deinitialize();
 }
 
@@ -157,6 +160,7 @@ void UQPGIM_Sound::QP_SetVolumeByIndex(int32 i,float v)
 	if (IsValid(qp_busMix)) {
 		qp_busMix->MixStages[i].Value.TargetValue = v;
 		UAudioModulationStatics::UpdateMix(GetWorld(), qp_busMix, qp_busMix->MixStages);
+		qp_soundVolumeData->QP_Addfloat(qp_busMix->MixStages[i].Bus.GetFName(),v);
 	}
 	//qp_soundData->QP_AddfloatExI(i,v);
 	//QP_UpdateControlBusMix(1, v);
@@ -172,6 +176,26 @@ float UQPGIM_Sound::QP_GetVolumeByIndex(int32 i)
 	return 0;
 }
 
+void UQPGIM_Sound::QP_SetVolume(FName n, float v)
+{
+	if (IsValid(qp_busMix)) {
+		qp_busMix->MixStages[qp_soundVolumeData->QP_Getint32(n)].Value.TargetValue = v;
+		UAudioModulationStatics::UpdateMix(GetWorld(), qp_busMix, qp_busMix->MixStages);
+		qp_soundVolumeData->QP_Addfloat(n, v);
+	}
+	//qp_soundData->QP_AddfloatExI(i,v);
+	//QP_UpdateControlBusMix(1, v);
+
+}
+
+float UQPGIM_Sound::QP_GetVolume(FName n)
+{
+	if (IsValid(qp_busMix)) {
+		return qp_soundVolumeData->QP_Getfloat(n);
+		//UAudioModulationStatics::UpdateMix(GetWorld(), qp_busMix, qp_busMix->MixStages);
+	}
+	return 0;
+}
 //void UQPGIM_Sound::QP_SetMusicVolume(float v)
 //{
 //	qp_soundData->QP_Addfloat("musicVolume", v);
@@ -247,7 +271,15 @@ void UQPGIM_Sound::QP_SoundDataChange(UQPData* data)
 		{
 			if (!UAudioModulationStatics::IsControlBusMixActive(GetWorld(), qp_busMix)) {
 				for (int i = 0; i < qp_busMix->MixStages.Num(); ++i) {
-					qp_busMix->MixStages[i].Value.TargetValue = qp_soundSaveGame->QP_GetValue(i);
+					qp_soundVolumeData->QP_Addint32(qp_busMix->MixStages[i].Bus.GetFName(), i);
+					//qp_soundVolumeData->QP_AddFNameExI( i, qp_busMix->MixStages[i].Bus.GetFName());
+					if (qp_soundVolumeData->QP_Contains<FName, float>(qp_busMix->MixStages[i].Bus.GetFName(), EQPDataValueType::FLOAT)) {
+						qp_busMix->MixStages[i].Value.TargetValue = qp_soundVolumeData->QP_Getfloat(qp_busMix->MixStages[i].Bus.GetFName());
+					}
+					else {
+						qp_soundVolumeData->QP_Addfloat(qp_busMix->MixStages[i].Bus.GetFName(),qp_busMix->MixStages[i].Value.TargetValue);
+					}
+					
 				}
 				
 				UAudioModulationStatics::ActivateBusMix(GetWorld(), qp_busMix);
@@ -263,27 +295,28 @@ void UQPGIM_Sound::QP_SaveSoundData()
 {
 
 	//UQPSG_Sound* qp_soundSaveGame = Cast<UQPSG_Sound>(UGameplayStatics::CreateSaveGameObject(UQPSG_Sound::StaticClass()));
-	if (IsValid(qp_soundSaveGame))
-	{
+	qp_soundData->QP_SaveData("UQPGIM_Sound");
+	//if (IsValid(qp_soundSaveGame))
+	//{
 
 		// 设置（可选）委托。
 		//FAsyncSaveGameToSlotDelegate qp_SavedDelegate;
 		// USomeUObjectClass::SaveGameDelegateFunction is a void function that takes the following parameters: const FString& SlotName, const int32 UserIndex, bool bSuccess
 		//qp_SavedDelegate.BindUObject(this, &UQPGIM_Sound::QP_SavedDelegate);
-		for (int i = 0; i < qp_busMix->MixStages.Num(); ++i) {
+		//for (int i = 0; i < qp_busMix->MixStages.Num(); ++i) {
 			//qp_busMix->MixStages[i].Value.TargetValue = qp_soundSaveGame->QP_GetValue(i);
-			qp_soundSaveGame->QP_SetValue(i, qp_busMix->MixStages[i].Value.TargetValue);
-		}
+			//qp_soundSaveGame->QP_SetValue(i, qp_busMix->MixStages[i].Value.TargetValue);
+		//}
 		/*qp_soundSaveGame->qp_musicVolume = QP_GetMusicVolume();
 		qp_soundSaveGame->qp_allVolume = QP_GetAllVolume();
 		qp_soundSaveGame->qp_UIVolume = QP_GetUIVolume();
 		qp_soundSaveGame->qp_effectVolume = QP_GetEffectVolume();
 		qp_soundSaveGame->qp_environmentVolume = QP_GetEnvironmentVolume();*/
-		qp_soundSaveGame->QP_AsyncSave();
+		//qp_soundSaveGame->QP_AsyncSave();
 		//UGameplayStatics::SaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName, qp_UserIndex);
 		// 启动异步保存进程。
 		//UGameplayStatics::AsyncSaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName,qp_UserIndex, qp_SavedDelegate);
-	}
+	//}
 	//if (IsValid(qp_busMix))
 	//{
 	//	if (UAudioModulationStatics::IsControlBusMixActive(GetWorld(), qp_busMix)) {
@@ -314,10 +347,10 @@ void UQPGIM_Sound::QP_SaveSoundData()
 
 void UQPGIM_Sound::QP_LoadSoundData()
 {
-	if (!IsValid(qp_soundSaveGame)) {
+	/*if (!IsValid(qp_soundSaveGame)) {
 		qp_soundSaveGame = UQPSaveGame::QP_LoadSaveData<UQPSG_Sound>(qp_SaveSlotName, qp_UserIndex);
 	}
-	qp_soundSaveGame->AddToRoot();
+	qp_soundSaveGame->AddToRoot();*/
 	/*if (qp_soundSaveGame)
 	{*/
 

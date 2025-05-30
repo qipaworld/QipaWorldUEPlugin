@@ -46,7 +46,7 @@ void UQPGIM_Localization::QP_DelayBroad() {
 void UQPGIM_Localization::Deinitialize()
 {
 	Super::Deinitialize();
-	UQPGIM_Localization::qp_staticObject = nullptr;
+	qp_staticObject = nullptr;
 }
 FString UQPGIM_Localization::QP_GetL10NAssetsPath(FString path) {
 	//path.Replace

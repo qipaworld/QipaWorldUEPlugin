@@ -38,8 +38,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPSound")
 	UQPData* qp_soundData;
 	
-	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPSound")
-	TObjectPtr<UQPSG_Sound> qp_soundSaveGame = nullptr;
+	//UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPSound")
+	UQPData* qp_soundVolumeData;
+	//UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPSound")
+	//TObjectPtr<UQPSG_Sound> qp_soundSaveGame = nullptr;
 	//UPROPERTY()
 	//UAudioComponent* qp_bgSound = nullptr;
 	//UPROPERTY()
@@ -121,6 +123,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
 		void QP_SetVolumeByIndex(int32 i,float v);
 
+		/** 获得音效大小*/
+		UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
+		float QP_GetVolume(FName n);
+
+		/** 设置音乐大小*/
+		UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
+		void QP_SetVolume(FName n, float v);
 	/** 获得音乐大小*/
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")
 	//	float QP_GetMusicVolume();

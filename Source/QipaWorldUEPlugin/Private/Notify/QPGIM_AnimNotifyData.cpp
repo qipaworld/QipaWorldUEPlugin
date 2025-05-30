@@ -6,7 +6,7 @@
 #include "Data/QPGIM_Data.h"
 #include "Data/QPData.h"
 
-UQPGIM_AnimNotifyData* UQPGIM_AnimNotifyData::QP_UQPGIM_AnimNotifyData = nullptr;
+UQPGIM_AnimNotifyData* UQPGIM_AnimNotifyData::qp_staticObject = nullptr;
 
 //FName UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME = "qp_animNotify";
 
@@ -21,7 +21,7 @@ void UQPGIM_AnimNotifyData::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 
-	QP_UQPGIM_AnimNotifyData = this;
+	qp_staticObject = this;
 
 	qp_animNotifyData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_AnimNotifyData");
 }
@@ -29,7 +29,7 @@ void UQPGIM_AnimNotifyData::Initialize(FSubsystemCollectionBase& Collection)
 void UQPGIM_AnimNotifyData::Deinitialize()
 {
 	Super::Deinitialize();
-	UQPGIM_AnimNotifyData::QP_UQPGIM_AnimNotifyData = nullptr;
+	qp_staticObject = nullptr;
 }
 
 UQPData* UQPGIM_AnimNotifyData::QP_GetNotifyBaseData(){

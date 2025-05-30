@@ -60,10 +60,10 @@ void UQPGIM_BaseData::Deinitialize()
 	//UQPUtil::QP_LOG("????????_____AAA__333___????????????");
 
 	QP_SaveData();
-	qp_staticObject = nullptr;
 
 
 	Super::Deinitialize();
+	qp_staticObject = nullptr;
 }
 void UQPGIM_BaseData::QP_SaveData() {
 	if (IsValid(qp_baseDataSave)) {
