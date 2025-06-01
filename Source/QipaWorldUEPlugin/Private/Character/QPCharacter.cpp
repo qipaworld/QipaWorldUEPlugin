@@ -76,6 +76,9 @@ void AQPCharacter::BeginPlay()
 	if (!qp_assetData) {
 		UQPGIM_Character::qp_staticObject->QP_InitCharacterData(this);
 	}
+
+	UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_PlayerDataChange);
+
 }
 
 // Called every frame
@@ -434,4 +437,8 @@ void AQPCharacter::QP_ReReset() {
 
  void AQPCharacter::QP_Fire() {
 	 
+ }
+
+  void AQPCharacter::QP_PlayerDataChange(UQPData* data) {
+
  }

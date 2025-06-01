@@ -246,5 +246,5 @@ public:
 	/**监听蒙太奇事件*/
 	virtual void QP_AnimNotify(const FName& n);
 	/**监听跳跃动画播放结束事件*/
-	//virtual void QP_AnimNotifyJumpEnd(UQPData* data);
+	virtual void QP_PlayerDataChange(UQPData* data);
 };
