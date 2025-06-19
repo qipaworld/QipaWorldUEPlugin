@@ -8,7 +8,6 @@
 #include <GameFramework/SpringArmComponent.h>
 #include "Engine/SkeletalMeshSocket.h"
 #include "Components/InputComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/AnimMontage.h"
 #include "Animation/AnimInstance.h"
 #include "Data/QPGIM_Data.h"
@@ -419,25 +418,16 @@ void AQPCharacter::QP_ReReset() {
 	 }
  }
 
- void AQPCharacter::QP_AnimNotify(const FName& n) {
-	 //GLog->Log("QP_AnimNotifyFire");
-	
-	if ( n== QP_AnimNotifyFireName) {
-		QP_Fire();
-	}
-	else if( n == QP_AnimNotifyJunmEndName) {
-		if (qp_characterData->QP_GetFString("characterAttack") == "start") {
-			//qp_characterData->QP_AddFString("characterAttack", "start");
-			QP_PlayAnim("characterAttack");
+ //void AQPCharacter::QP_AnimNotify(const FName& n) {
+	// //GLog->Log("QP_AnimNotifyFire");
+	//
+	//
+	// 
+ //}
 
-		}
-	}
-	 
- }
-
- void AQPCharacter::QP_Fire() {
-	 
- }
+ //void AQPCharacter::QP_Fire() {
+	// 
+ //}
 
   void AQPCharacter::QP_PlayerDataChange(UQPData* data) {
 

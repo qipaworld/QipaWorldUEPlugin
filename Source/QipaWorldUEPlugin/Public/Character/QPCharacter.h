@@ -236,15 +236,13 @@ public:
 		}
 	}
 
-	/**创建魔法技能*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPCharacter")
-		virtual void QP_Fire();
+	
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPCharacter")
 	virtual void QP_SetMatAmount(float amount = 0.f);
 
 	/**监听蒙太奇事件*/
-	virtual void QP_AnimNotify(const FName& n);
+	//virtual void QP_AnimNotify(const FName& n);
 	/**监听跳跃动画播放结束事件*/
 	virtual void QP_PlayerDataChange(UQPData* data);
 };

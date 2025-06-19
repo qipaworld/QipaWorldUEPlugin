@@ -4,6 +4,7 @@
 #include "Monster/QPMonster.h"
 #include "Data/QPGIM_Data.h"
 #include "UObject/UnrealType.h"
+#include "Components/AudioComponent.h"
 #include "Data/QPData.h"
 int AQPMonster::qp_characterDataMaxNum = 1;
 // Sets default values
@@ -11,7 +12,9 @@ AQPMonster::AQPMonster()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+	qp_footstepAudio = CreateDefaultSubobject<UAudioComponent>("footstepAudio");
+	qp_footstepAudio->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -61,6 +64,28 @@ UQPData* AQPMonster::QP_GetQPData() {
 }
 void AQPMonster::QP_AnimNotify(const FName& k) {
 
+	if (k == QP_AnimNotifyFootsetpAudio) {
+		if (qp_isPlayFootstepAudio) {
+			
+			//qp_movementC->speed
+			qp_footstepAudio->SetVolumeMultiplier(qp_movementC->Velocity.Size() / qp_runSpeed*0.8+0.2 );
+			qp_footstepAudio->Play(0);
+		}
+	}
+	if (k == QP_AnimNotifyFireName) {
+		QP_Fire();
+	}
+	else if (k == QP_AnimNotifyJunmEndName) {
+		if (qp_characterData->QP_GetFString("characterAttack") == "start") {
+			//qp_characterData->QP_AddFString("characterAttack", "start");
+			QP_PlayAnim("characterAttack");
+
+		}
+	}
+	
+}
+void AQPMonster::QP_Fire() {
+   // 
 }
 UQPData* AQPMonster::QP_GetAnimData() {
 

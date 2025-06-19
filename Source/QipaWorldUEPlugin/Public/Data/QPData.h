@@ -8,7 +8,7 @@
 
 #include "QPUtil.h"
 #include "string"
-
+#include <functional>
 #include "QPData.generated.h"
 
 class UQPData;

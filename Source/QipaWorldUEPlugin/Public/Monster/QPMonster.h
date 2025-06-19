@@ -8,6 +8,7 @@
 #include "Animation/QPC_PlayMontage.h"
 #include "Interface/QPI_GetAnimData.h"
 #include "Interface/QP_AnimNotify.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "QPMonster.generated.h"
 
@@ -81,6 +82,15 @@ public:
 	class UQPDA_Character* qp_assetData = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	class UQPC_MaterialAutoRestore* qp_materialAutoRestore = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	UAudioComponent* qp_footstepAudio = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	bool qp_isPlayFootstepAudio = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	FName QP_AnimNotifyFootsetpAudio = "QP_AnimNotifyFootsetpAudio";
 public:
 	// Sets default values for this character's properties
 	AQPMonster();
@@ -104,5 +114,9 @@ public:
 	void QP_InitSaveData();
 	virtual void QP_AnimNotify(const FName& k) override;
 	virtual void QP_PlayAnim(FName name, FName StartSectionName = NAME_None);
+
+	/**创建魔法技能*/
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPCharacter")
+	virtual void QP_Fire();
 
 };
