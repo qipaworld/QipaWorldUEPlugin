@@ -15,5 +15,7 @@ class QIPAWORLDUEPLUGINEDITOR_API UQPEditorUtils : public UBlueprintFunctionLibr
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
-static void QP_ReplaceTextBlocksWithCustomSubclass();
+	static void QP_ReplaceTextBlocksWithCustomSubclass();
+	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
+	static void QP_ChangeLevelAllActorsTag( FName oldTag,FName newTag);
 };

@@ -7,13 +7,35 @@
 #include "Interface/QPI_GetQPData.h"
 #include "Animation/QPC_PlayMontage.h"
 #include "Interface/QPI_GetAnimData.h"
-#include "Interface/QP_AnimNotify.h"
+#include "Interface/QPI_AnimNotify.h"
+#include "Interface/QPI_AnimNotifyFootstep.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "QPMonster.generated.h"
 
+USTRUCT(BlueprintType, Category = "QipaWorld|Sound")
+struct FQP_SoundDataCell
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Sound")
+	 float qp_volume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Sound")
+	 USoundWave* qp_sound;
+};
+
+USTRUCT(BlueprintType, Category = "QipaWorld|Sound")
+struct FQP_SoundData
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Sound")
+	TArray< FQP_SoundDataCell> qp_soundCell;
+};
+
+
+
 UCLASS()
-class QIPAWORLDUEPLUGIN_API AQPMonster : public ACharacter, public IQPI_GetQPData, public IQPI_GetAnimData , public IQP_AnimNotify
+class QIPAWORLDUEPLUGIN_API AQPMonster : public ACharacter, public IQPI_GetQPData, public IQPI_GetAnimData , public IQPI_AnimNotify, public IQPI_AnimNotifyFootstep
 {
 	GENERATED_BODY()
 public:
@@ -90,7 +112,13 @@ public:
 	bool qp_isPlayFootstepAudio = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	FName QP_AnimNotifyFootsetpAudio = "QP_AnimNotifyFootsetpAudio";
+	TMap<EQPFootstepType, FQP_SoundData > qp_footstepSounds;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	//TMap<EQPFootstepType, TArray<float> > qp_footstepSoundsVolume;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	//FName QP_AnimNotifyFootsetpAudio = "QP_AnimNotifyFootsetpAudio";
 public:
 	// Sets default values for this character's properties
 	AQPMonster();
@@ -112,11 +140,31 @@ public:
 	//if you want set save data,rewrite this function
 	virtual void QP_ChangeSaveData();
 	void QP_InitSaveData();
-	virtual void QP_AnimNotify(const FName& k) override;
+	virtual void QPI_AnimNotify(const FName& k) override;
+	virtual void QPI_AnimNotifyFootstep(EQPFootstepType, FVector,float) override;
+
+	virtual void QP_PlayFootstepAudio();
 	virtual void QP_PlayAnim(FName name, FName StartSectionName = NAME_None);
 
 	/**创建魔法技能*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPCharacter")
 	virtual void QP_Fire();
+
+	TArray<AActor*> qp_waters;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPBlind")
+	TObjectPtr<USceneComponent> qp_deepWaterPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPBlind")
+	TObjectPtr<USceneComponent> qp_underWaterPoint;
+
+	//EQPFootstepType qp_waterFootstep = EQPFootstepType::WATER;
+	//TObjectPtr<UCapsuleComponent> qp_capsuleComponent;
+	UFUNCTION()
+	virtual void QP_OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	virtual void QP_OnCapsuleEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };

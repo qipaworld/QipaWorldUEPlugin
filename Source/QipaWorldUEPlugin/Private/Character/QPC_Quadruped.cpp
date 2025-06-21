@@ -13,8 +13,8 @@ void AQPC_Quadruped::QP_RestorSlime() {
 
 }
 
-void AQPC_Quadruped::QP_AnimNotify(const FName& n) {
-	Super::QP_AnimNotify(n);
+void AQPC_Quadruped::QPI_AnimNotify(const FName& n) {
+	Super::QPI_AnimNotify(n);
 	
 		if (n == "qp_flySlimeReduceEnd") {
 			qp_targetCameraLength = qp_springArm->TargetArmLength;

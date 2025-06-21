@@ -10,7 +10,7 @@
 
 #include "Widget/QPTextBlock.h"
 #include "UObject/SavePackage.h"
-
+#include "EngineUtils.h"
 #include "Blueprint/WidgetTree.h"
 #include "Widget/QPTextBlock.h"
 
@@ -78,4 +78,23 @@ void UQPEditorUtils::QP_ReplaceTextBlocksWithCustomSubclass()
 	}
 	
 
+}
+
+void UQPEditorUtils::QP_ChangeLevelAllActorsTag( FName oldTag, FName newTag) {
+	//if (!World) return;
+
+	
+	for (TActorIterator<AActor> ActorItr(GEditor->GetEditorWorldContext().World()); ActorItr; ++ActorItr)
+	{
+		AActor* Actor = *ActorItr;
+		if (!Actor) continue;
+
+		for (int i = 0; i < Actor->Tags.Num(); ++i) {
+			if (Actor->Tags[i] == oldTag) {
+				Actor->Tags[i] = newTag;
+			}
+		}
+		
+	}
+	GEditor->GetEditorWorldContext().World()->MarkPackageDirty();
 }

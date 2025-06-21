@@ -5,6 +5,7 @@
 #include "Data/QPGIM_Data.h"
 #include "UObject/UnrealType.h"
 #include "Components/AudioComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Data/QPData.h"
 int AQPMonster::qp_characterDataMaxNum = 1;
 // Sets default values
@@ -13,7 +14,14 @@ AQPMonster::AQPMonster()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	qp_footstepAudio = CreateDefaultSubobject<UAudioComponent>("footstepAudio");
+	qp_footstepAudio->SetAutoActivate(false);
 	qp_footstepAudio->SetupAttachment(RootComponent);
+
+	qp_deepWaterPoint = CreateDefaultSubobject<USceneComponent>("qp_deepWaterPoint");
+	qp_deepWaterPoint->SetupAttachment(RootComponent);
+
+	qp_underWaterPoint = CreateDefaultSubobject<USceneComponent>("qp_underWaterPoint");
+	qp_underWaterPoint->SetupAttachment(RootComponent);
 
 }
 
@@ -21,6 +29,9 @@ AQPMonster::AQPMonster()
 void AQPMonster::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AQPMonster::QP_OnCapsuleBeginOverlap);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AQPMonster::QP_OnCapsuleEndOverlap);
 	QP_GetAnimData();
 	QP_InitSaveData();
 	if (!qp_saveName.IsEmpty()) {
@@ -35,6 +46,26 @@ void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 		qp_saveData->QP_SaveData(qp_saveName);
 	}
 }
+ void AQPMonster::QP_OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+	bool bFromSweep, const FHitResult& SweepResult) {
+
+	 if (OtherActor->Tags.Contains("water")) {
+		 qp_waters.Add(OtherActor);
+		 
+		 
+		 
+	 }
+	 //UE_LOG(LogTemp, Warning, TEXT("Capsule overlapped with %s"), *OtherActor->GetName());
+
+}
+ void AQPMonster::QP_OnCapsuleEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+	 //UE_LOG(LogTemp, Warning, TEXT("Capsule overlapped with %s"), *OtherActor->GetName());
+	 if (OtherActor->Tags.Contains("water")) {
+		 qp_waters.Remove(OtherActor);
+	 }
+ }
+
 void AQPMonster::QP_ChangeSaveData() {
 
 }
@@ -62,16 +93,81 @@ UQPData* AQPMonster::QP_GetQPData() {
 	}
 	return qp_characterData;
 }
-void AQPMonster::QP_AnimNotify(const FName& k) {
-
-	if (k == QP_AnimNotifyFootsetpAudio) {
+void AQPMonster::QPI_AnimNotifyFootstep(EQPFootstepType t, FVector v, float minVolume) {
+	//if (k == QP_AnimNotifyFootsetpAudio) {
 		if (qp_isPlayFootstepAudio) {
+			if (qp_waters.Num()> 0) {
+				if (qp_waters.Last()->GetActorLocation().Z > qp_underWaterPoint->GetComponentLocation().Z && qp_footstepSounds.Contains(EQPFootstepType::UNDER_WATER)) {
+					t = EQPFootstepType::UNDER_WATER;
+				}
+				else if (qp_waters.Last()->GetActorLocation().Z > qp_deepWaterPoint->GetComponentLocation().Z && qp_footstepSounds.Contains(EQPFootstepType::DEEP_WATER)) {
+					t = EQPFootstepType::DEEP_WATER;
+				}
+				else {
+					t = EQPFootstepType::WATER;
+
+				}
+
+				//t = qp_waterFootstep;
+				//UE_LOG(LogTemp, Warning, TEXT("Hit Actor:______"));
+			}
+			if (!qp_footstepSounds.Contains(t)) {
+				t = EQPFootstepType::DEFAULT;
+			}
+			FQP_SoundData& soundData = qp_footstepSounds[t];
+
+			FQP_SoundDataCell& soundDataCell = soundData.qp_soundCell[FMath::RandRange(0, soundData.qp_soundCell.Num() - 1)];
 			
-			//qp_movementC->speed
-			qp_footstepAudio->SetVolumeMultiplier(qp_movementC->Velocity.Size() / qp_runSpeed*0.8+0.2 );
+			qp_footstepAudio->SetWaveParameter("qp_wave", soundDataCell.qp_sound);
+			qp_footstepAudio->SetFloatParameter("qp_volume", soundDataCell.qp_volume);
+			/*if (t == EQPFootstepType::DEFAULT) {
+			} else if (t == EQPFootstepType::WOOD) {
+				qp_footstepAudio->SetIntParameter("qp_type", 1);
+			}
+			else if (t == EQPFootstepType::TILE) {
+				qp_footstepAudio->SetIntParameter("qp_type", 2);
+			}
+			else if (t == EQPFootstepType::WOOD2) {
+				qp_footstepAudio->SetIntParameter("qp_type", 6);
+			}*/
+			//qp_footstepAudio->SetWaveParameter
+		 //UE_LOG(LogTemp, Warning, TEXT("Hit Actor:______"));
+			// 
+			qp_footstepAudio->SetVolumeMultiplier(qp_movementC->Velocity.Size() / qp_runSpeed * (1- minVolume) + minVolume);
 			qp_footstepAudio->Play(0);
+			//qp_movementC->speed
+			
 		}
-	}
+	//}
+}
+ void AQPMonster::QP_PlayFootstepAudio() {
+
+	 //FVector Start = GetActorLocation(); // 射线起点
+	 //FVector ForwardVector = GetActorForwardVector(); // 方向
+	 //FVector End = Start + (ForwardVector * 1000.0f); // 射线终点（长度 1000）
+
+	 //FHitResult HitResult;
+	 //FCollisionQueryParams Params;
+	 //Params.AddIgnoredActor(this); // 忽略自己
+
+	 //bool bHit = GetWorld()->LineTraceSingleByChannel(
+		// HitResult,
+		// Start,
+		// End,
+		// ECC_Visibility, // 或 ECC_GameTraceChannel1 自定义碰撞通道
+		// Params
+	 //);
+
+	 //if (bHit)
+	 //{
+		// UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *HitResult.GetActor()->GetName());
+	 //}
+
+	 
+}
+void AQPMonster::QPI_AnimNotify(const FName& k) {
+
+	
 	if (k == QP_AnimNotifyFireName) {
 		QP_Fire();
 	}
