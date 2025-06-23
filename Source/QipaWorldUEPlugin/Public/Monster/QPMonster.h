@@ -10,27 +10,10 @@
 #include "Interface/QPI_AnimNotify.h"
 #include "Interface/QPI_AnimNotifyFootstep.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
+#include "Sound/QPC_PlayRandomSound.h"
+//#include "Sound/QP_RandomSoundData.h"
 #include "QPMonster.generated.h"
 
-USTRUCT(BlueprintType, Category = "QipaWorld|Sound")
-struct FQP_SoundDataCell
-{
-	GENERATED_BODY()
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Sound")
-	 float qp_volume;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Sound")
-	 USoundWave* qp_sound;
-};
-
-USTRUCT(BlueprintType, Category = "QipaWorld|Sound")
-struct FQP_SoundData
-{
-	GENERATED_BODY()
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Sound")
-	TArray< FQP_SoundDataCell> qp_soundCell;
-};
 
 
 
@@ -92,6 +75,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	bool qp_isSneak = false;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	//TMap<EQPFootstepType, FQP_SoundData > qp_footstepSounds;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	float qp_moveInterpSpeed = 5.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
@@ -109,10 +95,11 @@ public:
 	UAudioComponent* qp_footstepAudio = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	UQPC_PlayRandomSound* qp_playRandomSound = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	bool qp_isPlayFootstepAudio = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	TMap<EQPFootstepType, FQP_SoundData > qp_footstepSounds;
+	
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	//TMap<EQPFootstepType, TArray<float> > qp_footstepSoundsVolume;

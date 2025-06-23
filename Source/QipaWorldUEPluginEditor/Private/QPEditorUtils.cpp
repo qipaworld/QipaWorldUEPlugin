@@ -7,7 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
 #include "AssetRegistry/AssetRegistryModule.h"
-
+#include "EditorLevelLibrary.h"
 #include "Widget/QPTextBlock.h"
 #include "UObject/SavePackage.h"
 #include "EngineUtils.h"
@@ -92,6 +92,42 @@ void UQPEditorUtils::QP_ChangeLevelAllActorsTag( FName oldTag, FName newTag) {
 		for (int i = 0; i < Actor->Tags.Num(); ++i) {
 			if (Actor->Tags[i] == oldTag) {
 				Actor->Tags[i] = newTag;
+			}
+		}
+		
+	}
+	GEditor->GetEditorWorldContext().World()->MarkPackageDirty();
+}
+
+void UQPEditorUtils::QP_ReplaceLevelActor() {
+	UClass* c = (Cast<UBlueprint>(UEditorUtilityLibrary::GetSelectedAssets()[0]))->GeneratedClass;
+
+	TArray<AActor*> SelectedActors = UEditorLevelLibrary::GetSelectedLevelActors();
+	FTransform t;
+	for (auto v : SelectedActors) {
+		t = v->GetTransform();
+		GEditor->GetEditorWorldContext().World()->SpawnActor(c, &t);
+		v->Destroy();
+	}
+	GEditor->GetEditorWorldContext().World()->MarkPackageDirty();
+
+	//TArray< UObject* > SelectedAssets = UEditorUtilityLibrary::GetSelectedAssets();
+}
+void UQPEditorUtils::QP_ReplaceLevelActorByMeshName(FName n) {
+	UClass* c = (Cast<UBlueprint>(UEditorUtilityLibrary::GetSelectedAssets()[0]))->GeneratedClass;
+
+	TArray<AActor*> SelectedActors = UEditorLevelLibrary::GetSelectedLevelActors();
+	FTransform t;
+	for (auto v : SelectedActors) {
+		UStaticMeshComponent* MeshComp = v->FindComponentByClass<UStaticMeshComponent>();
+		if (MeshComp)
+		{
+			UStaticMesh* Mesh = MeshComp->GetStaticMesh();
+			if (Mesh&& Mesh->GetFName() == n)
+			{
+				t = v->GetTransform();
+				GEditor->GetEditorWorldContext().World()->SpawnActor(c, &t);
+				v->Destroy();
 			}
 		}
 		

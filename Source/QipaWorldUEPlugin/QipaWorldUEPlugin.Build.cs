@@ -27,6 +27,8 @@ public class QipaWorldUEPlugin : ModuleRules
 			{
 				"Core",
                 "AudioModulation",
+                "GeometryCollectionEngine",
+                "ChaosSolverEngine",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

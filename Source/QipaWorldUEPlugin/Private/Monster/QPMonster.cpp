@@ -4,7 +4,7 @@
 #include "Monster/QPMonster.h"
 #include "Data/QPGIM_Data.h"
 #include "UObject/UnrealType.h"
-#include "Components/AudioComponent.h"
+
 #include "Components/CapsuleComponent.h"
 #include "Data/QPData.h"
 int AQPMonster::qp_characterDataMaxNum = 1;
@@ -22,6 +22,12 @@ AQPMonster::AQPMonster()
 
 	qp_underWaterPoint = CreateDefaultSubobject<USceneComponent>("qp_underWaterPoint");
 	qp_underWaterPoint->SetupAttachment(RootComponent);
+
+	qp_playRandomSound = CreateDefaultSubobject<UQPC_PlayRandomSound>("qp_playRandomSound");
+	qp_playRandomSound->qp_footstepAudio = qp_footstepAudio;
+	//qp_playRandomSound->SetupAttachment(RootComponent);
+
+	
 
 }
 
@@ -97,10 +103,10 @@ void AQPMonster::QPI_AnimNotifyFootstep(EQPFootstepType t, FVector v, float minV
 	//if (k == QP_AnimNotifyFootsetpAudio) {
 		if (qp_isPlayFootstepAudio) {
 			if (qp_waters.Num()> 0) {
-				if (qp_waters.Last()->GetActorLocation().Z > qp_underWaterPoint->GetComponentLocation().Z && qp_footstepSounds.Contains(EQPFootstepType::UNDER_WATER)) {
+				if (qp_waters.Last()->GetActorLocation().Z > qp_underWaterPoint->GetComponentLocation().Z && qp_playRandomSound->qp_randomSounds.Contains(EQPFootstepType::UNDER_WATER)) {
 					t = EQPFootstepType::UNDER_WATER;
 				}
-				else if (qp_waters.Last()->GetActorLocation().Z > qp_deepWaterPoint->GetComponentLocation().Z && qp_footstepSounds.Contains(EQPFootstepType::DEEP_WATER)) {
+				else if (qp_waters.Last()->GetActorLocation().Z > qp_deepWaterPoint->GetComponentLocation().Z && qp_playRandomSound->qp_randomSounds.Contains(EQPFootstepType::DEEP_WATER)) {
 					t = EQPFootstepType::DEEP_WATER;
 				}
 				else {
@@ -111,15 +117,11 @@ void AQPMonster::QPI_AnimNotifyFootstep(EQPFootstepType t, FVector v, float minV
 				//t = qp_waterFootstep;
 				//UE_LOG(LogTemp, Warning, TEXT("Hit Actor:______"));
 			}
-			if (!qp_footstepSounds.Contains(t)) {
+			if (!qp_playRandomSound->qp_randomSounds.Contains(t)) {
 				t = EQPFootstepType::DEFAULT;
 			}
-			FQP_SoundData& soundData = qp_footstepSounds[t];
-
-			FQP_SoundDataCell& soundDataCell = soundData.qp_soundCell[FMath::RandRange(0, soundData.qp_soundCell.Num() - 1)];
-			
-			qp_footstepAudio->SetWaveParameter("qp_wave", soundDataCell.qp_sound);
-			qp_footstepAudio->SetFloatParameter("qp_volume", soundDataCell.qp_volume);
+			qp_playRandomSound->QP_SetVolume(qp_movementC->Velocity.Size() / qp_runSpeed * (1 - minVolume) + minVolume);
+			qp_playRandomSound->QP_Play(t);
 			/*if (t == EQPFootstepType::DEFAULT) {
 			} else if (t == EQPFootstepType::WOOD) {
 				qp_footstepAudio->SetIntParameter("qp_type", 1);
@@ -133,8 +135,7 @@ void AQPMonster::QPI_AnimNotifyFootstep(EQPFootstepType t, FVector v, float minV
 			//qp_footstepAudio->SetWaveParameter
 		 //UE_LOG(LogTemp, Warning, TEXT("Hit Actor:______"));
 			// 
-			qp_footstepAudio->SetVolumeMultiplier(qp_movementC->Velocity.Size() / qp_runSpeed * (1- minVolume) + minVolume);
-			qp_footstepAudio->Play(0);
+			
 			//qp_movementC->speed
 			
 		}

@@ -4,20 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Sound/QP_RandomSoundData.h"
 #include "QPI_AnimNotifyFootstep.generated.h"
 
 
-UENUM(BlueprintType, Category = "QipaWorld|AnimNotifyFootstep")
-enum class EQPFootstepType :uint8
-{
-	DEFAULT              UMETA(DisplayName = "default"),
-	WOOD              UMETA(DisplayName = "wood"),
-	WOOD_AIR              UMETA(DisplayName = "wood air"),
-	TILE              UMETA(DisplayName = "tile"),
-	WATER              UMETA(DisplayName = "water"),
-	DEEP_WATER              UMETA(DisplayName = "deep water"),
-	UNDER_WATER              UMETA(DisplayName = "under water"),
-};
+
 
 UENUM(BlueprintType, Category = "QipaWorld|AnimNotifyFootstep")
 enum class EQPFootstepAutoVolumeType :uint8

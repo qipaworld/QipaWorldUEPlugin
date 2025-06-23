@@ -18,4 +18,8 @@ public:
 	static void QP_ReplaceTextBlocksWithCustomSubclass();
 	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
 	static void QP_ChangeLevelAllActorsTag( FName oldTag,FName newTag);
+	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
+	static void QP_ReplaceLevelActor();
+	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
+	static void QP_ReplaceLevelActorByMeshName(FName n);
 };
