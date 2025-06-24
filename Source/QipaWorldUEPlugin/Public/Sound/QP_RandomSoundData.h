@@ -24,10 +24,10 @@ struct FQP_SoundDataCell
 {
 	GENERATED_BODY()
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Sound")
-	float qp_volume;
+	float qp_volume = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Sound")
-	USoundWave* qp_sound;
+	USoundWave* qp_sound = nullptr;
 };
 
 USTRUCT(BlueprintType, Category = "QipaWorld|Sound")

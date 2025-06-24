@@ -7,10 +7,7 @@
 #include "Component/QPComponent.h"
 #include "QPC_MaterialDissolve.generated.h"
 
-/**
- * 这个类和UQPC_MaterialAutoRestore 内容一样，
- * 以后可以改改
- */
+
 UCLASS(ClassGroup = (QipaWorld), meta = (BlueprintSpawnableComponent))
 class QIPAWORLDUEPLUGIN_API UQPC_MaterialDissolve : public UQPComponent
 {

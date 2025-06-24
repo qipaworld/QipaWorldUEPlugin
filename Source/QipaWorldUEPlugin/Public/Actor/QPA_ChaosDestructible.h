@@ -20,11 +20,17 @@ public:
 	AQPA_ChaosDestructible();
 
 	virtual void BeginPlay() override;
-	UFUNCTION()
-	void QP_OnChunkHit(const FChaosPhysicsCollisionInfo& CollisionInfo);
-	UFUNCTION()
-	void QP_OnBroken(const FChaosBreakEvent& BreakEvent);
+	//UFUNCTION() //This is very slow and needs to be changed to pure Cpp when there is time
+	 //void QP_OnChunkHit_Bind(const FChaosPhysicsCollisionInfo& CollisionInfo);
+	//UFUNCTION()
+	 //void QP_OnBroken_Bind(const FChaosBreakEvent& BreakEvent);
 
+	 UFUNCTION()
+	 virtual void QP_OnChunkHit(const FChaosPhysicsCollisionInfo& CollisionInfo);
+	 UFUNCTION()
+	 virtual void QP_OnBroken(const FChaosBreakEvent& BreakEvent);
+
+	 
 	//UFUNCTION()
 	//void QP_OnActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 

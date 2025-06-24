@@ -24,7 +24,7 @@ void UQPC_MaterialDissolve::BeginPlay() {
 	for (int32 i = 0; i < qp_mesh->GetNumMaterials(); ++i)
 	{
 		qp_materialDissolves.Add(qp_mesh->CreateDynamicMaterialInstance(i, qp_mesh->GetMaterial(i)));
-		qp_materialDissolves[i]->SetScalarParameterValue(qp_amountName, qp_matAmount);
+		//qp_materialDissolves[i]->SetScalarParameterValue(qp_amountName, qp_matAmount);
 
 	}
 	
@@ -50,15 +50,13 @@ void UQPC_MaterialDissolve::TickComponent(float DeltaTime,enum ELevelTick TickTy
 		qp_matAmount -= (qp_matAmountSpeed * DeltaTime);
 		if (qp_matAmount <= 0) {
 			qp_matAmount = 0;
-			for (int32 i = 0; i < qp_mesh->GetNumMaterials(); ++i)
-			{
-				qp_materialDissolves[i]->SetScalarParameterValue(qp_amountName, qp_matAmount);
-			}
-			QP_Stop();
 		}
 		for (int32 i = 0; i < qp_mesh->GetNumMaterials(); ++i)
 		{
 			qp_materialDissolves[i]->SetScalarParameterValue(qp_amountName, qp_matAmount);
+		}
+		if (qp_matAmount == 0) {
+			QP_Stop();
 		}
 		
 	

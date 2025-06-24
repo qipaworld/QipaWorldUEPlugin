@@ -31,12 +31,22 @@ AQPA_ChaosDestructible::AQPA_ChaosDestructible()
 void AQPA_ChaosDestructible::BeginPlay()
 {
 	Super::BeginPlay();
-
+	//qp_geometryCollection->OnPhysicsCollision
 	qp_geometryCollection->OnChaosPhysicsCollision.AddDynamic(this, &AQPA_ChaosDestructible::QP_OnChunkHit);
 	qp_geometryCollection->OnChaosBreakEvent.AddDynamic(this, &AQPA_ChaosDestructible::QP_OnBroken);
 	//OnActorHit.AddDynamic(this, &AQPA_ChaosDestructible::QP_OnActorHit);
 
 }
+
+//void AQPA_ChaosDestructible::QP_OnChunkHit_Bind(const FChaosPhysicsCollisionInfo& BreakEvent)
+//{
+//	QP_OnChunkHit(BreakEvent);
+//}
+//void AQPA_ChaosDestructible::QP_OnBroken_Bind(const FChaosBreakEvent& BreakEvent)
+//{
+//	QP_OnBroken(BreakEvent);
+//}
+
 void AQPA_ChaosDestructible::QP_OnBroken(const FChaosBreakEvent& BreakEvent)
 {
 	qp_autoDestroy = qp_delayDestroy;
