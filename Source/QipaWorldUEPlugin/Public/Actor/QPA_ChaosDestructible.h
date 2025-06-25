@@ -7,6 +7,7 @@
 #include "Sound/QPC_PlayRandomSound.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Chaos/ChaosNotifyHandlerInterface.h"
+#include "Components/SphereComponent.h"
 #include "QPA_ChaosDestructible.generated.h"
 
 /**
@@ -31,6 +32,12 @@ public:
 	 virtual void QP_OnBroken(const FChaosBreakEvent& BreakEvent);
 
 	 
+	 UFUNCTION()
+	 virtual void QP_OnTriggerSimulatePhysicsBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	 UFUNCTION()
+	 virtual void QP_OnTriggerSimulatePhysicsEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 	//UFUNCTION()
 	//void QP_OnActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
@@ -39,6 +46,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|ChaosDestructible")
 	UQPC_PlayRandomSound* qp_playRandomSound = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|ChaosDestructible")
+	bool qp_autoSimulatePhysics = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|ChaosDestructible")
 	float qp_maxSpeed = 600;
@@ -53,4 +63,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QipaWorld|ChaosDestructible")
 	TObjectPtr<UGeometryCollectionComponent> qp_geometryCollection;
 	
+	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPSkillCollision")
+	USphereComponent* qp_sphere;
 };

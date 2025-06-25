@@ -26,6 +26,8 @@ AQPMonster::AQPMonster()
 	qp_playRandomSound = CreateDefaultSubobject<UQPC_PlayRandomSound>("qp_playRandomSound");
 	qp_playRandomSound->qp_footstepAudio = qp_footstepAudio;
 	//qp_playRandomSound->SetupAttachment(RootComponent);
+	qp_sphereTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("qp_sphereTrigger"));
+	qp_sphereTrigger->SetupAttachment(RootComponent);
 
 	
 
@@ -38,6 +40,8 @@ void AQPMonster::BeginPlay()
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AQPMonster::QP_OnCapsuleBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AQPMonster::QP_OnCapsuleEndOverlap);
+	qp_sphereTrigger->OnComponentBeginOverlap.AddDynamic(this, &AQPMonster::QP_OnTriggerOverlapBegin);
+	qp_sphereTrigger->OnComponentEndOverlap.AddDynamic(this, &AQPMonster::QP_OnTriggerOverlapEnd);
 	QP_GetAnimData();
 	QP_InitSaveData();
 	if (!qp_saveName.IsEmpty()) {
@@ -70,6 +74,19 @@ void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 	 if (OtherActor->Tags.Contains("water")) {
 		 qp_waters.Remove(OtherActor);
 	 }
+ }
+
+ void AQPMonster::QP_OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+ {
+	 //if ("BP_ChaosJar_116" == GetActorLabel())
+		 //UE_LOG(LogTemp, Warning, TEXT("___!__d_d___%s"), *OtherActor->GetActorLabel());
+	 
+ }
+
+ void AQPMonster::QP_OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+ {
+	 //if ("BP_ChaosJar_116" == GetActorLabel())
+		 //UE_LOG(LogTemp, Warning, TEXT("___!___d___%s"), *OtherActor->GetActorLabel());
  }
 
 void AQPMonster::QP_ChangeSaveData() {

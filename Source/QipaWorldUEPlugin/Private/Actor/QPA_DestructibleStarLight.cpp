@@ -85,6 +85,8 @@ void AQPA_DestructibleStarLight::QP_OnChunkHit(const FChaosPhysicsCollisionInfo&
 	/*if (qp_delayTime >= 0) {
 		return;
 	}*/
+	/*if ("BP_ChaosJar_116" == GetActorLabel())
+		UE_LOG(LogTemp, Warning, TEXT("___!___d___%s"), *GetActorLabel());*/
 	if ((CollisionInfo.Velocity.Size() + CollisionInfo.OtherVelocity.Size()) > qp_fadeInMinVelocity) {
 		
 		qp_showedTime = qp_showTime;
@@ -94,8 +96,8 @@ void AQPA_DestructibleStarLight::QP_OnChunkHit(const FChaosPhysicsCollisionInfo&
 
 		qp_fadeMaterials->QP_FadeIn(qp_fadeInTime);
 		//qp_isShow = true;
-		//if("BP_ChaosJar_116" == GetActorLabel())
-		//UE_LOG(LogTemp, Warning, TEXT("___!______%s"),*GetActorLabel());
+		/*if("BP_ChaosJar_116" == GetActorLabel())
+		UE_LOG(LogTemp, Warning, TEXT("___!______%s"),*GetActorLabel());*/
 
 		//qp_autoDestroy = qp_delayDestroy;
 		//qp_playRandomSound->QP_SetVolume(velocity / qp_maxSpeed * (1 - qp_minVolume) + qp_minVolume);

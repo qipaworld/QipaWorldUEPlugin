@@ -23,8 +23,7 @@ AQPS_Collision::AQPS_Collision()
 	//Cube->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	// °ó¶¨º¯Êý
-	qp_sphere->OnComponentBeginOverlap.AddDynamic(this, &AQPS_Collision::QP_OnOverlapBegin);
-	qp_sphere->OnComponentEndOverlap.AddDynamic(this, &AQPS_Collision::QP_OnOverlapEnd);
+	
 
 	// °ó¶¨º¯Êý Ê¹ÓÃÎ¯ÍÐ
 	//FScriptDelegate OverlapEndDelegate;
@@ -32,7 +31,7 @@ AQPS_Collision::AQPS_Collision()
 	//qp_sphere->OnComponentBeginOverlap.Add(OverlapEndDelegate);
 
 	// °ó¶¨Åö×²º¯Êý
-	qp_sphere->OnComponentHit.AddDynamic(this, &AQPS_Collision::QP_OnHit);
+	
 
 	qp_bustNiagara = CreateDefaultSubobject<UNiagaraComponent>("qp_bustNiagara");
 	qp_bustNiagara->SetupAttachment(RootComponent);
@@ -42,6 +41,9 @@ AQPS_Collision::AQPS_Collision()
 void AQPS_Collision::BeginPlay()
 {
 	Super::BeginPlay();
+	qp_sphere->OnComponentBeginOverlap.AddDynamic(this, &AQPS_Collision::QP_OnSkillOverlapBegin);
+	qp_sphere->OnComponentEndOverlap.AddDynamic(this, &AQPS_Collision::QP_OnSkillOverlapEnd);
+	qp_sphere->OnComponentHit.AddDynamic(this, &AQPS_Collision::QP_OnSkillHit);
 	qp_bustNiagara->Deactivate();
 }
 
@@ -52,19 +54,19 @@ void AQPS_Collision::Tick(float DeltaTime)
 }
 
 
-void AQPS_Collision::QP_OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AQPS_Collision::QP_OnSkillOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Overlap Begin"));
 	QP_End();
 
 }
 
-void AQPS_Collision::QP_OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void AQPS_Collision::QP_OnSkillOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	//UQPUtil::QP_LOG("Overlap End");
 }
 
-void AQPS_Collision::QP_OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AQPS_Collision::QP_OnSkillHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	//UQPUtil::QP_LOG("Hit");
 	//Destroy();

@@ -9,6 +9,8 @@
 #include "Interface/QPI_GetAnimData.h"
 #include "Interface/QPI_AnimNotify.h"
 #include "Interface/QPI_AnimNotifyFootstep.h"
+#include "Components/SphereComponent.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Sound/QPC_PlayRandomSound.h"
 //#include "Sound/QP_RandomSoundData.h"
@@ -75,6 +77,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	bool qp_isSneak = false;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
+	USphereComponent* qp_sphereTrigger;
+	//UCapsuleComponent* qp_capsuleTrigger;
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	//TMap<EQPFootstepType, FQP_SoundData > qp_footstepSounds;
 
@@ -132,6 +137,13 @@ public:
 
 	virtual void QP_PlayFootstepAudio();
 	virtual void QP_PlayAnim(FName name, FName StartSectionName = NAME_None);
+
+	UFUNCTION()
+	virtual void QP_OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	virtual void QP_OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 
 	/**创建魔法技能*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPCharacter")
