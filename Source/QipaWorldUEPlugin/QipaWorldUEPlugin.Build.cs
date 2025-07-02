@@ -29,6 +29,10 @@ public class QipaWorldUEPlugin : ModuleRules
                 "AudioModulation",
                 "GeometryCollectionEngine",
                 "ChaosSolverEngine",
+                "StateTreeModule", 
+                "GameplayStateTreeModule",
+                "AIModule",
+                "NavigationSystem",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -52,7 +56,7 @@ public class QipaWorldUEPlugin : ModuleRules
                 "NavigationSystem",
                 "AppFramework",
                 "AudioModulation",
-                "AIModule",
+                
                 //"RHI",
 				// ... add private dependencies that you statically link with here ...	
 			}

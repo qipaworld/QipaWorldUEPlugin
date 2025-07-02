@@ -29,7 +29,10 @@ AQPMonster::AQPMonster()
 	qp_sphereTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("qp_sphereTrigger"));
 	qp_sphereTrigger->SetupAttachment(RootComponent);
 
-	
+	//qp_stateTree = CreateDefaultSubobject<UStateTreeComponent>(TEXT("qp_stateTree"));
+	//qp_stateTree->setlo = false;
+	//qp_stateTree->SetStartLogicAutomatically(false);
+
 
 }
 
@@ -38,6 +41,7 @@ void AQPMonster::BeginPlay()
 {
 	Super::BeginPlay();
 
+	qp_movementC = GetCharacterMovement();
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AQPMonster::QP_OnCapsuleBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AQPMonster::QP_OnCapsuleEndOverlap);
 	qp_sphereTrigger->OnComponentBeginOverlap.AddDynamic(this, &AQPMonster::QP_OnTriggerOverlapBegin);
@@ -47,6 +51,9 @@ void AQPMonster::BeginPlay()
 	if (!qp_saveName.IsEmpty()) {
 		qp_saveData->QP_LoadData(qp_saveName);
 	}
+	/*if (qp_AutoPlayStateTree) {
+		qp_stateTree->StartLogic();
+	}*/
 	//QP_GetQPData();
 }
 void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {

@@ -34,12 +34,46 @@ void AQPA_DestructibleStarLight::BeginPlay()
 		
 
 	}
+	if (qp_autoSimulatePhysics) {
+		//SetActorTickEnabled(false);
+		//qp_fadeMaterials->SetComponentTickEnabled(false);
+
+	}
 	//qp_geometryCollection->SetEnableGravity(false);
 	//qp_geometryCollection->MarkRenderStateDirty();
 	
 	//qp_geometryCollection->ForceRecreateRenderState_Concurrent();
 }
+void AQPA_DestructibleStarLight::QP_OnTriggerSimulatePhysicsBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//UE_LOG(LogTemp, Warning, TEXT("Overlap Begin"));
+	//QP_End();
+	//if ("BP_ChaosJar_116" == GetActorLabel())
+		//UE_LOG(LogTemp, Warning, TEXT("___!aa___d___%s"), *GetActorLabel());
+	Super::QP_OnTriggerSimulatePhysicsBegin(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+	/*if (qp_autoSimulatePhysics) {
+		qp_geometryCollection->SetSimulatePhysics(true);
+		qp_geometryCollection->SetEnableGravity(true);
+	}*/
+	if (qp_autoSimulatePhysics) {
+		//SetActorTickEnabled(true);
+		//qp_fadeMaterials->SetComponentTickEnabled(true);
+	}
+}
 
+void AQPA_DestructibleStarLight::QP_OnTriggerSimulatePhysicsEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	//UE_LOG(LogTemp, Warning, TEXT("___!asda___d___%s"), *GetActorLabel());
+	Super::QP_OnTriggerSimulatePhysicsEnd(OverlappedComp, OtherActor, OtherComp, OtherBodyIndex);
+	if (qp_autoSimulatePhysics) {
+		//SetActorTickEnabled(false);
+		/*qp_fadeMaterials->SetComponentTickEnabled(false);
+		if (qp_isAutoDestroy) {
+			QP_End();
+		}*/
+	}
+	
+}
 void AQPA_DestructibleStarLight::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

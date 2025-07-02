@@ -13,6 +13,8 @@
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Sound/QPC_PlayRandomSound.h"
+#include "Components/StateTreeComponent.h"
+//#include "Components/StateTreeReference.h"
 //#include "Sound/QP_RandomSoundData.h"
 #include "QPMonster.generated.h"
 
@@ -106,6 +108,16 @@ public:
 
 	
 
+	
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	//bool qp_AutoPlayStateTree = false;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
+	//TObjectPtr<UStateTreeComponent> qp_stateTree;
+
+	// 绑定的状态树资源（可在蓝图设置）
+	//UPROPERTY(EditDefaultsOnly, Category = "StateTree")
+	//FStateTreeReference StateTreeAsset;
+
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	//TMap<EQPFootstepType, TArray<float> > qp_footstepSoundsVolume;
 
@@ -151,10 +163,10 @@ public:
 
 	TArray<AActor*> qp_waters;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPBlind")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
 	TObjectPtr<USceneComponent> qp_deepWaterPoint;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPBlind")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
 	TObjectPtr<USceneComponent> qp_underWaterPoint;
 
 	//EQPFootstepType qp_waterFootstep = EQPFootstepType::WATER;

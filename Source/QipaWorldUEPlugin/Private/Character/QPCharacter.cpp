@@ -62,7 +62,7 @@ void AQPCharacter::BeginPlay()
 		//qp_characterData = UQPGIM_Data::qp_staticObject->QP_GetQPData("AQPCharacter")->QP_GetUQPData("qp_Character" + qp_characterMaxNum);
 	//}
 	
-	qp_movementC = GetCharacterMovement();
+	
 	qp_movementC->bOrientRotationToMovement = true;
 	qp_movementC->MaxAcceleration = qp_walkMaxAcceleration;
 	qp_movementC->bRunPhysicsWithNoController = true;
