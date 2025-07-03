@@ -35,6 +35,7 @@ void UQPC_PlayMontage::QP_PlayEvent(UQPData* data) {
 						if (ensure(qp_character)) {
 							//if (data->QP_IsChange<FName, FName>("startSectionName", EQPDataValueType::FNAME)) {
 								qp_character->PlayAnimMontage(*m, 1.0f, data->QP_GetFName("startSectionName"));
+								//UE_LOG(LogTemp, Warning, TEXT("___!___d___ddsdf"));
 							/*}
 							else {
 								qp_character->PlayAnimMontage(*m, 1.0f);

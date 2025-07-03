@@ -37,7 +37,7 @@ AQPCharacter::AQPCharacter()
 	bUseControllerRotationYaw = false;
 	qp_springArm->SetupAttachment(RootComponent);
 	qp_camera->SetupAttachment(qp_springArm);
-	qp_playMontage = CreateDefaultSubobject<UQPC_PlayMontage>("qp_playMontage");
+	
 	//qp_attackAnim->SetupAttachment(RootComponent);
 	//qp_restoreNg = CreateDefaultSubobject<UNiagaraComponent>("qp_restoreNg");
 	//qp_restoreNg->SetupAttachment(RootComponent);

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Data/QPData.h"
 #include "QPI_GetQPData.generated.h"
 
 // This class does not need to be modified.
@@ -23,8 +24,8 @@ class QIPAWORLDUEPLUGIN_API IQPI_GetQPData
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	/**获得数据*/
-	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "QipaWorld|QPInterface")
-	virtual class UQPData* QP_GetQPData() = 0;
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPInterface")
+	virtual UQPData* QP_GetQPData()=0;
 
 	/**初始化数据*/
 	//UFUNCTION()

@@ -107,7 +107,8 @@ public:
 	bool qp_isPlayFootstepAudio = false;
 
 	
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	TMap<FName, class UAnimMontage*> qp_montage;
 	
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	//bool qp_AutoPlayStateTree = false;
@@ -138,8 +139,10 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
 	virtual class UQPData* QP_GetQPData() override;
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPInterface")
+	virtual UQPData* QP_GetQPData_BP();
 	virtual class UQPData* QP_GetAnimData() override;
 	//if you want set save data,rewrite this function
 	virtual void QP_ChangeSaveData();

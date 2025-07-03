@@ -28,7 +28,7 @@ AQPMonster::AQPMonster()
 	//qp_playRandomSound->SetupAttachment(RootComponent);
 	qp_sphereTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("qp_sphereTrigger"));
 	qp_sphereTrigger->SetupAttachment(RootComponent);
-
+	qp_playMontage = CreateDefaultSubobject<UQPC_PlayMontage>("qp_playMontage");
 	//qp_stateTree = CreateDefaultSubobject<UStateTreeComponent>(TEXT("qp_stateTree"));
 	//qp_stateTree->setlo = false;
 	//qp_stateTree->SetStartLogicAutomatically(false);
@@ -40,7 +40,9 @@ AQPMonster::AQPMonster()
 void AQPMonster::BeginPlay()
 {
 	Super::BeginPlay();
-
+	if (!qp_montage.IsEmpty()) {
+		qp_playMontage->qp_montage.Append(qp_montage);
+	}
 	qp_movementC = GetCharacterMovement();
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AQPMonster::QP_OnCapsuleBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AQPMonster::QP_OnCapsuleEndOverlap);
@@ -112,7 +114,10 @@ void AQPMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
-
+ UQPData* AQPMonster::QP_GetQPData_BP()
+ { 
+	 return QP_GetQPData(); 
+ }
 UQPData* AQPMonster::QP_GetQPData() {
 
 	if (!qp_characterData) {
