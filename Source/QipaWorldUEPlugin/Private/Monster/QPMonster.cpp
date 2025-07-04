@@ -17,6 +17,10 @@ AQPMonster::AQPMonster()
 	qp_footstepAudio->SetAutoActivate(false);
 	qp_footstepAudio->SetupAttachment(RootComponent);
 
+	qp_callAudio = CreateDefaultSubobject<UAudioComponent>("qp_callAudio");
+	qp_callAudio->SetAutoActivate(false);
+	qp_callAudio->SetupAttachment(RootComponent);
+
 	qp_deepWaterPoint = CreateDefaultSubobject<USceneComponent>("qp_deepWaterPoint");
 	qp_deepWaterPoint->SetupAttachment(RootComponent);
 
@@ -24,7 +28,7 @@ AQPMonster::AQPMonster()
 	qp_underWaterPoint->SetupAttachment(RootComponent);
 
 	qp_playRandomSound = CreateDefaultSubobject<UQPC_PlayRandomSound>("qp_playRandomSound");
-	qp_playRandomSound->qp_footstepAudio = qp_footstepAudio;
+	//qp_playRandomSound->qp_footstepAudio = qp_footstepAudio;
 	//qp_playRandomSound->SetupAttachment(RootComponent);
 	qp_sphereTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("qp_sphereTrigger"));
 	qp_sphereTrigger->SetupAttachment(RootComponent);
@@ -53,6 +57,8 @@ void AQPMonster::BeginPlay()
 	if (!qp_saveName.IsEmpty()) {
 		qp_saveData->QP_LoadData(qp_saveName);
 	}
+
+	qp_playCallTime = FMath::FRandRange(qp_playCallTimeMin, qp_playCallTimeMax);
 	/*if (qp_AutoPlayStateTree) {
 		qp_stateTree->StartLogic();
 	}*/
@@ -97,7 +103,9 @@ void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 	 //if ("BP_ChaosJar_116" == GetActorLabel())
 		 //UE_LOG(LogTemp, Warning, TEXT("___!___d___%s"), *OtherActor->GetActorLabel());
  }
+ void AQPMonster::QP_PlayCall() {
 
+ }
 void AQPMonster::QP_ChangeSaveData() {
 
 }
@@ -105,7 +113,14 @@ void AQPMonster::QP_ChangeSaveData() {
 void AQPMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (qp_isPlayCall) {
+		qp_playCallTime -= DeltaTime;
+		if (qp_playCallTime <= 0) {
+			QP_PlayCall();
+			qp_playCallTime = FMath::FRandRange(qp_playCallTimeMin, qp_playCallTimeMax);
 
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -149,8 +164,8 @@ void AQPMonster::QPI_AnimNotifyFootstep(EQPFootstepType t, FVector v, float minV
 			if (!qp_playRandomSound->qp_randomSounds.Contains(t)) {
 				t = EQPFootstepType::DEFAULT;
 			}
-			qp_playRandomSound->QP_SetVolume(qp_movementC->Velocity.Size() / qp_runSpeed * (1 - minVolume) + minVolume);
-			qp_playRandomSound->QP_Play(t);
+			qp_footstepAudio->SetVolumeMultiplier(qp_movementC->Velocity.Size() / qp_runSpeed * (1 - minVolume) + minVolume);
+			qp_playRandomSound->QP_Play(t, qp_footstepAudio);
 			/*if (t == EQPFootstepType::DEFAULT) {
 			} else if (t == EQPFootstepType::WOOD) {
 				qp_footstepAudio->SetIntParameter("qp_type", 1);

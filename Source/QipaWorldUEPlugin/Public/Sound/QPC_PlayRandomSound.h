@@ -21,15 +21,15 @@ public:
 	UQPC_PlayRandomSound();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	float qp_playTime = 0;
-	bool qp_canPlay = true;
-	UAudioComponent* qp_footstepAudio = nullptr;
+	float qp_playTimeMin = 0.15;
+	TMap<UObject*,float> qp_playTimes;
+	//UAudioComponent* qp_footstepAudio = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|RandomSound")
 	TMap<EQPFootstepType, FQP_SoundData > qp_randomSounds;
-	void QP_Play(EQPFootstepType);
-	inline void QP_SetVolume(float v) {
+	void QP_Play(EQPFootstepType, UAudioComponent* qp_audio);
+	/*inline void QP_SetVolume(float v) {
 		qp_footstepAudio->SetVolumeMultiplier(v);
-	}
-	void QP_Play(AActor*);
+	}*/
+	void QP_Play(AActor*, UAudioComponent* qp_audio);
 
 };

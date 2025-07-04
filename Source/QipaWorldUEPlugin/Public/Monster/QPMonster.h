@@ -94,6 +94,14 @@ public:
 	float qp_forwardV = 0.0f;
 	float qp_rightV = 0.0f;
 	float qp_deltaTime = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	bool qp_isPlayCall = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	float qp_playCallTimeMax = 300;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	float qp_playCallTimeMin = 60;
+	float qp_playCallTime = 0;
 	class UQPDA_Character* qp_assetData = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	class UQPC_MaterialAutoRestore* qp_materialAutoRestore = nullptr;
@@ -103,6 +111,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	UQPC_PlayRandomSound* qp_playRandomSound = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	UAudioComponent* qp_callAudio = nullptr;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	//UQPC_PlayRandomSound* qp_playRandomSound = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	bool qp_isPlayFootstepAudio = false;
 
@@ -153,6 +168,8 @@ public:
 	virtual void QP_PlayFootstepAudio();
 	virtual void QP_PlayAnim(FName name, FName StartSectionName = NAME_None);
 
+	UFUNCTION(BlueprintCallable)
+	virtual void QP_PlayCall();
 	UFUNCTION()
 	virtual void QP_OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 

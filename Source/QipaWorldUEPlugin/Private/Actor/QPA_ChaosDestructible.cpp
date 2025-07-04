@@ -23,7 +23,7 @@ AQPA_ChaosDestructible::AQPA_ChaosDestructible()
 	qp_footstepAudio->SetupAttachment(RootComponent);
 
 	qp_playRandomSound = CreateDefaultSubobject<UQPC_PlayRandomSound>("qp_playRandomSound");
-	qp_playRandomSound->qp_footstepAudio = qp_footstepAudio;
+	//qp_playRandomSound->qp_footstepAudio = qp_footstepAudio;
 
 	qp_sphere = CreateDefaultSubobject<USphereComponent>("qp_sphere");
 	qp_sphere->SetupAttachment(RootComponent);
@@ -102,8 +102,8 @@ void AQPA_ChaosDestructible::QP_OnChunkHit(const FChaosPhysicsCollisionInfo& Col
 	if (velocity > qp_minVelocity) {
 		
 		qp_autoDestroy = qp_delayDestroy;
-		qp_playRandomSound->QP_SetVolume(velocity / qp_maxSpeed * (1 - qp_minVolume) + qp_minVolume);
-		qp_playRandomSound->QP_Play(CollisionInfo.OtherComponent->GetOwner());
+		qp_footstepAudio->SetVolumeMultiplier(velocity / qp_maxSpeed * (1 - qp_minVolume) + qp_minVolume);
+		qp_playRandomSound->QP_Play(CollisionInfo.OtherComponent->GetOwner(), qp_footstepAudio);
 
 	}
 }

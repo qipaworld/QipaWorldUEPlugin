@@ -17,6 +17,13 @@ enum class EQPFootstepType :uint8
 	WATER              UMETA(DisplayName = "water"),
 	DEEP_WATER              UMETA(DisplayName = "deep water"),
 	UNDER_WATER              UMETA(DisplayName = "under water"),
+	USER_1              UMETA(DisplayName = "user 1"),
+	USER_2              UMETA(DisplayName = "user 2"),
+	USER_3              UMETA(DisplayName = "user 3"),
+	USER_4              UMETA(DisplayName = "user 4"),
+	USER_5              UMETA(DisplayName = "user 5"),
+	USER_6              UMETA(DisplayName = "user 6"),
+	USER_7              UMETA(DisplayName = "user 7"),
 };
 
 USTRUCT(BlueprintType, Category = "QipaWorld|Sound")
