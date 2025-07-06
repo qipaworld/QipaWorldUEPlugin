@@ -17,7 +17,8 @@
 #include "Notify/QPGIM_AnimNotifyData.h"
 
 
-AQPFlyCharacter::AQPFlyCharacter() {
+AQPFlyCharacter::AQPFlyCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer) {
 	PrimaryActorTick.bCanEverTick = true;
 	qp_movementMode = MOVE_Flying;
 	//qp_unchangeMovementMode = true;

@@ -16,7 +16,7 @@ class QIPAWORLDUEPLUGIN_API AQPFlyCharacter : public AQPCharacter
 
 public:
 	// Sets default values for this character's properties
-	AQPFlyCharacter();
+	AQPFlyCharacter(const FObjectInitializer& ObjectInitializer);
 
 
 	// Called when the game starts or when spawned

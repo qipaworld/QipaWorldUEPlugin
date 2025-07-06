@@ -9,7 +9,9 @@
 #include "Data/QPData.h"
 int AQPMonster::qp_characterDataMaxNum = 1;
 // Sets default values
-AQPMonster::AQPMonster()
+AQPMonster::AQPMonster(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UQPCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
+
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -47,11 +49,13 @@ void AQPMonster::BeginPlay()
 	if (!qp_montage.IsEmpty()) {
 		qp_playMontage->qp_montage.Append(qp_montage);
 	}
-	qp_movementC = GetCharacterMovement();
+	qp_movementC = (UQPCharacterMovementComponent*) GetCharacterMovement();
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AQPMonster::QP_OnCapsuleBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AQPMonster::QP_OnCapsuleEndOverlap);
 	qp_sphereTrigger->OnComponentBeginOverlap.AddDynamic(this, &AQPMonster::QP_OnTriggerOverlapBegin);
 	qp_sphereTrigger->OnComponentEndOverlap.AddDynamic(this, &AQPMonster::QP_OnTriggerOverlapEnd);
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AQPMonster::QP_OnCapsuleHit);
+
 	QP_GetAnimData();
 	QP_InitSaveData();
 	if (!qp_saveName.IsEmpty()) {
@@ -62,8 +66,15 @@ void AQPMonster::BeginPlay()
 	/*if (qp_AutoPlayStateTree) {
 		qp_stateTree->StartLogic();
 	}*/
-	//QP_GetQPData();
+	QP_GetQPData()->qp_dataDelegate.AddUObject(this, &AQPMonster::QP_DataChange);
 }
+
+void AQPMonster::QP_OnCapsuleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	//UQPUtil::QP_LOG("Hit");
+	//Destroy();
+}
+
 void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 	Super::EndPlay(EndPlayReason);
 	if (!qp_saveName.IsEmpty()) {
@@ -245,4 +256,7 @@ void AQPMonster::QP_InitSaveData() {
 void AQPMonster::QP_PlayAnim(FName name, FName StartSectionName) {
 	qp_animData->QP_AddFName("playAnim", name);
 	qp_animData->QP_AddFName("startSectionName", StartSectionName);
+}
+void AQPMonster::QP_DataChange(UQPData* data) {
+
 }

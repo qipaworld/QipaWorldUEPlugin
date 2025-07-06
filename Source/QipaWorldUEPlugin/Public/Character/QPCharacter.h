@@ -32,7 +32,7 @@ class QIPAWORLDUEPLUGIN_API AQPCharacter : public AQPMonster
 	
 public:
 	// Sets default values for this character's properties
-	AQPCharacter();
+	AQPCharacter(const FObjectInitializer& ObjectInitializer);
 
 
 	// Called when the game starts or when spawned
@@ -241,8 +241,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPCharacter")
 	virtual void QP_SetMatAmount(float amount = 0.f);
 
-	/**监听蒙太奇事件*/
+	
 	//virtual void QP_AnimNotify(const FName& n);
-	/**监听跳跃动画播放结束事件*/
+	
 	virtual void QP_PlayerDataChange(UQPData* data);
 };

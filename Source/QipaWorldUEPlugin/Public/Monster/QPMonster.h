@@ -11,9 +11,11 @@
 #include "Interface/QPI_AnimNotifyFootstep.h"
 #include "Components/SphereComponent.h"
 
-#include "GameFramework/CharacterMovementComponent.h"
+//#include "GameFramework/CharacterMovementComponent.h"
 #include "Sound/QPC_PlayRandomSound.h"
 #include "Components/StateTreeComponent.h"
+#include "Monster/QPCharacterMovementComponent.h"
+
 //#include "Components/StateTreeReference.h"
 //#include "Sound/QP_RandomSoundData.h"
 #include "QPMonster.generated.h"
@@ -90,7 +92,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 
 	bool qp_isAttacking = false;
-	UCharacterMovementComponent* qp_movementC;
+	UQPCharacterMovementComponent* qp_movementC;
 	float qp_forwardV = 0.0f;
 	float qp_rightV = 0.0f;
 	float qp_deltaTime = 0.f;
@@ -141,7 +143,7 @@ public:
 	//FName QP_AnimNotifyFootsetpAudio = "QP_AnimNotifyFootsetpAudio";
 public:
 	// Sets default values for this character's properties
-	AQPMonster();
+	AQPMonster(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
@@ -197,5 +199,9 @@ public:
 		bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	virtual void QP_OnCapsuleEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION()
+	virtual void QP_OnCapsuleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	virtual void QP_DataChange(UQPData* data);
 
 };
