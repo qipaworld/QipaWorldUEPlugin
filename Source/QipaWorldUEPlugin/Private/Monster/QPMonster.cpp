@@ -46,6 +46,8 @@ AQPMonster::AQPMonster(const FObjectInitializer& ObjectInitializer)
 void AQPMonster::BeginPlay()
 {
 	Super::BeginPlay();
+	qp_animInst = (UQPU_AnimInstance*)GetMesh()->GetAnimInstance();
+	qp_animInst->QP_SetQPData(QP_GetQPData());
 	if (!qp_montage.IsEmpty()) {
 		qp_playMontage->qp_montage.Append(qp_montage);
 	}
@@ -57,9 +59,9 @@ void AQPMonster::BeginPlay()
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AQPMonster::QP_OnCapsuleHit);
 
 	QP_GetAnimData();
-	QP_InitSaveData();
+	
 	if (!qp_saveName.IsEmpty()) {
-		qp_saveData->QP_LoadData(qp_saveName);
+		QP_GetSaveData()->QP_LoadData(qp_saveName);
 	}
 
 	qp_playCallTime = FMath::FRandRange(qp_playCallTimeMin, qp_playCallTimeMax);
@@ -68,7 +70,10 @@ void AQPMonster::BeginPlay()
 	}*/
 	QP_GetQPData()->qp_dataDelegate.AddUObject(this, &AQPMonster::QP_DataChange);
 }
-
+void AQPMonster::QP_SetSaveDataName(const FString& n) {
+	qp_saveName = n;
+	this->QP_GetSaveData()->QP_LoadData(qp_saveName);
+}
 void AQPMonster::QP_OnCapsuleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	//UQPUtil::QP_LOG("Hit");
@@ -79,7 +84,7 @@ void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 	Super::EndPlay(EndPlayReason);
 	if (!qp_saveName.IsEmpty()) {
 		QP_ChangeSaveData();
-		qp_saveData->QP_SaveData(qp_saveName);
+		QP_GetSaveData()->QP_SaveData(qp_saveName);
 	}
 }
  void AQPMonster::QP_OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -247,11 +252,12 @@ UQPData* AQPMonster::QP_GetAnimData() {
 	}
 	return qp_animData;
 }
-void AQPMonster::QP_InitSaveData() {
+UQPData* AQPMonster::QP_GetSaveData() {
 	if (!qp_saveData) {
 		qp_saveData = QP_GetQPData()->QP_GetUQPData("qp_saveData");
 
 	}
+	return qp_saveData;
 }
 void AQPMonster::QP_PlayAnim(FName name, FName StartSectionName) {
 	qp_animData->QP_AddFName("playAnim", name);

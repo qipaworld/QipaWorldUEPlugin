@@ -33,6 +33,8 @@ public class QipaWorldUEPlugin : ModuleRules
                 "GameplayStateTreeModule",
                 "AIModule",
                 "NavigationSystem",
+                 "OnlineSubsystem",
+                  "OnlineSubsystemUtils",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

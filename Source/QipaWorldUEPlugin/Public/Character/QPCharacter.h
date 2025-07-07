@@ -23,7 +23,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UAnimMontage;
 class UQPData;
-class UAnimInstance;
+//class UAnimInstance;
 UCLASS()
 class QIPAWORLDUEPLUGIN_API AQPCharacter : public AQPMonster
 {

@@ -325,8 +325,22 @@ void UQPData::Serialize(FArchive& Ar)
     }
 }
 
+//bool UQPData::QP_SaveData() {
+//    
+//    TArray<uint8> BinaryData;
+//    FMemoryWriter Ar(BinaryData, false);
+//    Serialize(Ar);
+//
+//    if (FFileHelper::SaveArrayToFile(BinaryData, *(FPaths::Combine(FPaths::ProjectSavedDir(), qp_saveName))))
+//    {
+//        return true;
+//    }
+//    UQPUtil::QP_LOG("Failed to save to file: " + qp_saveName);
+//    return false;
+//}
+
 bool UQPData::QP_SaveData(const FString& name) {
-    
+
     TArray<uint8> BinaryData;
     FMemoryWriter Ar(BinaryData, false);
     Serialize(Ar);
@@ -338,8 +352,10 @@ bool UQPData::QP_SaveData(const FString& name) {
     UQPUtil::QP_LOG("Failed to save to file: " + name);
     return false;
 }
-bool UQPData::QP_LoadData(const FString& name) {
 
+
+bool UQPData::QP_LoadData(const FString& name) {
+    //qp_saveName = UQPSaveGame::QP_GenerateSaveKey(name);
     TArray<uint8> FileData;
     if (FFileHelper::LoadFileToArray(FileData, *(FPaths::Combine(FPaths::ProjectSavedDir(), UQPSaveGame::QP_GenerateSaveKey(name)))))
     {

@@ -59,7 +59,7 @@ void UQPGIM_BaseData::Deinitialize()
 //	QP_SaveSoundData();
 	//UQPUtil::QP_LOG("????????_____AAA__333___????????????");
 
-	QP_SaveData();
+	//QP_SaveData();
 
 
 	Super::Deinitialize();
@@ -236,6 +236,10 @@ UQPData* UQPGIM_BaseData::QP_GetSoundData() {
 	return qp_gameBaseData->QP_GetUQPData("QP_GetSoundData");
 
 }
+UQPData* UQPGIM_BaseData::QP_GetSteamData() {
+	return qp_gameBaseData->QP_GetUQPData("QP_GetSteamData");
+}
+
 
 
 

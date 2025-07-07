@@ -61,6 +61,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetSoundData();
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UQPData* QP_GetSteamData();
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	//class UQPDS_DataAsset* QP_GetDefaultSettingDataAsset();
 	void QP_InitDefaultSetting();

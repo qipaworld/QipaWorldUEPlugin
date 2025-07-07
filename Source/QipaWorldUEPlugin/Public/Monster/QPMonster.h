@@ -10,7 +10,7 @@
 #include "Interface/QPI_AnimNotify.h"
 #include "Interface/QPI_AnimNotifyFootstep.h"
 #include "Components/SphereComponent.h"
-
+#include "Animation/QPU_AnimInstance.h"
 //#include "GameFramework/CharacterMovementComponent.h"
 #include "Sound/QPC_PlayRandomSound.h"
 #include "Components/StateTreeComponent.h"
@@ -141,6 +141,8 @@ public:
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	//FName QP_AnimNotifyFootsetpAudio = "QP_AnimNotifyFootsetpAudio";
+
+	UQPU_AnimInstance* qp_animInst;
 public:
 	// Sets default values for this character's properties
 	AQPMonster(const FObjectInitializer& ObjectInitializer);
@@ -163,7 +165,8 @@ public:
 	virtual class UQPData* QP_GetAnimData() override;
 	//if you want set save data,rewrite this function
 	virtual void QP_ChangeSaveData();
-	void QP_InitSaveData();
+
+	class UQPData* QP_GetSaveData();
 	virtual void QPI_AnimNotify(const FName& k) override;
 	virtual void QPI_AnimNotifyFootstep(EQPFootstepType, FVector,float) override;
 
@@ -172,6 +175,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void QP_PlayCall();
+	UFUNCTION(BlueprintCallable)
+	virtual void QP_SetSaveDataName(const FString& name);
 	UFUNCTION()
 	virtual void QP_OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
