@@ -82,6 +82,7 @@ void AQPA_ChaosDestructible::QP_OnTriggerSimulatePhysicsEnd(UPrimitiveComponent*
 
 void AQPA_ChaosDestructible::QP_OnBroken(const FChaosBreakEvent& BreakEvent)
 {
+
 	qp_autoDestroy = qp_delayDestroy;
 	qp_isAutoDestroy = true;
 }

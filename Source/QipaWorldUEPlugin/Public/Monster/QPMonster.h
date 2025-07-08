@@ -171,6 +171,7 @@ public:
 	virtual void QPI_AnimNotifyFootstep(EQPFootstepType, FVector,float) override;
 
 	virtual void QP_PlayFootstepAudio();
+	UFUNCTION(BlueprintCallable)
 	virtual void QP_PlayAnim(FName name, FName StartSectionName = NAME_None);
 
 	UFUNCTION(BlueprintCallable)

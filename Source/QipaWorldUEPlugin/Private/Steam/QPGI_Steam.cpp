@@ -25,6 +25,8 @@ void UQPGI_Steam::Initialize(FSubsystemCollectionBase& Collection)
 
 	qp_steamData = UQPGIM_BaseData::qp_staticObject->QP_GetSteamData();
 	qp_steamData->QP_LoadData("UQPGI_Steam");
+	qp_steamData->QP_GetUQPData("Achievement")->QP_GetUQPData("qp_sending")->QP_GetUQPData("_");
+	qp_steamData->QP_GetUQPData("Achievement")->QP_GetUQPData("qp_sending")->QP_SetIsSave(EQPDataKeyType::FNAME, EQPDataValueType::UQPDATA,false);
 	//qp_soundData->QP_LoadData("UQPGI_Steam");
 	//qp_soundVolumeData = qp_soundData->QP_GetUQPData("qp_soundVolumeData");
 	//QP_LoadSoundData();
@@ -53,8 +55,12 @@ void UQPGI_Steam::QP_AddAchievement(FName qp_AchievementId, int32 qp_playerId, f
 
 		return;
 	}
-
-	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get("STEAM");
+	UQPData* d = qp_steamData->QP_GetUQPData("Achievement")->QP_GetUQPData("qp_sending")->QP_GetUQPData(qp_AchievementId);
+	if (d->QP_GetboolExI(qp_playerId)) {
+		return;
+	}
+	d->QP_AddboolExI(qp_playerId, true);
+	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get(STEAM_SUBSYSTEM);
 	if (Subsystem)
 	{
 
@@ -68,8 +74,9 @@ void UQPGI_Steam::QP_AddAchievement(FName qp_AchievementId, int32 qp_playerId, f
 			TSharedPtr<const FUniqueNetId> UserId = Identity->GetUniquePlayerId(qp_playerId);
 			if (UserId.IsValid())
 			{
+
 				Achievements->QueryAchievements(*UserId, FOnQueryAchievementsCompleteDelegate::CreateLambda(
-					[this,Achievements, UserId, qp_AchievementId, num, qp_playerId](const FUniqueNetId& QueriedId, const bool bSuccess)
+					[this,Achievements, UserId, qp_AchievementId, num, qp_playerId,d](const FUniqueNetId& QueriedId, const bool bSuccess)
 					{
 
 						if (bSuccess)
@@ -79,21 +86,36 @@ void UQPGI_Steam::QP_AddAchievement(FName qp_AchievementId, int32 qp_playerId, f
 
 							FOnlineAchievementsWriteRef WriteRef = WriteObject.ToSharedRef();
 							Achievements->WriteAchievements(*UserId, WriteRef,
-								FOnAchievementsWrittenDelegate::CreateLambda([this,qp_AchievementId, num, qp_playerId](const FUniqueNetId& PlayerId, bool bWriteSuccess)
+								FOnAchievementsWrittenDelegate::CreateLambda([this,qp_AchievementId, num, qp_playerId,d](const FUniqueNetId& PlayerId, bool bWriteSuccess)
 									{
+
 										if (num == 100&& bWriteSuccess) {
+
 											qp_steamData->QP_GetUQPData("Achievement")->QP_GetUQPData(qp_AchievementId)->QP_AddboolExI(qp_playerId, true);
 											qp_steamData->QP_SaveData("UQPGI_Steam");
-
+										}
+										else {
+											d->QP_AddboolExI(qp_playerId, false);
 										}
 									}));
 						}
 						else
 						{
+							d->QP_AddboolExI(qp_playerId, false);
 						}
 					}));
 			}
+			else {
+				d->QP_AddboolExI(qp_playerId, false);
+			}
 		}
+		else {
+			d->QP_AddboolExI(qp_playerId, false);
+		}
+	}
+	else {
+		d->QP_AddboolExI(qp_playerId, false);
+
 	}
 
 

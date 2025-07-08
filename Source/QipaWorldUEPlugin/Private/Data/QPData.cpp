@@ -22,6 +22,19 @@ else {\
 
 #define QP_SAVE_CELL(type) bd_i->Serialize(Ar);
 
+void UQPData::QP_SetIsSave(EQPDataKeyType keyE, EQPDataValueType valueE, bool b) {
+    int32 k = QP_EncodeKey(keyE, valueE);
+    if (qp_ValueMap.Contains(k)) {
+        IQPBaseData* bd_i = (IQPBaseData*)qp_ValueMap[k];
+        bd_i->qp_isSave = b;
+    }
+    else {
+
+        UQPUtil::QP_LOG("QP_SetIsSave error  not  k  v " + FString::FromInt(static_cast<int8>(keyE)) + "  " + FString::FromInt(static_cast<int8>(valueE)));
+        //UQPUtil::QP_LOG_EX<int8>("QP_SetIsSave error  not key", static_cast<int8>(keyE));
+    }
+
+}
 void UQPData::Serialize(FArchive& Ar)
 {
     //Super::Serialize(Ar); // 保证父类序列化也执行

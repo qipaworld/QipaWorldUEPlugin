@@ -31,5 +31,5 @@ public:
 	virtual void Deinitialize();
 
 	UFUNCTION(BlueprintCallable)
-	void QP_AddAchievement(FName qp_AchievementId,int32 qp_playerId,float num);
+	void QP_AddAchievement(FName qp_AchievementId,int32 qp_playerId = 0,float num = 100);
 };

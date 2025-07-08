@@ -46,8 +46,10 @@ AQPMonster::AQPMonster(const FObjectInitializer& ObjectInitializer)
 void AQPMonster::BeginPlay()
 {
 	Super::BeginPlay();
-	qp_animInst = (UQPU_AnimInstance*)GetMesh()->GetAnimInstance();
-	qp_animInst->QP_SetQPData(QP_GetQPData());
+	qp_animInst = Cast<UQPU_AnimInstance>(GetMesh()->GetAnimInstance());
+	if (qp_animInst) {
+		qp_animInst->QP_SetQPData(QP_GetQPData());
+	}
 	if (!qp_montage.IsEmpty()) {
 		qp_playMontage->qp_montage.Append(qp_montage);
 	}

@@ -289,6 +289,8 @@ public:
 		return this;
 	}
 	
+
+	inline void QP_SetIsSave(EQPDataKeyType keyE, EQPDataValueType valueE, bool b);
 	//发送事件----
 	void QP_DelegateBroadcast();
 	//发送事件----
