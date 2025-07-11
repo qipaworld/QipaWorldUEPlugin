@@ -777,7 +777,7 @@ void UQPData::QP_ClearFVectorExO( EQPDataBroadcastType bType)
 }
 
 
-void UQPData::QP_AddFName(FName  key, const FName& v, EQPDataBroadcastType bType)
+void UQPData::QP_AddFName(FName  key, const FName v, EQPDataBroadcastType bType)
 {
     QP_AddValue<FName , FName>(key,v,EQPDataValueType::FNAME,EQPDataKeyType::FNAME ,bType);
 }
@@ -803,7 +803,7 @@ void UQPData::QP_ClearFName( EQPDataBroadcastType bType)
 }
 
 
-void UQPData::QP_AddFNameExI(int32  key, const FName& v, EQPDataBroadcastType bType)
+void UQPData::QP_AddFNameExI(int32  key, const FName v, EQPDataBroadcastType bType)
 {
     QP_AddValue<int32 , FName>(key,v,EQPDataValueType::FNAME,EQPDataKeyType::INT32 ,bType);
 }
@@ -829,7 +829,7 @@ void UQPData::QP_ClearFNameExI( EQPDataBroadcastType bType)
 }
 
 
-void UQPData::QP_AddFNameExO(UObject*  key, const FName& v, EQPDataBroadcastType bType)
+void UQPData::QP_AddFNameExO(UObject*  key, const FName v, EQPDataBroadcastType bType)
 {
     QP_AddValue<UObject* , FName>(key,v,EQPDataValueType::FNAME,EQPDataKeyType::VOID ,bType);
 }

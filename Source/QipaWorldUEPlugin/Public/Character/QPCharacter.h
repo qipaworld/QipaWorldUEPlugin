@@ -245,4 +245,8 @@ public:
 	//virtual void QP_AnimNotify(const FName& n);
 	
 	virtual void QP_PlayerDataChange(UQPData* data);
+
+	virtual void QP_InitSaveData() override;
+	virtual void QP_ChangeSaveData()override;
+
 };

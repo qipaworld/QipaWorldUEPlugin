@@ -83,7 +83,7 @@ var dataList =
     {funName: 'double',funValue: 'double',valueType: 'double',returnValue: 'double',enumV: 'EQPDataValueType::DOUBLE' },
     {funName: 'int64',funValue: 'int64',valueType: 'int64',returnValue: 'int64',enumV: 'EQPDataValueType::INT64' },
     {funName: 'FVector',funValue: 'const FVector&',valueType: 'FVector',returnValue: 'FVector&',enumV: 'EQPDataValueType::FVECTOR' },
-    {funName: 'FName',funValue: 'const FName&',valueType: 'FName',returnValue: 'FName&',enumV: 'EQPDataValueType::FNAME' },
+    {funName: 'FName',funValue: 'const FName',valueType: 'FName',returnValue: 'FName&',enumV: 'EQPDataValueType::FNAME' },
     {funName: 'FText',funValue: 'const FText&',valueType: 'FText',returnValue: 'FText&',enumV: 'EQPDataValueType::FTEXT' },
     {funName: 'FString',funValue: 'const FString&',valueType: 'FString',returnValue: 'FString&',enumV: 'EQPDataValueType::FSTRING' },
     {funName: 'bool',funValue: 'bool',valueType: 'bool',returnValue: 'bool',enumV: 'EQPDataValueType::BOOL' },

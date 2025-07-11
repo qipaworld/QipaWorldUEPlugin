@@ -165,6 +165,7 @@ public:
 	virtual class UQPData* QP_GetAnimData() override;
 	//if you want set save data,rewrite this function
 	virtual void QP_ChangeSaveData();
+	virtual void QP_InitSaveData();
 
 	class UQPData* QP_GetSaveData();
 	virtual void QPI_AnimNotify(const FName& k) override;

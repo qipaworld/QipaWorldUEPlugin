@@ -64,6 +64,9 @@ void AQPMonster::BeginPlay()
 	
 	if (!qp_saveName.IsEmpty()) {
 		QP_GetSaveData()->QP_LoadData(qp_saveName);
+		if (!qp_saveData->QP_Getbool("qp_init")) {
+			QP_InitSaveData();
+		}
 	}
 
 	qp_playCallTime = FMath::FRandRange(qp_playCallTimeMin, qp_playCallTimeMax);
@@ -127,6 +130,10 @@ void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 void AQPMonster::QP_ChangeSaveData() {
 
 }
+void AQPMonster::QP_InitSaveData() {
+	qp_saveData->QP_Addbool("qp_init", true);
+}
+
 // Called every frame
 void AQPMonster::Tick(float DeltaTime)
 {

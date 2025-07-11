@@ -583,7 +583,7 @@ void QP_ClearFVectorExO( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFA
 
 
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_AddFName(FName  key, const FName& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+void QP_AddFName(FName  key, const FName v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
 
 UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 bool QP_ContainsFName(FName  key);
@@ -599,7 +599,7 @@ void QP_ClearFName( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
 
 
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_AddFNameExI(int32  key, const FName& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+void QP_AddFNameExI(int32  key, const FName v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
 
 UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 bool QP_ContainsFNameExI(int32  key);
@@ -615,7 +615,7 @@ void QP_ClearFNameExI( EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAUL
 
 
 UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-void QP_AddFNameExO(UObject*  key, const FName& v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
+void QP_AddFNameExO(UObject*  key, const FName v, EQPDataBroadcastType bType = EQPDataBroadcastType::DEFAULT);
 
 UFUNCTION(BlueprintPure, Category = "QipaWorld|QPData")
 bool QP_ContainsFNameExO(UObject*  key);

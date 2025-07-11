@@ -35,22 +35,22 @@ public:
 	* @param c - 对象。
 	*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
-		void QP_AddCharacter(const FName& qp_name, ACharacter* c);
+		void QP_AddCharacter(const FName qp_name, ACharacter* c);
 
 		UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
-		void QP_Possess(AController* controller, const FName& qp_name, bool qp_unchangeMovementMode = true, bool qp_isEnter = true, bool qp_isEixt = true);
+		void QP_Possess(AController* controller, const FName qp_name, bool qp_unchangeMovementMode = true, bool qp_isEnter = true, bool qp_isEixt = true);
 
 		/**通过类型获得场景里对象的引用
 		* @param qp_name - 对象类型。
 		*/
 		UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
-		ACharacter* QP_GetCharacter(const FName& qp_name);
+		ACharacter* QP_GetCharacter(const FName qp_name);
 
 		/**通过类型在对象池里面取出对象
 		* @param qp_name - 对象类型。
 		*/
 		UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
-		ACharacter* QP_GetNewCharacter(const FName& qp_name, FTransform T);
+		ACharacter* QP_GetNewCharacter(const FName qp_name, FTransform T);
 
 		/**把用不到的对象放到这个里面，里面是个数组。
 		* @param key - 对象类型。
@@ -59,7 +59,7 @@ public:
 		* @warning 每个类型可以存储多个对象。
 		*/
 		UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
-		void QP_CollectCharacter(const FName& key, ACharacter* character);
+		void QP_CollectCharacter(const FName key, ACharacter* character);
 		/**用一个新的角色替换现在的角色。
 		* @param collkey - 回收的对象类型。
 		* @param character - 回收的对象。
@@ -68,14 +68,14 @@ public:
 		* @warning 每个类型可以存储多个对象。
 		*/
 		UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
-		ACharacter* QP_ChangeMainCharacter(const FName& collkey, ACharacter* character, const FName& qp_name, FTransform T);
+		ACharacter* QP_ChangeMainCharacter(const FName collkey, ACharacter* character, const FName qp_name, FTransform T);
 
 		/**获取一类角色的本地基数数据。
 		* @param qp_name - 角色名字。
 		* @warning 是基础数据，不是游戏进行时的实时数据。
 		*/
 		UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
-		class UQPDA_Character* QP_GetCharacterData(const FName& qp_name);
+		class UQPDA_Character* QP_GetCharacterData(const FName qp_name);
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
 	void QP_InitCharacterData(AQPCharacter* c);

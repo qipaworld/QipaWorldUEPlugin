@@ -79,6 +79,11 @@ void AQPCharacter::BeginPlay()
 
 	UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_PlayerDataChange);
 
+	Controller->SetControlRotation(qp_saveData->QP_GetFRotator("ControllerRotation"));
+	//qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
+	qp_springArm->TargetArmLength = qp_saveData->QP_Getfloat("TargetArmLength");
+	//qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
+
 }
 
 // Called every frame
@@ -175,7 +180,16 @@ void AQPCharacter::QP_MouseWheelAxis(float value)
 {
 	
 }
-
+ void AQPCharacter::QP_InitSaveData() {
+	 Super::QP_InitSaveData();
+	 qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
+	 qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
+}
+  void AQPCharacter::QP_ChangeSaveData() {
+	  Super::QP_ChangeSaveData();
+	  qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
+	  qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
+ }
 void AQPCharacter::QP_MoveForward(float value)
 {
 	 qp_forwardV = value;

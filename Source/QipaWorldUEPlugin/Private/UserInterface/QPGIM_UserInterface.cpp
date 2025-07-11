@@ -156,8 +156,15 @@ void UQPGIM_UserInterface::QP_RemoveAllUserInterface()
 {
 	for (FString realKey: qp_UIDataKey)
 	{
-		QP_RemoveUserInterface(realKey);
+		if (qp_UIData.Contains(realKey)) {
+			qp_UIData[realKey]->RemoveFromParent();
+		}
 	}
+	if (qp_autoMouse) {
+		UQPUtil::QP_UpdateMouse(false);
+	}
+	qp_UIDataKey.Reset();
+	qp_UIData.Reset();
 
 }
 
