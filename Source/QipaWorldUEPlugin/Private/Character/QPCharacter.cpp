@@ -91,6 +91,7 @@ void AQPCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	qp_deltaTime = DeltaTime;
+	//UQPUtil::QP_LOG(GetControlRotation().ToString());
 
 	if (qp_isAutoCameraLength) {
 		
@@ -187,9 +188,15 @@ void AQPCharacter::QP_MouseWheelAxis(float value)
 }
   void AQPCharacter::QP_ChangeSaveData() {
 	  Super::QP_ChangeSaveData();
+	  
+ }
+  void AQPCharacter::UnPossessed() {
 	  qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
 	  qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
- }
+	  //UQPUtil::QP_LOG(GetControlRotation().ToString());
+	  Super::UnPossessed();
+
+  }
 void AQPCharacter::QP_MoveForward(float value)
 {
 	 qp_forwardV = value;

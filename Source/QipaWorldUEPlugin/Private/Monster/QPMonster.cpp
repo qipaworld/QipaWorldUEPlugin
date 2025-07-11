@@ -86,11 +86,11 @@ void AQPMonster::QP_OnCapsuleHit(UPrimitiveComponent* HitComponent, AActor* Othe
 }
 
 void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {
-	Super::EndPlay(EndPlayReason);
 	if (!qp_saveName.IsEmpty()) {
 		QP_ChangeSaveData();
 		QP_GetSaveData()->QP_SaveData(qp_saveName);
 	}
+	Super::EndPlay(EndPlayReason);
 }
  void AQPMonster::QP_OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,

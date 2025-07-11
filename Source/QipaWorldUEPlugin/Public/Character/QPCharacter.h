@@ -248,5 +248,5 @@ public:
 
 	virtual void QP_InitSaveData() override;
 	virtual void QP_ChangeSaveData()override;
-
+	virtual void UnPossessed() override;
 };
