@@ -28,7 +28,7 @@ void UQPGIM_Map::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_BaseData::StaticClass());
 	
-	qp_staticObject = this;
+	QP_InitStaticObject();
 	qp_mapData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_Map");
 	qp_actionInfo.CallbackTarget = this;
 	qp_actionInfo.ExecutionFunction = "QP_LoadMapEnd";
@@ -39,7 +39,9 @@ void UQPGIM_Map::Initialize(FSubsystemCollectionBase& Collection)
 	//qp_loadingMapName = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultLoadingMap;
 	//qp_loadingMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;
 }
-
+void UQPGIM_Map::QP_InitStaticObject() {
+	UQPGIM_Map::qp_staticObject = this;
+}
 void UQPGIM_Map::Deinitialize()
 {
 	Super::Deinitialize();

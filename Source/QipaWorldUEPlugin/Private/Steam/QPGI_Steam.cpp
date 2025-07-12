@@ -21,7 +21,7 @@ void UQPGI_Steam::Initialize(FSubsystemCollectionBase& Collection)
 	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 	Collection.InitializeDependency(UQPGIM_BaseData::StaticClass());
 
-	qp_staticObject = this; 
+	QP_InitStaticObject();
 
 	qp_steamData = UQPGIM_BaseData::qp_staticObject->QP_GetSteamData();
 	qp_steamData->QP_LoadData("UQPGI_Steam");
@@ -33,7 +33,9 @@ void UQPGI_Steam::Initialize(FSubsystemCollectionBase& Collection)
 
 	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
 }
-
+void UQPGI_Steam::QP_InitStaticObject() {
+	UQPGI_Steam::qp_staticObject = this;
+}
 void UQPGI_Steam::Deinitialize()
 {
 	//if (qp_bgSound != nullptr) {

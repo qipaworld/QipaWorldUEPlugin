@@ -18,11 +18,13 @@ void UQPGIM_Assets::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	//Collection.InitializeDependency(UQPGameInstanceDataManager::StaticClass());
 
-	qp_staticObject = this;
+	QP_InitStaticObject();
 	//LoadYaml("");
 	//qp_gameQPdataBase = NewObject<UQPData>();
 }
-
+void UQPGIM_Assets::QP_InitStaticObject() {
+	UQPGIM_Assets::qp_staticObject = this;
+}
 void UQPGIM_Assets::Deinitialize()
 {
 	Super::Deinitialize();

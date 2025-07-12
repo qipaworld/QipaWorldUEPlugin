@@ -18,6 +18,7 @@ class QIPAWORLDUEPLUGIN_API UQPGI_Steam : public UGameInstanceSubsystem
 public:
 public:
 	static UQPGI_Steam* qp_staticObject;
+	virtual void QP_InitStaticObject();
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/

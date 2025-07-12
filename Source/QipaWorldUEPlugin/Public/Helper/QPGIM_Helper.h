@@ -7,9 +7,15 @@
 #include "QPGIM_Helper.generated.h"
 
 class UQPData;
-class UQPSG_Helper;
+//class UQPSG_Helper;
 
-
+UENUM(BlueprintType)
+enum class EQPHelperType :uint8
+{
+	NOT              UMETA(DisplayName = "not"),
+	OVER              UMETA(DisplayName = "over"),
+	PROGRESS              UMETA(DisplayName = "progress"),
+};
 /**
  * 教程管理基类
  */
@@ -20,6 +26,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Helper : public UGameInstanceSubsystem
 
 public:
 	static UQPGIM_Helper* qp_staticObject;
+	virtual void QP_InitStaticObject();
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
@@ -36,9 +43,9 @@ protected:
 	/**在数据管理器里的名字*/
 	FName qp_dataName = TEXT("UQPGIM_Helper");
 	/**保存设置的文件名字*/
-	FString qp_SaveSlotName = TEXT("qp_helperSaveGame");
+	//FString qp_SaveSlotName = TEXT("qp_helperSaveGame");
 	/**保存设置的玩家id*/
-	uint32 qp_UserIndex = 0;
+	//uint32 qp_UserIndex = 0;
 
 	/**加载数据*/
 	virtual void QP_LoadHelperData();
@@ -52,20 +59,20 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	UQPData* qp_helperData;
 	/**存储数据类*/
-	UPROPERTY(BlueprintReadWrite)
-	UQPSG_Helper* qp_helperSaveData;
+	//UPROPERTY(BlueprintReadWrite)
+	//UQPSG_Helper* qp_helperSaveData;
 
 	/** 设置新的提示id*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPHelper")
-	void QP_SetHelperName(FString n);
+	void QP_SetHelperName(FName n, EQPHelperType v);
 
 	/** 获得提示id*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPHelper")
-	FString QP_GetHelperName();
+	FName QP_GetHelperName();
 	
 	/** 检测提示id*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPHelper")
-	bool QP_GetHelperNameState(FString n);
+	EQPHelperType QP_GetHelperNameState(FName n);
 
 	void QP_SaveHelperData();
 	/**监听帮助数据，如果变了就保存*/

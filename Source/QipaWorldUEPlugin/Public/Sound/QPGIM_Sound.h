@@ -21,6 +21,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Sound : public UGameInstanceSubsystem
 	//FString qp_soundDataName = "qp_soundDataName";
 public:
 	static UQPGIM_Sound* qp_staticObject;
+	virtual void QP_InitStaticObject();
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/

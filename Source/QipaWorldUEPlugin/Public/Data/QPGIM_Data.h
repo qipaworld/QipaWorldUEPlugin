@@ -22,6 +22,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Data : public UGameInstanceSubsystem, public 
 	//int qp_newDataNum = 0;
 public:
 	static UQPGIM_Data* qp_staticObject;
+	virtual void QP_InitStaticObject();
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/

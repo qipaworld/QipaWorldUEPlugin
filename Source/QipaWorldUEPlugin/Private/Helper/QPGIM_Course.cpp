@@ -20,13 +20,16 @@ bool UQPGIM_Course::ShouldCreateSubsystem(UObject* Outer) const
 void UQPGIM_Course::Initialize(FSubsystemCollectionBase& Collection)
 {
 	qp_dataName = TEXT("UQPGIM_Course");
-	qp_SaveSlotName = TEXT("qp_helperCourseSaveGame");
+	//qp_SaveSlotName = TEXT("qp_helperCourseSaveGame");
 
 	Super::Initialize(Collection);
 
-	qp_staticObject = this;
-}
+	QP_InitStaticObject();
 
+}
+void UQPGIM_Course::QP_InitStaticObject() {
+	UQPGIM_Course::qp_staticObject = this;
+}
 void UQPGIM_Course::Deinitialize()
 {
 	
@@ -37,9 +40,9 @@ void UQPGIM_Course::Deinitialize()
 
 
 
-void UQPGIM_Course::QP_LoadHelperData()
-{
-	qp_helperSaveData = UQPSaveGame::QP_LoadSaveData<UQPSG_Course>(qp_SaveSlotName, qp_UserIndex);
-
-	//qp_helperSaveData->AddToRoot();
-}
+//void UQPGIM_Course::QP_LoadHelperData()
+//{
+//	qp_helperSaveData = UQPSaveGame::QP_LoadSaveData<UQPSG_Course>(qp_SaveSlotName, qp_UserIndex);
+//
+//	//qp_helperSaveData->AddToRoot();
+//}

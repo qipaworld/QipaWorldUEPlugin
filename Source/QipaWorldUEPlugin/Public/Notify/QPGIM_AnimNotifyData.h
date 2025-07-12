@@ -19,6 +19,8 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_AnimNotifyData : public UGameInstanceSubsyste
 	//FString qp_animNotifyDataName = "qp_animNotifyDataName";
 public:
 	static UQPGIM_AnimNotifyData* qp_staticObject;
+	virtual void QP_InitStaticObject();
+
 	//static FName QP_DATA_BASE_NAME;
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/

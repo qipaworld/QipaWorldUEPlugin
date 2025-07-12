@@ -24,14 +24,16 @@ void UQPGIM_Character::Initialize(FSubsystemCollectionBase& Collection)
 	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 	Collection.InitializeDependency(UQPGIM_Map::StaticClass());
 	UQPGIM_Map::qp_staticObject->QP_GetMapData()->qp_dataDelegate.AddUObject(this, &UQPGIM_Character::QP_BindMapData);
-	qp_staticObject = this;
+	QP_InitStaticObject();
 
 
 	//QP_LoadSoundData();
 
 	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
 }
-
+void UQPGIM_Character::QP_InitStaticObject() {
+	UQPGIM_Character::qp_staticObject = this;
+}
 void UQPGIM_Character::Deinitialize()
 {
 	//if (qp_bgSound != nullptr) {

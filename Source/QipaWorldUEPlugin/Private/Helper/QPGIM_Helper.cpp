@@ -22,17 +22,18 @@ void UQPGIM_Helper::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 	Collection.InitializeDependency(UQPGIM_BaseData::StaticClass());
-	qp_staticObject = this;
+	QP_InitStaticObject();
 
 
+	//qp_helperSaveData->AddToRoot();
+	qp_helperData = UQPGIM_BaseData::qp_staticObject->QP_GetHelperData();
+	
 	QP_LoadHelperData();
-	qp_helperSaveData->AddToRoot();
-	qp_helperData = UQPGIM_Data::qp_staticObject->QP_GetUQPData(qp_dataName);
-	qp_helperData->qp_dataDelegate.AddUObject(this, &UQPGIM_Helper::QP_BindHelperData);
-
 	//qp_loadMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;
 }
-
+void UQPGIM_Helper::QP_InitStaticObject() {
+	UQPGIM_Helper::qp_staticObject = this;
+}
 void UQPGIM_Helper::Deinitialize()
 {
 	
@@ -43,53 +44,37 @@ void UQPGIM_Helper::Deinitialize()
 }
 
 
-void UQPGIM_Helper::QP_SetHelperName(FString n)
+void UQPGIM_Helper::QP_SetHelperName(FName n, EQPHelperType v)
 {
-	qp_helperSaveData->qp_helperData.Add(n, "1");
-	qp_helperSaveData->qp_helperName = n;
-	qp_helperData->QP_AddFString("helperName", n);
+	//qp_helperSaveData->qp_helperData.Add(n, "1");
+	//qp_helperSaveData->qp_helperName = n;
+	qp_helperData->QP_GetUQPData(qp_dataName)->QP_AddFName("nowHelperName", n);
+	qp_helperData->QP_GetUQPData(qp_dataName)->QP_AddValue<FName,int8>(n, static_cast<int8>(v), EQPDataValueType::INT8);
 
+	//QP_SaveHelperData();
 	//QP_SaveHelperData();
 }
 
 
 
-FString UQPGIM_Helper::QP_GetHelperName()
+FName UQPGIM_Helper::QP_GetHelperName()
 {
-	return qp_helperSaveData->qp_helperName;
+	return 	qp_helperData->QP_GetUQPData(qp_dataName)->QP_GetFName("nowHelperName");
 }
 
-bool UQPGIM_Helper::QP_GetHelperNameState(FString n)
+EQPHelperType UQPGIM_Helper::QP_GetHelperNameState(FName n)
 {
-	if (qp_helperSaveData) {
-		return !qp_helperSaveData->qp_helperData.Contains(n);
-	}
-	else {
-		return false;
-	}
+	
+	return  static_cast<EQPHelperType> (qp_helperData->QP_GetUQPData(qp_dataName)->QP_GetValue<FName,int8>(n,EQPDataValueType::INT8));
+	
 }
 
 void UQPGIM_Helper::QP_SaveHelperData()
 {
 
-	//UQPSG_Helper* qp_helperSaveGame = Cast<UQPSG_Helper>(UGameplayStatics::CreateSaveGameObject(UQPSG_Helper::StaticClass()));
-	if (qp_helperSaveData)
-	{
+	qp_helperData -> QP_GetUQPData(qp_dataName)->QP_SaveData(qp_dataName.ToString());
 
-		// 设置（可选）委托。
-		//FAsyncSaveGameToSlotDelegate qp_SavedDelegate;
-		// USomeUObjectClass::SaveGameDelegateFunction is a void function that takes the following parameters: const FString& SlotName, const int32 UserIndex, bool bSuccess
-		//qp_SavedDelegate.BindUObject(this, &UQPGIM_Helper::QP_SavedDelegate);
-
-		/*qp_helperSaveGame->qp_helperNum = QP_GetHelperNum();
-		qp_helperSaveGame->qp_tipNum = QP_GetTipNum();
-		qp_helperSaveGame->qp_courseNum = QP_GetCourseNum();*/
-
-		//UGameplayStatics::SaveGameToSlot(qp_soundSaveGame, qp_SaveSlotName, qp_UserIndex);
-		// 启动异步保存进程。
-		//UGameplayStatics::AsyncSaveGameToSlot(qp_helperSaveData, qp_SaveSlotName,qp_UserIndex, qp_SavedDelegate);
-		qp_helperSaveData->QP_AsyncSave();
-	}
+	
 }
 
 //void UQPGIM_Helper::QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess)
@@ -99,7 +84,9 @@ void UQPGIM_Helper::QP_SaveHelperData()
 
 void UQPGIM_Helper::QP_LoadHelperData()
 {
-	qp_helperSaveData = UQPSaveGame::QP_LoadSaveData<UQPSG_Helper>(qp_SaveSlotName, qp_UserIndex);
+	qp_helperData->QP_GetUQPData(qp_dataName)->qp_dataDelegate.AddUObject(this, &UQPGIM_Helper::QP_BindHelperData);
+	qp_helperData->QP_GetUQPData(qp_dataName)->QP_LoadData(qp_dataName.ToString());
+	//qp_helperSaveData = UQPSaveGame::QP_LoadSaveData<UQPSG_Helper>(qp_SaveSlotName, qp_UserIndex);
 }
 
 

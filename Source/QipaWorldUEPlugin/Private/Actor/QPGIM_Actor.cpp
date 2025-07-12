@@ -21,8 +21,11 @@ void UQPGIM_Actor::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_Map::StaticClass());
 	UQPGIM_Map::qp_staticObject->QP_GetMapData()->qp_dataDelegate.AddUObject(this, &UQPGIM_Actor::QP_BindMapData);
-	qp_staticObject = this;
+	QP_InitStaticObject();
 
+}
+void UQPGIM_Actor::QP_InitStaticObject() {
+	UQPGIM_Actor::qp_staticObject = this;
 }
 void UQPGIM_Actor::QP_BindMapData(UQPData* data)
 {

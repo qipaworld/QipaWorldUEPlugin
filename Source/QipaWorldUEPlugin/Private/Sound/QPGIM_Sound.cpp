@@ -29,7 +29,7 @@ void UQPGIM_Sound::Initialize(FSubsystemCollectionBase& Collection)
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 	Collection.InitializeDependency(UQPGIM_BaseData::StaticClass());
 
-	qp_staticObject = this;
+	QP_InitStaticObject();
 
 	qp_soundData = UQPGIM_BaseData::qp_staticObject->QP_GetSoundData();
 	qp_soundData->QP_LoadData("UQPGIM_Sound");
@@ -38,7 +38,9 @@ void UQPGIM_Sound::Initialize(FSubsystemCollectionBase& Collection)
 	
 	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
 }
-
+void UQPGIM_Sound::QP_InitStaticObject() {
+	UQPGIM_Sound::qp_staticObject = this;
+}
 void UQPGIM_Sound::Deinitialize()
 {
 	//if (qp_bgSound != nullptr) {

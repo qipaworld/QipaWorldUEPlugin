@@ -4,9 +4,10 @@
 #include "Helper/QPA_Tip.h"
 #include "Helper/QPGIM_Tip.h"
 bool AQPA_Tip::QP_HelperTip() {
-	if (UQPGIM_Tip::qp_staticObject->QP_GetHelperNameState(qp_helperName)) {
+	
+	if (UQPGIM_Tip::qp_staticObject->QP_GetHelperNameState(qp_helperName) == EQPHelperType::NOT) {
 		QP_HelperTipCell();
-		UQPGIM_Tip::qp_staticObject->QP_SetHelperName(qp_helperName);
+		UQPGIM_Tip::qp_staticObject->QP_SetHelperName(qp_helperName,EQPHelperType::OVER);
 		return true;
 	}
 	return false;
@@ -17,5 +18,5 @@ bool AQPA_Tip::QP_HelperTip() {
 void AQPA_Tip::BeginPlay()
 {
 	Super::BeginPlay();
-	QP_HelperTip();
+	//QP_HelperTip();
 }

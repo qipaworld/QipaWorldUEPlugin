@@ -17,5 +17,5 @@ class QIPAWORLDUEPLUGIN_API AQPA_HelperBase : public AQPActor
 protected:
 	//当前教程id
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPHelper")
-	FString qp_helperName = "helper";
+	FName qp_helperName = "helper";
 };

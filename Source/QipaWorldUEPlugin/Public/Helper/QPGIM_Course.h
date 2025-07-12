@@ -18,6 +18,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Course : public UQPGIM_Helper
 
 public:
 	static UQPGIM_Course* qp_staticObject;
+	virtual void QP_InitStaticObject() override;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
@@ -30,5 +31,5 @@ public:
 	/** Implement this for deinitialization of instances of the system */
 	virtual void Deinitialize();
 protected:
-	virtual void QP_LoadHelperData() override;
+	//virtual void QP_LoadHelperData() override;
 };

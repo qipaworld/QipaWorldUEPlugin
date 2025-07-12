@@ -53,12 +53,14 @@ bool UQPGIM_Data::ShouldCreateSubsystem(UObject* Outer) const
 void UQPGIM_Data::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	qp_staticObject = this;
+	QP_InitStaticObject();
 	qp_baseData = NewObject<UQPData>();
 	qp_baseData->QP_Init();
 	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 }
-
+void UQPGIM_Data::QP_InitStaticObject() {
+	UQPGIM_Data::qp_staticObject = this;
+}
 void UQPGIM_Data::Deinitialize()
 {
 	Super::Deinitialize();

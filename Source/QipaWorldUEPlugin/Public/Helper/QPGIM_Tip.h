@@ -16,6 +16,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Tip : public UQPGIM_Helper
 
 public:
 	static UQPGIM_Tip* qp_staticObject;
+	virtual void QP_InitStaticObject() override;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
@@ -29,7 +30,7 @@ public:
 	virtual void Deinitialize();
 
 protected:
-	virtual void QP_LoadHelperData() override;
+	//virtual void QP_LoadHelperData() override;
 
 
 };

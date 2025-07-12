@@ -31,7 +31,7 @@ void UQPGIM_UserInterface::Initialize(FSubsystemCollectionBase& Collection)
 	Collection.InitializeDependency(UQPGIM_Map::StaticClass());
 	UQPGIM_Map::qp_staticObject->QP_GetMapData()->qp_dataDelegate.AddUObject(this, &UQPGIM_UserInterface::QP_BindMapData);
 	UQPGIM_BaseData::qp_staticObject->QP_GetKeyBoardEventData()->qp_dataDelegate.AddUObject(this, &UQPGIM_UserInterface::QP_BindKeyBoard);
-	qp_staticObject = this;
+	QP_InitStaticObject();
 	//UQPDS_Default* devSetting = UQPDS_Default::QP_GET();
 	
 	//qp_mainUIPath = UQPGIM_BaseData::qp_defaultDataAsset->QP_DefaultMainUserInterfacePath;
@@ -40,7 +40,9 @@ void UQPGIM_UserInterface::Initialize(FSubsystemCollectionBase& Collection)
 	
 	
 }
-
+void UQPGIM_UserInterface::QP_InitStaticObject() {
+	UQPGIM_UserInterface::qp_staticObject = this;
+}
 void UQPGIM_UserInterface::Deinitialize()
 {
 	Super::Deinitialize();

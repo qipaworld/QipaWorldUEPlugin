@@ -31,7 +31,7 @@ void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 
-	qp_staticObject = this;
+	QP_InitStaticObject();
 
 	qp_gameBaseData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_BaseData");
 	qp_baseDataSave = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_BaseDataSave");
@@ -49,7 +49,9 @@ void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 
 	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
 }
-
+void UQPGIM_BaseData::QP_InitStaticObject() {
+	UQPGIM_BaseData::qp_staticObject = this;
+}
 void UQPGIM_BaseData::Deinitialize()
 {
 	//if (qp_bgSound != nullptr) {
@@ -240,7 +242,11 @@ UQPData* UQPGIM_BaseData::QP_GetSteamData() {
 	return qp_gameBaseData->QP_GetUQPData("QP_GetSteamData");
 }
 
+UQPData* UQPGIM_BaseData::QP_GetHelperData() {
+	return qp_gameBaseData->QP_GetUQPData("QP_GetHelperData");
+}
 
+//UQPData* QP_GetHelperData();
 
 
 

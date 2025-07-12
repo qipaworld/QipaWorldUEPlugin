@@ -19,13 +19,16 @@ bool UQPGIM_Tip::ShouldCreateSubsystem(UObject* Outer) const
 void UQPGIM_Tip::Initialize(FSubsystemCollectionBase& Collection)
 {
 	qp_dataName = TEXT("UQPGIM_Tip");
-	qp_SaveSlotName = TEXT("qp_helperTipSaveGame");
+	//qp_SaveSlotName = TEXT("qp_helperTipSaveGame");
 
 	Super::Initialize(Collection);
 
-	qp_staticObject = this;
-}
+	QP_InitStaticObject();
 
+}
+void UQPGIM_Tip::QP_InitStaticObject() {
+	UQPGIM_Tip::qp_staticObject = this;
+}
 void UQPGIM_Tip::Deinitialize()
 {
 
@@ -34,8 +37,8 @@ void UQPGIM_Tip::Deinitialize()
 
 
 
-void UQPGIM_Tip::QP_LoadHelperData()
-{
-	qp_helperSaveData = UQPSaveGame::QP_LoadSaveData<UQPSG_Tip>(qp_SaveSlotName, qp_UserIndex);
-
-}
+//void UQPGIM_Tip::QP_LoadHelperData()
+//{
+//	qp_helperSaveData = UQPSaveGame::QP_LoadSaveData<UQPSG_Tip>(qp_SaveSlotName, qp_UserIndex);
+//
+//}

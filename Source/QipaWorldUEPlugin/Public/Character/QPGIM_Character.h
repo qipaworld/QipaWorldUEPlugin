@@ -18,6 +18,8 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Character : public UGameInstanceSubsystem
 public:
 	TMap<FName, ACharacter*> qp_characterMap;
 	static UQPGIM_Character* qp_staticObject;
+	virtual void QP_InitStaticObject();
+
 	//Slime.Slime'
 	//FString qp_assetPath = "/Game/QipaWorld3D/Data/Character/";
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")

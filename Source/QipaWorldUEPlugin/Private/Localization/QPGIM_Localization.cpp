@@ -26,10 +26,13 @@ void UQPGIM_Localization::Initialize(FSubsystemCollectionBase& Collection)
 	qp_localizationData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_Localization");
 	//QP_GameLocalizationDataChange()
 	FInternationalization::Get().OnCultureChanged().AddUObject(this, &UQPGIM_Localization::QP_GameLocalizationDataChange);
-	qp_staticObject = this;
+	QP_InitStaticObject();
 
 	//LoadYaml("");
 	//qp_gameQPdataBase = NewObject<UQPData>();
+}
+void UQPGIM_Localization::QP_InitStaticObject() {
+	UQPGIM_Localization::qp_staticObject = this;
 }
 void UQPGIM_Localization::QP_GameLocalizationDataChange() {
 	qp_localizationData->QP_AddFString("Language", QP_GetCurrentLanguage());
@@ -48,6 +51,7 @@ void UQPGIM_Localization::Deinitialize()
 	Super::Deinitialize();
 	qp_staticObject = nullptr;
 }
+
 FString UQPGIM_Localization::QP_GetL10NAssetsPath(FString path) {
 	//path.Replace
 	FString qp_IETF = QP_GetCurrentLanguage();

@@ -18,6 +18,8 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Localization : public UGameInstanceSubsystem
 
 public:
 	static UQPGIM_Localization* qp_staticObject;
+	virtual void QP_InitStaticObject();
+
 	//国际化资源路径
 	//FString qp_localizationAssetsPath = ;
 

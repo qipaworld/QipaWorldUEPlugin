@@ -21,11 +21,13 @@ void UQPGIM_AnimNotifyData::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 
-	qp_staticObject = this;
+	QP_InitStaticObject();
 
 	qp_animNotifyData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_AnimNotifyData");
 }
-
+void UQPGIM_AnimNotifyData::QP_InitStaticObject() {
+	UQPGIM_AnimNotifyData::qp_staticObject = this;
+}
 void UQPGIM_AnimNotifyData::Deinitialize()
 {
 	Super::Deinitialize();

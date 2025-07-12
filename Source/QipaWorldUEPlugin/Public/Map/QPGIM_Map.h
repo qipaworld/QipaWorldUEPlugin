@@ -16,6 +16,7 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Map : public UGameInstanceSubsystem
 
 public:
 	static UQPGIM_Map* qp_staticObject;
+	virtual void QP_InitStaticObject();
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
