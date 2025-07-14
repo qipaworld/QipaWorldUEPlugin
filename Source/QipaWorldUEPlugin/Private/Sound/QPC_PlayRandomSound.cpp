@@ -35,7 +35,9 @@ void UQPC_PlayRandomSound::QP_Play(EQPFootstepType t, UAudioComponent* qp_audio)
         return;
     }
 	FQP_SoundData& soundData = qp_randomSounds[t];
-
+    if (soundData.qp_soundCell.IsEmpty()) {
+        return;
+    }
 	FQP_SoundDataCell& soundDataCell = soundData.qp_soundCell[FMath::RandRange(0, soundData.qp_soundCell.Num() - 1)];
 
     qp_audio->SetWaveParameter("qp_wave", soundDataCell.qp_sound);

@@ -61,7 +61,7 @@ void AQPMonster::BeginPlay()
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AQPMonster::QP_OnCapsuleHit);
 
 	QP_GetAnimData();
-	
+
 	if (!qp_saveName.IsEmpty()) {
 		QP_GetSaveData()->QP_LoadData(qp_saveName);
 		if (!qp_saveData->QP_Getbool("qp_init")) {
