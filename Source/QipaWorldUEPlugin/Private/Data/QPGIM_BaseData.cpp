@@ -238,8 +238,8 @@ UQPData* UQPGIM_BaseData::QP_GetSoundData() {
 	return qp_gameBaseData->QP_GetUQPData("QP_GetSoundData");
 
 }
-UQPData* UQPGIM_BaseData::QP_GetSteamData() {
-	return qp_gameBaseData->QP_GetUQPData("QP_GetSteamData");
+UQPData* UQPGIM_BaseData::QP_GetOnlineData() {
+	return qp_gameBaseData->QP_GetUQPData("QP_GetOnlineData");
 }
 
 UQPData* UQPGIM_BaseData::QP_GetHelperData() {

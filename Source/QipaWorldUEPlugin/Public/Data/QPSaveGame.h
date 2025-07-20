@@ -36,6 +36,12 @@ public:
 		return saveData;
 	}
 	UFUNCTION(BlueprintCallable)
+	static  bool QP_SaveFString(const FString& name, const FString& v, const FString& Key);
+
+	UFUNCTION(BlueprintCallable)
+	static  bool QP_LoadFString(const FString& name,  FString& v, const FString& Key);
+
+	UFUNCTION(BlueprintCallable)
 	void QP_SetSaveKey(const FString& v);
 	UFUNCTION(BlueprintCallable)
 	const FString& QP_GetSaveKey();

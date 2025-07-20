@@ -9,6 +9,7 @@
 #include "QPUtil.h"
 #include "string"
 #include <functional>
+#include "Misc/AES.h"
 #include "QPData.generated.h"
 
 class UQPData;
@@ -310,7 +311,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	void QP_BroadcastNow();
 
-	
+
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	bool QP_SaveData(const FString& name);
 
@@ -319,12 +320,26 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	bool QP_LoadData(const FString& name);
+	
+	
+
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	//bool QP_SaveDataByName(const FString& name);
+
+
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	//bool QP_SaveDataByName(const FString& name);
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+
+	bool QP_SaveDataFAES(const FString& name, const FString& FAES_key);
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	bool QP_LoadDataFAES(const FString& name, const FString& FAES_key);
 
 	//FString qp_saveName;
-	void QP_AsyncSaveData(const FString& name, std::function<void(bool /*bSuccess*/)> Callback = nullptr);
+	void QP_AsyncSaveData(const FString& name, const FString& FAES_key, std::function<void(bool /*bSuccess*/)> Callback = nullptr);
 
 	
-	void QP_AsyncLoadData(const FString& name, std::function<void(bool /*bSuccess*/)> Callback = nullptr);
+	void QP_AsyncLoadData(const FString& name, const FString& FAES_key, std::function<void(bool /*bSuccess*/)> Callback = nullptr);
 
 
 	template<typename K, typename V>

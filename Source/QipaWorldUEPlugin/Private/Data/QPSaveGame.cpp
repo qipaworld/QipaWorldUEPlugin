@@ -3,17 +3,69 @@
 
 #include "Data/QPSaveGame.h"
 #include "Kismet/GameplayStatics.h"
+#include "Online/QPGI_Online.h"
 #include "Data/QPGIM_BaseData.h"
 
 #include "QPUtil.h"
 //FString UQPSaveGame::qp_save_ = "NONE";
 
 FString UQPSaveGame::QP_GenerateSaveKey(const FString& key) {
-	if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType == "NONE") {
+	if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType == "NONE" || UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType.IsEmpty()) {
 		return key;
 	}
-	return UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType + key;
+	//FString s =;
+	//return key + "sdfsdf";
+	FString CustomSaveDir = FPaths::ProjectUserDir() + UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType + UQPGI_Online::qp_staticObject->QP_GetPlatform() + "/";
+	IFileManager::Get().MakeDirectory(*CustomSaveDir, true);
+	//UQPUtil::QP_LOG(CustomSaveDir + key + ".qp");
+	//QP_GetPlatform()
+	return CustomSaveDir + key + ".qp";
 	
+}
+
+bool UQPSaveGame::QP_SaveFString(const FString& name, const FString& v, const FString& key) {
+	if (key.IsEmpty()) {
+		return false;
+	}
+	TArray<uint8> BinaryData;
+	
+	BinaryData.Append((uint8*)TCHAR_TO_UTF8(*v), v.Len());
+
+		
+	int32 Padding = FAES::AESBlockSize - (BinaryData.Num() % FAES::AESBlockSize);
+	if (Padding < FAES::AESBlockSize)
+	{
+		BinaryData.AddZeroed(Padding);
+	}
+
+	FAES::EncryptData(BinaryData.GetData(), BinaryData.Num(), (uint8*)TCHAR_TO_UTF8(*key), key.Len());
+	
+
+	if (FFileHelper::SaveArrayToFile(BinaryData, *(UQPSaveGame::QP_GenerateSaveKey(name))))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool UQPSaveGame::QP_LoadFString(const FString& name, FString& v, const FString& key) {
+	TArray<uint8> FileData;
+	if (key.IsEmpty()) {
+		return false;
+	}
+	if (FFileHelper::LoadFileToArray(FileData, *(UQPSaveGame::QP_GenerateSaveKey(name))))
+	{
+		
+		FAES::DecryptData(FileData.GetData(), FileData.Num(), (uint8*)TCHAR_TO_UTF8(*key), key.Len());
+		
+		FileData.Add(0); 
+
+		v = FString(UTF8_TO_TCHAR(reinterpret_cast<const char*>(FileData.GetData())));
+
+		return true;
+	}
+	UQPUtil::QP_LOG("Failed to load to file: " + name);
+	return false;
 }
 void UQPSaveGame::QP_SetSaveKey(const FString& v) {
 	//if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType == "NONE") {

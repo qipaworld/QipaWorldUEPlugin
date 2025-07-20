@@ -5,6 +5,7 @@
 #include "Data/QPGIM_Data.h"
 #include "QPUtil.h"
 #include "GameFramework/GameUserSettings.h"
+#include "Online/QPGI_Online.h"
 #include "Data/QPGIM_BaseData.h"
 
 void AQPPlayerController::BeginPlay() {
@@ -21,6 +22,22 @@ void AQPPlayerController::BeginPlay() {
         UQPGIM_BaseData::qp_staticObject->QP_SetInitKey("QP_AutoSetingGameQuality", true);
     }
     UQPGIM_BaseData::qp_staticObject->QP_GetSoundData()->QP_Addbool("ActivateBusMix", true);
+
+    
+
+    FTimerHandle DummyHandle;
+    GetWorld()->GetTimerManager().SetTimer(DummyHandle, []()
+      {
+            if (UQPGI_Online::qp_staticObject->QP_GetPlatform() == "Steam") {
+
+                UQPGI_Online::qp_staticObject->QP_LoadUserData();
+            }
+            else if (UQPGI_Online::qp_staticObject->QP_GetPlatform() == "EOS") {
+                UQPGI_Online::qp_staticObject->QP_StartLogin();
+            }
+     
+       }, 2.0f, false);
+        
 }
 void AQPPlayerController::SetupInputComponent()
 {

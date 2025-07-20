@@ -63,7 +63,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetSoundData();
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
-	UQPData* QP_GetSteamData();
+	UQPData* QP_GetOnlineData();
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetHelperData();
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")

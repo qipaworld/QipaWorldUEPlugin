@@ -337,7 +337,16 @@ void UQPData::Serialize(FArchive& Ar)
 
     }
 }
+bool UQPData::QP_SaveData(const FString& name) {
+    return  QP_SaveDataFAES(name, FString());
+}
 
+//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+//bool QP_SaveDataByName(const FString& name);
+
+bool UQPData::QP_LoadData(const FString& name) {
+    return QP_LoadDataFAES(name, FString());
+}
 //bool UQPData::QP_SaveData() {
 //    
 //    TArray<uint8> BinaryData;
@@ -352,13 +361,24 @@ void UQPData::Serialize(FArchive& Ar)
 //    return false;
 //}
 
-bool UQPData::QP_SaveData(const FString& name) {
+bool UQPData::QP_SaveDataFAES(const FString& name, const FString& key) {
 
     TArray<uint8> BinaryData;
     FMemoryWriter Ar(BinaryData, false);
     Serialize(Ar);
 
-    if (FFileHelper::SaveArrayToFile(BinaryData, *(FPaths::Combine(FPaths::ProjectSavedDir(), UQPSaveGame::QP_GenerateSaveKey(name)))))
+    if (!key.IsEmpty()) {
+
+        int32 Padding = FAES::AESBlockSize - (BinaryData.Num() % FAES::AESBlockSize);
+        if (Padding < FAES::AESBlockSize)
+        {
+            BinaryData.AddZeroed(Padding);
+        }
+
+        FAES::EncryptData(BinaryData.GetData(), BinaryData.Num(), (uint8*)TCHAR_TO_UTF8(*key), key.Len());
+    }
+
+    if (FFileHelper::SaveArrayToFile(BinaryData, *(UQPSaveGame::QP_GenerateSaveKey(name))))
     {
         return true;
     }
@@ -367,11 +387,14 @@ bool UQPData::QP_SaveData(const FString& name) {
 }
 
 
-bool UQPData::QP_LoadData(const FString& name) {
+bool UQPData::QP_LoadDataFAES(const FString& name, const FString& key) {
     //qp_saveName = UQPSaveGame::QP_GenerateSaveKey(name);
     TArray<uint8> FileData;
-    if (FFileHelper::LoadFileToArray(FileData, *(FPaths::Combine(FPaths::ProjectSavedDir(), UQPSaveGame::QP_GenerateSaveKey(name)))))
+    if (FFileHelper::LoadFileToArray(FileData, *(UQPSaveGame::QP_GenerateSaveKey(name))))
     {
+        if (!key.IsEmpty()) {
+            FAES::DecryptData(FileData.GetData(), FileData.Num(), (uint8*)TCHAR_TO_UTF8(*key), key.Len());
+        }
         FMemoryReader  Ar(FileData, true);
         Serialize(Ar);
         return true;
@@ -380,29 +403,29 @@ bool UQPData::QP_LoadData(const FString& name) {
     return false;
 }
 
-void UQPData::QP_AsyncSaveData(const FString& name, std::function<void(bool /*bSuccess*/)> Callback)
+void UQPData::QP_AsyncSaveData(const FString& name, const FString& key, std::function<void(bool /*bSuccess*/)> Callback)
 {
 
-    Async(EAsyncExecution::Thread, [name,this, Callback]()
-    {
-        if (Callback) {
-            Callback(QP_SaveData(name));
-        }
-        else {
-            QP_SaveData(name);
-        }
-        
-    });
+    Async(EAsyncExecution::Thread, [name, this, key, Callback]()
+        {
+            if (Callback) {
+                Callback(QP_SaveDataFAES(name, key));
+            }
+            else {
+                QP_SaveDataFAES(name, key);
+            }
+
+        });
 }
-void UQPData::QP_AsyncLoadData(const FString& name, std::function<void(bool /*bSuccess*/)> Callback) {
-    Async(EAsyncExecution::Thread, [name, this, Callback]()
+void UQPData::QP_AsyncLoadData(const FString& name, const FString& key, std::function<void(bool /*bSuccess*/)> Callback) {
+    Async(EAsyncExecution::Thread, [name, this, key, Callback]()
     {
         if (Callback)
         {
-            Callback(QP_LoadData(name));
+            Callback(QP_LoadDataFAES(name,key));
         }
         else {
-            QP_LoadData(name);
+            QP_LoadDataFAES(name, key);
         }
     });
 }
