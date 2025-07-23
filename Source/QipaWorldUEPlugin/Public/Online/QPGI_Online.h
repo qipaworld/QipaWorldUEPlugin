@@ -50,4 +50,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FString QP_GetPlatformOnline();
+
+	void QP_QueryAchievements();
 };

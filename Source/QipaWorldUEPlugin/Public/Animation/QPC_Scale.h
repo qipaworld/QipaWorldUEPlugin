@@ -3,35 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Animation/QPC_Rotate.h"
-#include "QPC_RotateTo.generated.h"
+#include "Animation/QPC_AnimBase.h"
+
+#include "QPC_Scale.generated.h"
 
 /**
  * 
  */
 UCLASS(ClassGroup = (QipaWorld), meta = (BlueprintSpawnableComponent))
-class QIPAWORLDUEPLUGIN_API UQPC_RotateTo : public UQPC_Rotate
+class QIPAWORLDUEPLUGIN_API UQPC_Scale : public UQPC_AnimBase
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Animation")
-	FRotator qp_targetRotator;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Animation")
-	float qp_time = 0;
+	
 public:
 	// Sets default values for this component's properties
-	//UQPC_RotateTo();
+	//UQPC_Scale();
 
 protected:
 	// Called when the game starts
-	virtual void BeginPlay() override;
+	//virtual void BeginPlay() override;
 
 public:
 	// Called every frame
 	//virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void QP_TickAnim() override;
-
-	UFUNCTION(BlueprintCallable)
-	void QP_SetRotatorTarget(const FRotator& c);
 
 };

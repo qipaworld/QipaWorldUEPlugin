@@ -46,14 +46,14 @@ void UQPC_FadeMaterials::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 				qp_isPlay = false;
 				//if ("BP_ChaosJar_116" == GetOwner()->GetActorLabel())
 					//UE_LOG(LogTemp, Warning, TEXT("___!_aa__1_ddddddddddddddddd__%f"), qp_fadeValues[i]);
-				qp_showType = EQPFadeMaterialType::SHOW;
+				qp_showType = EQPFadeType::SHOW;
 
 			}else if (qp_fadeValues[i] <= qp_mins[i]) {
 				qp_fadeValues[i] = qp_mins[i];
 				qp_isPlay = false;
 				//if ("BP_ChaosJar_116" == GetOwner()->GetActorLabel())
 					//UE_LOG(LogTemp, Warning, TEXT("___!_aa__1_ddddddddddddddddd__%f"), qp_fadeValues[i]);
-				qp_showType = EQPFadeMaterialType::HIDE;
+				qp_showType = EQPFadeType::HIDE;
 
 			}
 			qp_materials[i]->SetScalarParameterValue(qp_parameterValueName, qp_fadeValues[i]);
@@ -71,14 +71,14 @@ void UQPC_FadeMaterials::QP_FadeIn(float time) {
 	}
 	//if ("BP_ChaosJar_116" == GetOwner()->GetActorLabel())
 		//UE_LOG(LogTemp, Warning, TEXT("___!_aa__2___%s"), *GetOwner()->GetActorLabel());
-	if (qp_showType == EQPFadeMaterialType::SHOW || qp_showType == EQPFadeMaterialType::FADE_IN) {
+	if (qp_showType == EQPFadeType::SHOW || qp_showType == EQPFadeType::FADE_IN) {
 		return;
 	}
 	//if ("BP_ChaosJar_116" == GetOwner()->GetActorLabel())
 	//UE_LOG(LogTemp, Warning, TEXT("___!_aa___3__%s"),*GetOwner()->GetActorLabel());
 	
 	qp_isPlay = true;
-	qp_showType = EQPFadeMaterialType::FADE_IN;
+	qp_showType = EQPFadeType::FADE_IN;
 	qp_idleTime = 0;
 	for (int32 i = 0; i < qp_materials.Num(); ++i)
 	{
@@ -95,14 +95,14 @@ void UQPC_FadeMaterials::QP_FadeOut(float time) {
 	}
 	//if ("BP_ChaosJar_116" == GetOwner()->GetActorLabel())
 		//UE_LOG(LogTemp, Warning, TEXT("___a_aa___3__%s"), *GetOwner()->GetActorLabel());
-	if (qp_showType == EQPFadeMaterialType::HIDE || qp_showType == EQPFadeMaterialType::FADE_OUT) {
+	if (qp_showType == EQPFadeType::HIDE || qp_showType == EQPFadeType::FADE_OUT) {
 		return;
 	}
 	//if ("BP_ChaosJar_116" == GetOwner()->GetActorLabel())
 		//UE_LOG(LogTemp, Warning, TEXT("___a_aa___3__%s"), *GetOwner()->GetActorLabel());
 	qp_isPlay = true;
 
-	qp_showType = EQPFadeMaterialType::FADE_OUT;
+	qp_showType = EQPFadeType::FADE_OUT;
 	qp_idleTime = 0;
 	for (int32 i = 0; i < qp_materials.Num(); ++i)
 	{
@@ -114,7 +114,7 @@ void UQPC_FadeMaterials::QP_FadeTo(float time, float value) {
 	if (qp_idleTime < qp_lazyTime) {
 		return;
 	}
-	qp_showType = EQPFadeMaterialType::FADE_TO;
+	qp_showType = EQPFadeType::FADE_TO;
 	qp_isPlay = true;
 
 	qp_idleTime = 0;

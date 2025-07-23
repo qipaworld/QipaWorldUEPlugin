@@ -20,31 +20,21 @@ bool UQPGI_Online::ShouldCreateSubsystem(UObject* Outer) const
 void UQPGI_Online::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	//Collection.InitializeDependency(UQPGIM_Data::StaticClass());
 	Collection.InitializeDependency(UQPGIM_BaseData::StaticClass());
 
 	QP_InitStaticObject();
 
 	qp_onlineData = UQPGIM_BaseData::qp_staticObject->QP_GetOnlineData();
 	qp_onlineData->QP_LoadData("UQPGI_Online");
-	qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData("qp_sending")->QP_GetUQPData("_");
-	qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData("qp_sending")->QP_SetIsSave(EQPDataKeyType::FNAME, EQPDataValueType::UQPDATA, false);
-	//qp_soundData->QP_LoadData("UQPGI_Online");
-	//qp_soundVolumeData = qp_soundData->QP_GetUQPData("qp_soundVolumeData");
-	//QP_LoadSoundData();
-
-	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
+	//qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData("qp_sending")->QP_GetUQPData("_");
+	//qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData("qp_sending")->QP_SetIsSave(EQPDataKeyType::FNAME, EQPDataValueType::UQPDATA, false);
+	
 }
 void UQPGI_Online::QP_InitStaticObject() {
 	UQPGI_Online::qp_staticObject = this;
 }
 void UQPGI_Online::Deinitialize()
 {
-	//if (qp_bgSound != nullptr) {
-		//qp_bgSound->Stop();
-	//}
-	//qp_soundData->qp_dataDelegate.Remove(qp_handle);
-	//QP_SaveSoundData();
 
 	Super::Deinitialize();
 
@@ -74,10 +64,10 @@ void UQPGI_Online::QP_LoadUserData()
 		{
 			FUniqueNetIdPtr UserId = IdentityInterface->GetUniquePlayerId(0);
 			//TArray<TSharedRef<const FUniqueNetId>> Users;
-
+			UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", UserId.IsValid());
 			if (UserId.IsValid())
 			{
-				UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin",true);
+				
 
 				FDelegateHandle Handle = UserInterface->AddOnQueryUserInfoCompleteDelegate_Handle(
 					0,
@@ -104,9 +94,6 @@ void UQPGI_Online::QP_LoadUserData()
 
 				UserInterface->QueryUserInfo(0, Users);
 
-			}
-			else {
-				UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", false);
 			}
 
 		}
@@ -161,18 +148,11 @@ void UQPGI_Online::QP_StartLogin() {
 					if (!bWasSuccessful) {
 						Online::GetExternalUIInterface(GetWorld())->ShowLoginUI(0, true, true, FOnLoginUIClosedDelegate::CreateLambda(
 							[this](TSharedPtr<const FUniqueNetId> UniqueId, const int ControllerIndex, const FOnlineError& Result) {
+									UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", Result.WasSuccessful());
 								if (Result.WasSuccessful())
 								{
-									UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", true);
-
 									QP_LoadUserData();
-									//UE_LOG(LogTemp, Log, TEXT("Login Success"));
-								}
-								else
-								{
-									UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", false);
-
-									//UE_LOG(LogTemp, Warning, TEXT("Login Failed: %s"), *Result.ErrorMessage.ToString());
+									QP_QueryAchievements();
 								}
 							}));
 					}
@@ -180,6 +160,7 @@ void UQPGI_Online::QP_StartLogin() {
 						UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", true);
 
 						QP_LoadUserData();
+						QP_QueryAchievements();
 					}
 					
 				});
@@ -197,20 +178,72 @@ void UQPGI_Online::QP_StartLogin() {
 		UE_LOG(LogTemp, Error, TEXT("not  OnlineSubsystem£¡"));
 	}
 }
+
+void UQPGI_Online::QP_QueryAchievements() {
+	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
+	if (!Subsystem)
+	{
+		UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isQueryAchievements", false);
+		return;
+	}
+	IOnlineIdentityPtr Identity = Subsystem->GetIdentityInterface();
+	IOnlineAchievementsPtr Achievements = Subsystem->GetAchievementsInterface();
+
+
+	if (Identity.IsValid() && Achievements.IsValid())
+	{
+
+		TSharedPtr<const FUniqueNetId> UserId = Identity->GetUniquePlayerId(0);
+		if (UserId.IsValid())
+		{
+
+			Achievements->QueryAchievements(*UserId, FOnQueryAchievementsCompleteDelegate::CreateLambda(
+				[this, Achievements, UserId, Identity](const FUniqueNetId& QueriedId, const bool bSuccess)
+				{
+					UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isQueryAchievements", bSuccess);
+					
+					TArray<FOnlineAchievement> PlayerAchievements;
+					Achievements->GetCachedAchievements(*UserId, PlayerAchievements);
+
+					FOnlineAchievementsWritePtr WriteObject = MakeShareable(new FOnlineAchievementsWrite());
+					
+
+					FOnlineAchievementsWriteRef WriteRef = WriteObject.ToSharedRef();
+					for (const FOnlineAchievement& Achievement : PlayerAchievements)
+					{
+						if (Achievement.Progress < 100.0f)
+						{
+							if (qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData((*Achievement.Id))->QP_GetboolExI(0)) {
+								WriteObject->SetFloatStat(Achievement.Id, 100);
+							}
+						}
+					}
+					Achievements->WriteAchievements(*UserId, WriteRef,
+						FOnAchievementsWrittenDelegate::CreateLambda([](const FUniqueNetId& PlayerId, bool bWriteSuccess)
+							{
+							}));
+
+				}));
+		}
+	}
+	else {
+		UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isQueryAchievements", false);
+	}
+}
 void UQPGI_Online::QP_AddAchievement(FName qp_AchievementId, int32 qp_playerId, float num) {
 
 	if (qp_AchievementId.IsNone()) {
 		return;
 	}
+	
 	if (qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData(qp_AchievementId)->QP_GetboolExI(qp_playerId)) {
 
 		return;
 	}
-	UQPData* d = qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData("qp_sending")->QP_GetUQPData(qp_AchievementId);
-	if (d->QP_GetboolExI(qp_playerId)) {
-		return;
-	}
-	d->QP_AddboolExI(qp_playerId, true);
+	qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData(qp_AchievementId)->QP_AddboolExI(qp_playerId, true);
+	qp_onlineData->QP_SaveData("UQPGI_Online");
+
+	
 	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
 	if (Subsystem)
 	{
@@ -222,52 +255,45 @@ void UQPGI_Online::QP_AddAchievement(FName qp_AchievementId, int32 qp_playerId, 
 		if (Identity.IsValid() && Achievements.IsValid())
 		{
 
+			
 			TSharedPtr<const FUniqueNetId> UserId = Identity->GetUniquePlayerId(qp_playerId);
 			if (UserId.IsValid())
 			{
+			FOnlineAchievement Achievement;
+			if (Achievements->GetCachedAchievement(*UserId, qp_AchievementId.ToString(), Achievement) == EOnlineCachedResult::Success)
+			{
+				return;
+			}
+			FOnlineAchievementsWritePtr WriteObject = MakeShareable(new FOnlineAchievementsWrite());
+			WriteObject->SetFloatStat(qp_AchievementId, num);
 
-				Achievements->QueryAchievements(*UserId, FOnQueryAchievementsCompleteDelegate::CreateLambda(
-					[this, Achievements, UserId, qp_AchievementId, num, qp_playerId, d](const FUniqueNetId& QueriedId, const bool bSuccess)
+			FOnlineAchievementsWriteRef WriteRef = WriteObject.ToSharedRef();
+			Achievements->WriteAchievements(*UserId, WriteRef,
+				FOnAchievementsWrittenDelegate::CreateLambda([this, qp_AchievementId, num, qp_playerId](const FUniqueNetId& PlayerId, bool bWriteSuccess)
 					{
-
-						if (bSuccess)
-						{
-							FOnlineAchievementsWritePtr WriteObject = MakeShareable(new FOnlineAchievementsWrite());
-							WriteObject->SetFloatStat(qp_AchievementId, num);
-
-							FOnlineAchievementsWriteRef WriteRef = WriteObject.ToSharedRef();
-							Achievements->WriteAchievements(*UserId, WriteRef,
-								FOnAchievementsWrittenDelegate::CreateLambda([this, qp_AchievementId, num, qp_playerId, d](const FUniqueNetId& PlayerId, bool bWriteSuccess)
-									{
 										
-										if (num == 100 && bWriteSuccess) {
+						/*if (num == 100 && bWriteSuccess) {
 
-											qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData(qp_AchievementId)->QP_AddboolExI(qp_playerId, true);
-											qp_onlineData->QP_SaveData("UQPGI_Online");
-										}
-										else {
-											d->QP_AddboolExI(qp_playerId, false);
-										}
-									}));
+							
 						}
-						else
-						{
-							d->QP_AddboolExI(qp_playerId, false);
-						}
+						else {
+							
+						}*/
 					}));
+					
 			}
-			else {
+			/*else {
 				d->QP_AddboolExI(qp_playerId, false);
-			}
+			}*/
 		}
-		else {
+		/*else {
 			d->QP_AddboolExI(qp_playerId, false);
-		}
+		}*/
 	}
-	else {
+	/*else {
 		d->QP_AddboolExI(qp_playerId, false);
 
-	}
+	}*/
 
 
 	

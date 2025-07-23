@@ -1,28 +1,21 @@
 // QIPAWORLD
 
 
-#include "Material/QPC_FadeMaterial.h"
+#include "Light/QPC_FadeLight.h"
 
-UQPC_FadeMaterial::UQPC_FadeMaterial() {
+UQPC_FadeLight::UQPC_FadeLight() {
     PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UQPC_FadeMaterial::BeginPlay() {
+void UQPC_FadeLight::BeginPlay() {
     Super::BeginPlay();
 
     this->SetComponentTickEnabled(true);
-    if (!qp_mesh) {
-
-        return;
-    }
    
-        
-       qp_material=(qp_mesh->CreateDynamicMaterialInstance(0, qp_mesh->GetMaterial(0)));
-    
     
 
 }
-void UQPC_FadeMaterial::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UQPC_FadeLight::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	qp_idleTime += DeltaTime;
@@ -39,38 +32,46 @@ void UQPC_FadeMaterial::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 				qp_isPlay = false;
 				qp_showType = EQPFadeType::HIDE;
 			}
-			qp_material->SetScalarParameterValue(qp_parameterValueName, qp_fadeValue);
+			for (auto v : qp_lights) {
+				v->SetIntensity(qp_fadeValue);
+			}
 			
 		
 	}
 }
 
-void UQPC_FadeMaterial::QP_FadeIn(float time) {
+void UQPC_FadeLight::QP_FadeIn(float time) {
 	if (qp_showType == EQPFadeType::SHOW || qp_showType == EQPFadeType::FADE_IN) {
 		return;
 	}
 	qp_showType = EQPFadeType::FADE_IN;
 	qp_isPlay = true;
 
-	qp_material->GetScalarParameterValue(qp_parameterValueName, qp_fadeValue);
+	for (auto v : qp_lights) {
+		v->SetIntensity(qp_fadeValue);
+	}
 	qp_fadeSpeed = (qp_max - qp_fadeValue) / time;
 }
-void UQPC_FadeMaterial::QP_FadeOut(float time) {
+void UQPC_FadeLight::QP_FadeOut(float time) {
 	if (qp_showType == EQPFadeType::HIDE || qp_showType == EQPFadeType::FADE_OUT) {
 		return;
 	}
 	qp_isPlay = true;
 	qp_showType = EQPFadeType::FADE_OUT;
-	qp_material->GetScalarParameterValue(qp_parameterValueName, qp_fadeValue);
+	for (auto v : qp_lights) {
+		v->SetIntensity(qp_fadeValue);
+	}
 	qp_fadeSpeed = (qp_min - qp_fadeValue) / time;
 }
-void UQPC_FadeMaterial::QP_FadeTo(float time, float value) {
+void UQPC_FadeLight::QP_FadeTo(float time, float value) {
 	if (qp_idleTime < qp_lazyTime) {
 		return;
 	}
 	qp_showType = EQPFadeType::FADE_TO;
 
 	qp_isPlay = true;
-	qp_material->GetScalarParameterValue(qp_parameterValueName, qp_fadeValue);
+	for (auto v : qp_lights) {
+		v->SetIntensity(qp_fadeValue);
+	}
 	qp_fadeSpeed = (value - qp_fadeValue) / time;
 }

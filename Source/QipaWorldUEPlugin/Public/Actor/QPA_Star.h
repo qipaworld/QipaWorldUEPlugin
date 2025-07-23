@@ -3,31 +3,35 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actor/QPA_ChaosDestructible.h"
+#include "Actor/QPActor.h"
 #include "Material/QPC_FadeMaterials.h"
 
-#include "QPA_DestructibleStarLight.generated.h"
+#include "QPA_Star.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API AQPA_DestructibleStarLight : public AQPA_ChaosDestructible
+class QIPAWORLDUEPLUGIN_API AQPA_Star : public AQPActor
 {
 	GENERATED_BODY()
 public:
-	AQPA_DestructibleStarLight();
+	AQPA_Star();
 
 	virtual void BeginPlay() override;
 
-	virtual void QP_OnChunkHit(const FChaosPhysicsCollisionInfo& CollisionInfo) override;
+	UFUNCTION()
+	virtual void QP_OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	virtual void Tick(float DeltaTime) override;
 
 	//UFUNCTION()
 	//virtual void QP_OnBroken(const FChaosBreakEvent& BreakEvent)override;
 	//bool qp_isShow = false;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|ChaosDestructible")
+	UStaticMeshComponent* qp_mesh;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|ChaosDestructible")
 	UQPC_FadeMaterials* qp_fadeMaterials = nullptr;
 
@@ -46,8 +50,8 @@ public:
 	float qp_fadeInMinVelocity = 5;
 	
 
-	virtual void QP_OnTriggerSimulatePhysicsBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+	//virtual void QP_OnTriggerSimulatePhysicsBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
-	virtual void QP_OnTriggerSimulatePhysicsEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+	//virtual void QP_OnTriggerSimulatePhysicsEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 };

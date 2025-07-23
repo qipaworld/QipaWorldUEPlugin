@@ -5,17 +5,18 @@
 #include "CoreMinimal.h"
 //#include "Component/QPComponent.h"
 #include "Material/QPC_FadeMaterials.h"
-#include "QPC_FadeMaterial.generated.h"
+#include "Components/LightComponent.h"
+#include "QPC_FadeLight.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPC_FadeMaterial : public UQPComponent
+class QIPAWORLDUEPLUGIN_API UQPC_FadeLight : public UQPComponent
 {
 	GENERATED_BODY()
 public:
-	UQPC_FadeMaterial();
+	UQPC_FadeLight();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void BeginPlay();
 
@@ -30,14 +31,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|FadeMaterial")
 	float qp_min;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|FadeMaterial")
+	//FName qp_parameterValueName;
+	/*you need set value in blueprint*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|FadeMaterial")
-	FName qp_parameterValueName;
+	TArray< ULightComponent*> qp_lights;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|FadeMaterial")
-	UMeshComponent* qp_mesh = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|FadeMaterial")
-	class UMaterialInstanceDynamic* qp_material;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|FadeMaterial")
+	//class UMaterialInstanceDynamic* qp_material;
 
 	void QP_FadeIn(float time);
 	void QP_FadeOut(float time);

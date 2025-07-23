@@ -15,7 +15,7 @@ FString UQPSaveGame::QP_GenerateSaveKey(const FString& key) {
 	}
 	//FString s =;
 	//return key + "sdfsdf";
-	FString CustomSaveDir = FPaths::ProjectUserDir() + UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType + UQPGI_Online::qp_staticObject->QP_GetPlatform() + "/";
+	FString CustomSaveDir = FPaths::ProjectUserDir() + UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType;// +UQPGI_Online::qp_staticObject->QP_GetPlatform() + "/";
 	IFileManager::Get().MakeDirectory(*CustomSaveDir, true);
 	//UQPUtil::QP_LOG(CustomSaveDir + key + ".qp");
 	//QP_GetPlatform()

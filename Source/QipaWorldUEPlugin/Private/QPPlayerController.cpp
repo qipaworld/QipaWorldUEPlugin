@@ -31,6 +31,7 @@ void AQPPlayerController::BeginPlay() {
             if (UQPGI_Online::qp_staticObject->QP_GetPlatform() == "Steam") {
 
                 UQPGI_Online::qp_staticObject->QP_LoadUserData();
+                UQPGI_Online::qp_staticObject->QP_QueryAchievements();
             }
             else if (UQPGI_Online::qp_staticObject->QP_GetPlatform() == "EOS") {
                 UQPGI_Online::qp_staticObject->QP_StartLogin();

@@ -8,7 +8,7 @@
 
 
 UENUM(BlueprintType)
-enum class EQPFadeMaterialType :uint8
+enum class EQPFadeType :uint8
 {
 	DEFAULT              UMETA(DisplayName = "default"),
 	SHOW              UMETA(DisplayName = "show"),
@@ -53,7 +53,7 @@ public:
 	void QP_FadeIn(float time);
 	void QP_FadeOut(float time);
 	void QP_FadeTo(float time,float value);
-	EQPFadeMaterialType qp_showType = EQPFadeMaterialType::DEFAULT;
+	EQPFadeType qp_showType = EQPFadeType::DEFAULT;
 	/*void QP_Play(EQPFootstepType);
 	inline void QP_SetVolume(float v) {
 		qp_footstepAudio->SetVolumeMultiplier(v);

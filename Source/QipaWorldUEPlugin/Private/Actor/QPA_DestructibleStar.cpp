@@ -1,9 +1,9 @@
 // QIPAWORLD
 
 
-#include "Actor/QPA_DestructibleStarLight.h"
+#include "Actor/QPA_DestructibleStar.h"
 
-AQPA_DestructibleStarLight::AQPA_DestructibleStarLight()
+AQPA_DestructibleStar::AQPA_DestructibleStar()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -15,25 +15,25 @@ AQPA_DestructibleStarLight::AQPA_DestructibleStarLight()
 	
 
 	//UE_LOG(LogTemp, Warning, TEXT("___!______%d"), qp_fadeMaterials->qp_materials.Num());
-	//qp_fadeMaterial->qp_mesh = qp_geometryCollection->getstaticmes
+	qp_fadeMaterials->qp_mesh = qp_geometryCollection;
 	//qp_fadeMaterial->SetupAttachment(RootComponent);
 	
 
 }
 
 // Called when the game starts or when spawned
-void AQPA_DestructibleStarLight::BeginPlay()
+void AQPA_DestructibleStar::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (int32 i = 0; i < qp_geometryCollection->GetNumMaterials(); ++i)
+	/*for (int32 i = 0; i < qp_geometryCollection->GetNumMaterials(); ++i)
 	{
 		qp_fadeMaterials->qp_materials.Add(qp_geometryCollection->CreateDynamicMaterialInstance(i, qp_geometryCollection->GetMaterial(i)));
 		qp_fadeMaterials->qp_fadeValues.Add(0);
 		qp_fadeMaterials->qp_fadeSpeeds.Add(0);
 		
 
-	}
+	}*/
 	if (qp_autoSimulatePhysics) {
 		//SetActorTickEnabled(false);
 		//qp_fadeMaterials->SetComponentTickEnabled(false);
@@ -44,7 +44,7 @@ void AQPA_DestructibleStarLight::BeginPlay()
 	
 	//qp_geometryCollection->ForceRecreateRenderState_Concurrent();
 }
-void AQPA_DestructibleStarLight::QP_OnTriggerSimulatePhysicsBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AQPA_DestructibleStar::QP_OnTriggerSimulatePhysicsBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Overlap Begin"));
 	//QP_End();
@@ -61,7 +61,7 @@ void AQPA_DestructibleStarLight::QP_OnTriggerSimulatePhysicsBegin(UPrimitiveComp
 	}
 }
 
-void AQPA_DestructibleStarLight::QP_OnTriggerSimulatePhysicsEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void AQPA_DestructibleStar::QP_OnTriggerSimulatePhysicsEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("___!asda___d___%s"), *GetActorLabel());
 	Super::QP_OnTriggerSimulatePhysicsEnd(OverlappedComp, OtherActor, OtherComp, OtherBodyIndex);
@@ -74,14 +74,14 @@ void AQPA_DestructibleStarLight::QP_OnTriggerSimulatePhysicsEnd(UPrimitiveCompon
 	}
 	
 }
-void AQPA_DestructibleStarLight::Tick(float DeltaTime)
+void AQPA_DestructibleStar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	/*if (qp_delayTime >= 0) {
 		qp_delayTime -= DeltaTime;
 	}
 	else {*/
-		if (qp_fadeMaterials->qp_showType == EQPFadeMaterialType::SHOW) {
+		if (qp_fadeMaterials->qp_showType == EQPFadeType::SHOW) {
 			qp_showedTime -= DeltaTime;
 			if (qp_showedTime <= 0) {
 				qp_fadeMaterials->QP_FadeOut(qp_fadeOutTime);
@@ -93,16 +93,16 @@ void AQPA_DestructibleStarLight::Tick(float DeltaTime)
 	//}
 	
 }
-//void AQPA_DestructibleStarLight::QP_OnBroken(const FChaosBreakEvent& BreakEvent)
+//void AQPA_DestructibleStar::QP_OnBroken(const FChaosBreakEvent& BreakEvent)
 //{
 	//Super::QP_OnBroken(BreakEvent);
 	//qp_autoDestroy = qp_delayDestroy;
 	//qp_isAutoDestroy = true;
 //}
-//void AQPA_DestructibleStarLight::QP_OnActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit) {
+//void AQPA_DestructibleStar::QP_OnActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit) {
 	//UE_LOG(LogTemp, Warning, TEXT("___!_______%s"), *OtherActor->GetName());
 //}
-void AQPA_DestructibleStarLight::QP_OnChunkHit(const FChaosPhysicsCollisionInfo& CollisionInfo)
+void AQPA_DestructibleStar::QP_OnChunkHit(const FChaosPhysicsCollisionInfo& CollisionInfo)
 {
 	Super::QP_OnChunkHit(CollisionInfo);
 	//UE_LOG(LogTemp, Warning, TEXT("___!______%d"), qp_geometryCollection->GetNumMaterials());
@@ -124,7 +124,7 @@ void AQPA_DestructibleStarLight::QP_OnChunkHit(const FChaosPhysicsCollisionInfo&
 	if ((CollisionInfo.Velocity.Size() + CollisionInfo.OtherVelocity.Size()) > qp_fadeInMinVelocity) {
 		
 		qp_showedTime = qp_showTime;
-		/*if (qp_fadeMaterials->qp_showType == EQPFadeMaterialType::SHOW || qp_fadeMaterials->qp_showType == EQPFadeMaterialType::FADE_IN) {
+		/*if (qp_fadeMaterials->qp_showType == EQPFadeType::SHOW || qp_fadeMaterials->qp_showType == EQPFadeType::FADE_IN) {
 			return;
 		}*/
 
