@@ -11,7 +11,8 @@
 #include "Interface/QPI_AnimNotifyFootstep.h"
 #include "Components/SphereComponent.h"
 #include "Animation/QPU_AnimInstance.h"
-//#include "GameFramework/CharacterMovementComponent.h"
+#include "Data/QPGIM_Data.h"
+
 #include "Sound/QPC_PlayRandomSound.h"
 #include "Components/StateTreeComponent.h"
 #include "Monster/QPCharacterMovementComponent.h"
@@ -169,7 +170,7 @@ public:
 
 	class UQPData* QP_GetSaveData();
 	virtual void QPI_AnimNotify(const FName& k) override;
-	virtual void QPI_AnimNotifyFootstep(EQPFootstepType, FVector,float) override;
+	virtual void QPI_AnimNotifyFootstep(EQPFootstepType, const FHitResult&,float) override;
 
 	virtual void QP_PlayFootstepAudio();
 	UFUNCTION(BlueprintCallable)
@@ -210,5 +211,8 @@ public:
 	virtual void QP_OnCapsuleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	virtual void QP_DataChange(UQPData* data);
+
+	virtual void QP_PlayerDataChange(UQPData* data);
+
 
 };

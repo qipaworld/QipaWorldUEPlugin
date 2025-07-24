@@ -46,6 +46,7 @@ AQPMonster::AQPMonster(const FObjectInitializer& ObjectInitializer)
 void AQPMonster::BeginPlay()
 {
 	Super::BeginPlay();
+
 	qp_animInst = Cast<UQPU_AnimInstance>(GetMesh()->GetAnimInstance());
 	if (qp_animInst) {
 		qp_animInst->QP_SetQPData(QP_GetQPData());
@@ -74,6 +75,11 @@ void AQPMonster::BeginPlay()
 		qp_stateTree->StartLogic();
 	}*/
 	QP_GetQPData()->qp_dataDelegate.AddUObject(this, &AQPMonster::QP_DataChange);
+	UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->qp_dataDelegate.AddUObject(this, &AQPMonster::QP_PlayerDataChange);
+
+}
+void AQPMonster::QP_PlayerDataChange(UQPData* data) {
+
 }
 void AQPMonster::QP_SetSaveDataName(const FString& n) {
 	qp_saveName = n;
@@ -168,7 +174,7 @@ UQPData* AQPMonster::QP_GetQPData() {
 	}
 	return qp_characterData;
 }
-void AQPMonster::QPI_AnimNotifyFootstep(EQPFootstepType t, FVector v, float minVolume) {
+void AQPMonster::QPI_AnimNotifyFootstep(EQPFootstepType t, const FHitResult& v, float minVolume) {
 	//if (k == QP_AnimNotifyFootsetpAudio) {
 		if (qp_isPlayFootstepAudio) {
 			if (qp_waters.Num()> 0) {

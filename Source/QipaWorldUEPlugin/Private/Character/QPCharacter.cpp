@@ -77,7 +77,6 @@ void AQPCharacter::BeginPlay()
 		UQPGIM_Character::qp_staticObject->QP_InitCharacterData(this);
 	}
 
-	UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_PlayerDataChange);
 
 	Controller->SetControlRotation(qp_saveData->QP_GetFRotator("ControllerRotation"));
 	//qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
@@ -452,5 +451,5 @@ void AQPCharacter::QP_ReReset() {
  //}
 
   void AQPCharacter::QP_PlayerDataChange(UQPData* data) {
-
+	  Super::QP_PlayerDataChange(data);
  }

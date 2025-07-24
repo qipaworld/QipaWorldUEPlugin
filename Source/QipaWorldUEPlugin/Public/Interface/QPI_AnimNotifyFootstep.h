@@ -36,5 +36,5 @@ class QIPAWORLDUEPLUGIN_API IQPI_AnimNotifyFootstep
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void QPI_AnimNotifyFootstep(EQPFootstepType, FVector, float) = 0;
+	virtual void QPI_AnimNotifyFootstep(EQPFootstepType, const FHitResult&, float) = 0;
 };

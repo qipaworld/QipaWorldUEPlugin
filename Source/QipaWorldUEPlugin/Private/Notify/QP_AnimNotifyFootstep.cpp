@@ -44,7 +44,7 @@ void UQP_AnimNotifyFootstep::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
             else if (Hit.GetActor()->Tags.Contains("woodAir")) {
                 t = EQPFootstepType::WOOD_AIR;
             }
-               di->QPI_AnimNotifyFootstep(t, Hit.ImpactPoint, qp_minVolume);
+               di->QPI_AnimNotifyFootstep(t, Hit, qp_minVolume);
             
             
             //Hit.ImpactPoint
