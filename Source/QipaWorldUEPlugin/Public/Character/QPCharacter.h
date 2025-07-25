@@ -161,7 +161,7 @@ public:
 	bool qp_isExit = false;
 	
 
-	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPCharacter")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		UCameraComponent* qp_camera;
 
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPCharacter")
