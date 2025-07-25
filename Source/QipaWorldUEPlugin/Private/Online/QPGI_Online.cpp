@@ -146,6 +146,7 @@ void UQPGI_Online::QP_StartLogin() {
 				{
 
 					if (!bWasSuccessful) {
+						UQPUtil::QP_UpdateMouse(true);
 						Online::GetExternalUIInterface(GetWorld())->ShowLoginUI(0, true, true, FOnLoginUIClosedDelegate::CreateLambda(
 							[this](TSharedPtr<const FUniqueNetId> UniqueId, const int ControllerIndex, const FOnlineError& Result) {
 									UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", Result.WasSuccessful());
@@ -200,28 +201,31 @@ void UQPGI_Online::QP_QueryAchievements() {
 			Achievements->QueryAchievements(*UserId, FOnQueryAchievementsCompleteDelegate::CreateLambda(
 				[this, Achievements, UserId, Identity](const FUniqueNetId& QueriedId, const bool bSuccess)
 				{
-					UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isQueryAchievements", bSuccess);
-					
-					TArray<FOnlineAchievement> PlayerAchievements;
-					Achievements->GetCachedAchievements(*UserId, PlayerAchievements);
+					if (bSuccess) {
+						TArray<FOnlineAchievement> PlayerAchievements;
+						Achievements->GetCachedAchievements(*UserId, PlayerAchievements);
 
-					FOnlineAchievementsWritePtr WriteObject = MakeShareable(new FOnlineAchievementsWrite());
-					
+						FOnlineAchievementsWritePtr WriteObject = MakeShareable(new FOnlineAchievementsWrite());
 
-					FOnlineAchievementsWriteRef WriteRef = WriteObject.ToSharedRef();
-					for (const FOnlineAchievement& Achievement : PlayerAchievements)
-					{
-						if (Achievement.Progress < 100.0f)
+
+						FOnlineAchievementsWriteRef WriteRef = WriteObject.ToSharedRef();
+						for (const FOnlineAchievement& Achievement : PlayerAchievements)
 						{
-							if (qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData((*Achievement.Id))->QP_GetboolExI(0)) {
-								WriteObject->SetFloatStat(Achievement.Id, 100);
+							if (Achievement.Progress < 0.9)
+							{
+								if (qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData((*Achievement.Id))->QP_GetboolExI(0)) {
+									WriteObject->SetFloatStat(Achievement.Id, 100);
+								}
 							}
 						}
+						Achievements->WriteAchievements(*UserId, WriteRef,
+							FOnAchievementsWrittenDelegate::CreateLambda([](const FUniqueNetId& PlayerId, bool bWriteSuccess)
+								{
+								}));
 					}
-					Achievements->WriteAchievements(*UserId, WriteRef,
-						FOnAchievementsWrittenDelegate::CreateLambda([](const FUniqueNetId& PlayerId, bool bWriteSuccess)
-							{
-							}));
+					UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isQueryAchievements", bSuccess);
+					
+					
 
 				}));
 		}
@@ -231,15 +235,15 @@ void UQPGI_Online::QP_QueryAchievements() {
 	}
 }
 void UQPGI_Online::QP_AddAchievement(FName qp_AchievementId, int32 qp_playerId, float num) {
-
 	if (qp_AchievementId.IsNone()) {
 		return;
 	}
-	
+
 	if (qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData(qp_AchievementId)->QP_GetboolExI(qp_playerId)) {
 
 		return;
 	}
+
 	qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData(qp_AchievementId)->QP_AddboolExI(qp_playerId, true);
 	qp_onlineData->QP_SaveData("UQPGI_Online");
 
@@ -259,11 +263,18 @@ void UQPGI_Online::QP_AddAchievement(FName qp_AchievementId, int32 qp_playerId, 
 			TSharedPtr<const FUniqueNetId> UserId = Identity->GetUniquePlayerId(qp_playerId);
 			if (UserId.IsValid())
 			{
+
 			FOnlineAchievement Achievement;
 			if (Achievements->GetCachedAchievement(*UserId, qp_AchievementId.ToString(), Achievement) == EOnlineCachedResult::Success)
 			{
-				return;
+
+				if (Achievement.Progress>0)
+				{
+					return;
+				}
+				
 			}
+
 			FOnlineAchievementsWritePtr WriteObject = MakeShareable(new FOnlineAchievementsWrite());
 			WriteObject->SetFloatStat(qp_AchievementId, num);
 
@@ -274,10 +285,10 @@ void UQPGI_Online::QP_AddAchievement(FName qp_AchievementId, int32 qp_playerId, 
 										
 						/*if (num == 100 && bWriteSuccess) {
 
-							
+
 						}
 						else {
-							
+
 						}*/
 					}));
 					
