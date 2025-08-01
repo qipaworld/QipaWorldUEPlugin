@@ -6,6 +6,13 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Data/QPGIM_Data.h"
 #include "Data/QPGIM_BaseData.h"
+#include "OnlineSubsystem.h"
+#include "Interfaces/OnlineAchievementsInterface.h"
+#include "Interfaces/OnlineStatsInterface.h"
+#include "OnlineError.h"
+#include "Interfaces/OnlineUserInterface.h"
+#include "OnlineSubsystemUtils.h"
+#include "Interfaces/OnlineIdentityInterface.h"
 #include "QPGI_Online.generated.h"
 
 /**
@@ -31,11 +38,26 @@ public:
 	/** Implement this for deinitialization of instances of the system */
 	virtual void Deinitialize();
 
+
+	IOnlineUserPtr qp_userInterface = nullptr;
+	IOnlineIdentityPtr qp_identityInterface = nullptr;
+	FUniqueNetIdPtr qp_userId = nullptr;
+	IOnlineAchievementsPtr qp_achievements = nullptr;
+	void QP_Init();
+	
+	void QP_QueryUserInfo(int32 LocalUserNum, bool bWasSuccessful, const TArray<TSharedRef<const FUniqueNetId>>& UserIds, const FString& ErrorStr);
+	void QP_LogoutComplete(int32 UserNum, bool bWasSuccessful);
+	void QP_LoginComplete(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error);
+	void QP_LogInUI();
+	bool qp_isLongining = false;
+	bool qp_isSwitching = false;
+	bool qp_isInit = false;
+	FString qp_loginType;
 	UFUNCTION(BlueprintCallable)
 	void QP_AddAchievement(FName qp_AchievementId,int32 qp_playerId = 0,float num = 100);
 
 	UFUNCTION(BlueprintCallable)
-	void QP_StartLogin();
+	void QP_StartLogin(FString loginType = "persistentauth");
 
 	UFUNCTION(BlueprintCallable)
 	void QP_StartLogout();

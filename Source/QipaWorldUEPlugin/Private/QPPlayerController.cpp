@@ -25,19 +25,11 @@ void AQPPlayerController::BeginPlay() {
 
     
 
-    FTimerHandle DummyHandle;
-    GetWorld()->GetTimerManager().SetTimer(DummyHandle, []()
-      {
-            if (UQPGI_Online::qp_staticObject->QP_GetPlatform() == "Steam") {
-
-                UQPGI_Online::qp_staticObject->QP_LoadUserData();
-                UQPGI_Online::qp_staticObject->QP_QueryAchievements();
-            }
-            else if (UQPGI_Online::qp_staticObject->QP_GetPlatform() == "EOS") {
-                UQPGI_Online::qp_staticObject->QP_StartLogin();
-            }
+    
+    UQPGI_Online::qp_staticObject->QP_Init();
+           
      
-       }, 2.0f, false);
+      
         
 }
 void AQPPlayerController::SetupInputComponent()

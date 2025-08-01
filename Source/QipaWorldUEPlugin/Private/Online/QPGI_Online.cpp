@@ -2,14 +2,8 @@
 
 
 #include "Online/QPGI_Online.h"
-#include "OnlineSubsystem.h"
-#include "Interfaces/OnlineAchievementsInterface.h"
-#include "Interfaces/OnlineStatsInterface.h"
+
 #include "QPUtil.h"
-#include "OnlineError.h"
-#include "Interfaces/OnlineUserInterface.h"
-#include "OnlineSubsystemUtils.h"
-#include "Interfaces/OnlineIdentityInterface.h"
 UQPGI_Online* UQPGI_Online::qp_staticObject = nullptr;
 bool UQPGI_Online::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -41,194 +35,212 @@ void UQPGI_Online::Deinitialize()
 	qp_staticObject = nullptr;
 }
 void UQPGI_Online::QP_StartLogout() {
-	/*IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
-	if (Subsystem)
+	
+	if (qp_identityInterface.IsValid())
 	{
-		IOnlineIdentityPtr IdentityInterface = Subsystem->GetIdentityInterface();
-		if (IdentityInterface.IsValid())
-		{
-			IdentityInterface->Logout(0);
-		}
+		qp_identityInterface->Logout(0);
+	}
+	
+}
+void UQPGI_Online::QP_Init() {
+	if (qp_isInit) {
+		return;
+	}
+	UWorld* w = GetWorld();
+	if (!w) {
+		return;
+	}
+	
+	qp_isInit = true;
+	UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", false);
+	UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isQueryAchievements", false);
+	//if (!qp_userInterface) {
+	qp_userInterface = Online::GetUserInterface(w);
+	if (qp_userInterface.IsValid())
+	{
+		qp_userInterface->AddOnQueryUserInfoCompleteDelegate_Handle(0,FOnQueryUserInfoCompleteDelegate::CreateUObject(this,&UQPGI_Online::QP_QueryUserInfo));
+	}
+	//}
+	
+	
+	qp_identityInterface = Online::GetIdentityInterface(w);
+	if (qp_identityInterface.IsValid())
+	{
+		qp_identityInterface->AddOnLogoutCompleteDelegate_Handle(0,FOnLogoutCompleteDelegate::CreateUObject(this, &UQPGI_Online::QP_LogoutComplete));
+		qp_identityInterface->AddOnLoginCompleteDelegate_Handle(0, FOnLoginCompleteDelegate::CreateUObject(this, &UQPGI_Online::QP_LoginComplete));
+	}
+	qp_achievements = Online::GetAchievementsInterface(w);
+	if (qp_achievements.IsValid()) {
+
+	}
+
+	/*if (QP_GetPlatform() == "Steam") {
+		QP_StartLogin("");
+	}
+	else if (QP_GetPlatform() == "EOS") {
 	}*/
+		QP_StartLogin();
+	//QP_LoadUserData();
+	//QP_QueryAchievements();
+	
+		
+	
+}
+void UQPGI_Online::QP_QueryUserInfo(int32 LocalUserNum, bool bWasSuccessful, const TArray<TSharedRef<const FUniqueNetId>>& UserIds, const FString& ErrorStr) {
+
+	if (bWasSuccessful)
+	{
+		/*FUniqueNetIdPtr qp_userId = qp_identityInterface->GetUniquePlayerId(0);
+		if (qp_userInterface.IsValid() && qp_identityInterface.IsValid() && qp_userId.IsValid())
+		{
+			TSharedPtr<const FOnlineUser> UserInfo = qp_userInterface->GetUserInfo(LocalUserNum, *qp_userId);
+			if (UserInfo.IsValid())
+			{
+				UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_AddFString("userName", UserInfo->GetDisplayName());
+			}
+		}*/
+	}
+	else
+	{
+
+	}
 }
 void UQPGI_Online::QP_LoadUserData() 
 {
 
-	IOnlineUserPtr UserInterface = Online::GetUserInterface(GetWorld());
-	if (UserInterface.IsValid())
+	UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_AddFString("userName", *(qp_identityInterface->GetPlayerNickname(0)));
+
+	qp_userId = qp_identityInterface->GetUniquePlayerId(0);
+	UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", qp_userId.IsValid());
+	/*if (qp_userInterface.IsValid() && qp_identityInterface.IsValid() && qp_userId.IsValid())
 	{
-		
-		IOnlineIdentityPtr IdentityInterface = IOnlineSubsystem::Get()->GetIdentityInterface();
-		
-		if (IdentityInterface.IsValid())
-		{
-			FUniqueNetIdPtr UserId = IdentityInterface->GetUniquePlayerId(0);
-			//TArray<TSharedRef<const FUniqueNetId>> Users;
-			UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", UserId.IsValid());
-			if (UserId.IsValid())
-			{
-				
-
-				FDelegateHandle Handle = UserInterface->AddOnQueryUserInfoCompleteDelegate_Handle(
-					0,
-					FOnQueryUserInfoCompleteDelegate::CreateLambda(
-						[UserInterface, UserId](int32 LocalUserNum, bool bWasSuccessful, const TArray<TSharedRef<const FUniqueNetId>>& UserIds, const FString& ErrorStr)
-						{
-							if (bWasSuccessful)
-							{
-								TSharedPtr<const FOnlineUser> UserInfo = UserInterface->GetUserInfo(LocalUserNum, *UserId);
-								if (UserInfo)
-								{
-
-									UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_AddFString("userName", UserInfo->GetDisplayName());
-								}
-							}
-							else
-							{
-
-							}
-						})
-				);
-				TArray<TSharedRef<const FUniqueNetId>> Users;
-				Users.Add(UserId.ToSharedRef());
-
-				UserInterface->QueryUserInfo(0, Users);
-
-			}
-
-		}
-		// 异步请求用户信息（包括 DisplayName）
-		
+		TArray<TSharedRef<const FUniqueNetId>> Users;
+		Users.Add(qp_userId.ToSharedRef());
+		qp_userInterface->QueryUserInfo(0, Users);
+		;
+	}*/
+}
+void UQPGI_Online::QP_LogInUI() {
+	if (qp_isLongining) {
+		return;
 	}
-
-	
-	
+	qp_isLongining = true;
+	UQPUtil::QP_UpdateMouse(true);
+	Online::GetExternalUIInterface(GetWorld())->ShowLoginUI(0, true, true, FOnLoginUIClosedDelegate::CreateLambda(
+		[this](TSharedPtr<const FUniqueNetId> UniqueId, const int ControllerIndex, const FOnlineError& Result) {
+			UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", Result.WasSuccessful());
+			qp_isLongining = false;
+			qp_isSwitching = false;
+			UQPUtil::QP_UpdateMouse(false);
+			if (Result.WasSuccessful())
+			{
+				QP_LoadUserData();
+				QP_QueryAchievements();
+			}
+		}));
+}
+void UQPGI_Online::QP_LogoutComplete(int32 UserNum, bool bWasSuccessful) {
+	if (bWasSuccessful)
+	{
+		UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", false);
+		QP_LogInUI();
+	}
 }
 void UQPGI_Online::QP_StartSwitchAccounts() {
-	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
-	if (Subsystem)
+	if (qp_isSwitching) {
+		return;
+	}
+	
+	if (qp_identityInterface.IsValid())
 	{
-		IOnlineIdentityPtr IdentityInterface = Subsystem->GetIdentityInterface();
-		if (IdentityInterface.IsValid())
-		{
+		qp_isSwitching = true;
+		qp_identityInterface->Logout(0);
+	}
+	
+}
 
-			IdentityInterface->AddOnLogoutCompleteDelegate_Handle(0,
-				FOnLogoutCompleteDelegate::CreateLambda([this](int32 UserNum, bool bWasSuccessful)
-					{
-						if (bWasSuccessful)
-						{
-							UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", false);
+void UQPGI_Online::QP_LoginComplete(int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error) {
+	qp_isLongining = false;
+	if (!bWasSuccessful) {
 
-							QP_StartLogin();
-						}
-						
-					}));
-			//int32 LocalUserNum = 0; // 通常为 0，表示本地第一个用户
-
-			IdentityInterface->Logout(0);
+		if (!UQPGIM_BaseData::qp_staticObject) {
+			return;
 		}
+		if (qp_loginType == "persistentauth") {
+			QP_StartLogin("accountportal");
+		}
+		else {
+			QP_LogInUI();
+		}
+	}
+	else {
+		UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", true);
+		QP_LoadUserData();
+		QP_QueryAchievements();
 	}
 }
 
-
-
-void UQPGI_Online::QP_StartLogin() {
-	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
-
-	if (OnlineSub)
+void UQPGI_Online::QP_StartLogin(FString loginType) {
+	
+	if (qp_isLongining) 
 	{
-		IOnlineIdentityPtr IdentityInterface = OnlineSub->GetIdentityInterface();
-
-		if (IdentityInterface.IsValid())
-		{
-			IdentityInterface->OnLoginCompleteDelegates->AddLambda(
-				[this](int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error)
-				{
-
-					if (!bWasSuccessful) {
-						UQPUtil::QP_UpdateMouse(true);
-						Online::GetExternalUIInterface(GetWorld())->ShowLoginUI(0, true, true, FOnLoginUIClosedDelegate::CreateLambda(
-							[this](TSharedPtr<const FUniqueNetId> UniqueId, const int ControllerIndex, const FOnlineError& Result) {
-									UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", Result.WasSuccessful());
-								if (Result.WasSuccessful())
-								{
-									QP_LoadUserData();
-									QP_QueryAchievements();
-								}
-							}));
-					}
-					else {
-						UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", true);
-
-						QP_LoadUserData();
-						QP_QueryAchievements();
-					}
-					
-				});
-			// 使用 IdentityInterface，比如调用 Login
-			FOnlineAccountCredentials Credentials(TEXT("accountportal"), TEXT(""), TEXT(""));
-			IdentityInterface->Login(0, Credentials);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("IdentityInterface error！"));
-		}
+		return;
+	}
+	if (qp_identityInterface.IsValid())
+	{	
+		qp_isLongining = true;
+		qp_loginType = loginType;
+		qp_identityInterface->Login(0, FOnlineAccountCredentials(qp_loginType, TEXT(""), TEXT("")));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("not  OnlineSubsystem！"));
+		UE_LOG(LogTemp, Error, TEXT("IdentityInterface error！"));
 	}
+	
 }
 
 void UQPGI_Online::QP_QueryAchievements() {
-	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
-	if (!Subsystem)
-	{
-		UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isQueryAchievements", false);
-		return;
-	}
-	IOnlineIdentityPtr Identity = Subsystem->GetIdentityInterface();
-	IOnlineAchievementsPtr Achievements = Subsystem->GetAchievementsInterface();
-
-
-	if (Identity.IsValid() && Achievements.IsValid())
+		
+	
+	if (qp_identityInterface.IsValid() && qp_achievements.IsValid()&&qp_userId.IsValid())
 	{
 
-		TSharedPtr<const FUniqueNetId> UserId = Identity->GetUniquePlayerId(0);
-		if (UserId.IsValid())
-		{
-
-			Achievements->QueryAchievements(*UserId, FOnQueryAchievementsCompleteDelegate::CreateLambda(
-				[this, Achievements, UserId, Identity](const FUniqueNetId& QueriedId, const bool bSuccess)
+		
+		qp_achievements->QueryAchievements(*qp_userId, FOnQueryAchievementsCompleteDelegate::CreateLambda(
+				[this](const FUniqueNetId& QueriedId, const bool bSuccess)
 				{
+					UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isQueryAchievements", bSuccess);
 					if (bSuccess) {
 						TArray<FOnlineAchievement> PlayerAchievements;
-						Achievements->GetCachedAchievements(*UserId, PlayerAchievements);
+
+						qp_achievements->GetCachedAchievements(*qp_userId, PlayerAchievements);
 
 						FOnlineAchievementsWritePtr WriteObject = MakeShareable(new FOnlineAchievementsWrite());
 
 
 						FOnlineAchievementsWriteRef WriteRef = WriteObject.ToSharedRef();
+						bool isSend = false;
 						for (const FOnlineAchievement& Achievement : PlayerAchievements)
 						{
 							if (Achievement.Progress < 0.9)
 							{
 								if (qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData((*Achievement.Id))->QP_GetboolExI(0)) {
 									WriteObject->SetFloatStat(Achievement.Id, 100);
+									isSend = true;
 								}
 							}
 						}
-						Achievements->WriteAchievements(*UserId, WriteRef,
+						if (isSend) {
+							qp_achievements->WriteAchievements(*qp_userId, WriteRef);
+						}
+						/*Achievements->WriteAchievements(*UserId, WriteRef,
 							FOnAchievementsWrittenDelegate::CreateLambda([](const FUniqueNetId& PlayerId, bool bWriteSuccess)
 								{
-								}));
+								}));*/
 					}
-					UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isQueryAchievements", bSuccess);
-					
-					
 
 				}));
-		}
+		
 	}
 	else {
 		UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isQueryAchievements", false);
@@ -247,27 +259,12 @@ void UQPGI_Online::QP_AddAchievement(FName qp_AchievementId, int32 qp_playerId, 
 	qp_onlineData->QP_GetUQPData("Achievement")->QP_GetUQPData(qp_AchievementId)->QP_AddboolExI(qp_playerId, true);
 	qp_onlineData->QP_SaveData("UQPGI_Online");
 
-	
-	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
-	if (Subsystem)
+	if (qp_identityInterface.IsValid() && qp_achievements.IsValid() && qp_userId.IsValid())
 	{
-
-		IOnlineIdentityPtr Identity = Subsystem->GetIdentityInterface();
-		IOnlineAchievementsPtr Achievements = Subsystem->GetAchievementsInterface();
-
-
-		if (Identity.IsValid() && Achievements.IsValid())
-		{
-
 			
-			TSharedPtr<const FUniqueNetId> UserId = Identity->GetUniquePlayerId(qp_playerId);
-			if (UserId.IsValid())
-			{
-
 			FOnlineAchievement Achievement;
-			if (Achievements->GetCachedAchievement(*UserId, qp_AchievementId.ToString(), Achievement) == EOnlineCachedResult::Success)
+			if (qp_achievements->GetCachedAchievement(*qp_userId, qp_AchievementId.ToString(), Achievement) == EOnlineCachedResult::Success)
 			{
-
 				if (Achievement.Progress>0)
 				{
 					return;
@@ -279,32 +276,25 @@ void UQPGI_Online::QP_AddAchievement(FName qp_AchievementId, int32 qp_playerId, 
 			WriteObject->SetFloatStat(qp_AchievementId, num);
 
 			FOnlineAchievementsWriteRef WriteRef = WriteObject.ToSharedRef();
-			Achievements->WriteAchievements(*UserId, WriteRef,
+			qp_achievements->WriteAchievements(*qp_userId, WriteRef);
+
+			/*Achievements->WriteAchievements(*UserId, WriteRef,
 				FOnAchievementsWrittenDelegate::CreateLambda([this, qp_AchievementId, num, qp_playerId](const FUniqueNetId& PlayerId, bool bWriteSuccess)
 					{
-										
-						/*if (num == 100 && bWriteSuccess) {
+
+						if (num == 100 && bWriteSuccess) {
 
 
 						}
 						else {
 
-						}*/
-					}));
+						}
+					}));*/
 					
-			}
-			/*else {
-				d->QP_AddboolExI(qp_playerId, false);
-			}*/
-		}
-		/*else {
-			d->QP_AddboolExI(qp_playerId, false);
-		}*/
+			
 	}
-	/*else {
-		d->QP_AddboolExI(qp_playerId, false);
-
-	}*/
+	
+	
 
 
 	
