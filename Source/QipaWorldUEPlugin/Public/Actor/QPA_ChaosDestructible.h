@@ -65,4 +65,5 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPSkillCollision")
 	USphereComponent* qp_sphere;
+	bool qp_isMove = false;
 };

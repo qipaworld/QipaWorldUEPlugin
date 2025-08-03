@@ -127,6 +127,7 @@ void AQPA_DestructibleStar::QP_OnChunkHit(const FChaosPhysicsCollisionInfo& Coll
 		/*if (qp_fadeMaterials->qp_showType == EQPFadeType::SHOW || qp_fadeMaterials->qp_showType == EQPFadeType::FADE_IN) {
 			return;
 		}*/
+		qp_isMove = true;
 
 		qp_fadeMaterials->QP_FadeIn(qp_fadeInTime);
 		//qp_isShow = true;

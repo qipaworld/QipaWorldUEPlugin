@@ -65,9 +65,10 @@ void AQPA_ChaosDestructible::QP_OnTriggerSimulatePhysicsEnd(UPrimitiveComponent*
 {
 	//UE_LOG(LogTemp, Warning, TEXT("___!asda___d___%s"), *GetActorLabel());
 
-	if (qp_autoSimulatePhysics) {
+	if (qp_autoSimulatePhysics&&!qp_isMove) {
 		qp_geometryCollection->SetSimulatePhysics(false);
 		qp_geometryCollection->SetEnableGravity(false);
+
 	}
 }
 
@@ -85,6 +86,7 @@ void AQPA_ChaosDestructible::QP_OnBroken(const FChaosBreakEvent& BreakEvent)
 
 	qp_autoDestroy = qp_delayDestroy;
 	qp_isAutoDestroy = true;
+	qp_isMove = true;
 }
 //void AQPA_ChaosDestructible::QP_OnActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit) {
 	//UE_LOG(LogTemp, Warning, TEXT("___!_______%s"), *OtherActor->GetName());
@@ -101,7 +103,7 @@ void AQPA_ChaosDestructible::QP_OnChunkHit(const FChaosPhysicsCollisionInfo& Col
 	float velocity = (CollisionInfo.Velocity.Size() + CollisionInfo.OtherVelocity.Size());
 	//UE_LOG(LogTemp, Warning, TEXT("___%f_"), velocity);
 	if (velocity > qp_minVelocity) {
-		
+		qp_isMove = true;
 		qp_autoDestroy = qp_delayDestroy;
 		qp_footstepAudio->SetVolumeMultiplier(velocity / qp_maxSpeed * (1 - qp_minVolume) + qp_minVolume);
 		qp_playRandomSound->QP_Play(CollisionInfo.OtherComponent->GetOwner(), qp_footstepAudio);
