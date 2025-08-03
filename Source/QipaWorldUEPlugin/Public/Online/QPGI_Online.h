@@ -43,6 +43,7 @@ public:
 	IOnlineIdentityPtr qp_identityInterface = nullptr;
 	FUniqueNetIdPtr qp_userId = nullptr;
 	IOnlineAchievementsPtr qp_achievements = nullptr;
+	IOnlineStatsPtr qp_statsInterface = nullptr;
 	void QP_Init();
 	
 	void QP_QueryUserInfo(int32 LocalUserNum, bool bWasSuccessful, const TArray<TSharedRef<const FUniqueNetId>>& UserIds, const FString& ErrorStr);
@@ -53,6 +54,10 @@ public:
 	bool qp_isSwitching = false;
 	bool qp_isInit = false;
 	FString qp_loginType;
+
+	UFUNCTION(BlueprintCallable)
+	void QP_UploadStats(FName statsId,float num);
+
 	UFUNCTION(BlueprintCallable)
 	void QP_AddAchievement(FName qp_AchievementId,int32 qp_playerId = 0,float num = 100);
 
@@ -74,4 +79,6 @@ public:
 	FString QP_GetPlatformOnline();
 
 	void QP_QueryAchievements();
+	void QP_QueryStats();
+	void QP_QueryAllData();
 };

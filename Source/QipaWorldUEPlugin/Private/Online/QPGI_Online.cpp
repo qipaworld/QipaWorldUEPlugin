@@ -73,6 +73,7 @@ void UQPGI_Online::QP_Init() {
 	if (qp_achievements.IsValid()) {
 
 	}
+	qp_statsInterface = Online::GetStatsInterface(w);
 
 	/*if (QP_GetPlatform() == "Steam") {
 		QP_StartLogin("");
@@ -134,8 +135,7 @@ void UQPGI_Online::QP_LogInUI() {
 			UQPUtil::QP_UpdateMouse(false);
 			if (Result.WasSuccessful())
 			{
-				QP_LoadUserData();
-				QP_QueryAchievements();
+				QP_QueryAllData();
 			}
 		}));
 }
@@ -175,8 +175,7 @@ void UQPGI_Online::QP_LoginComplete(int32 LocalUserNum, bool bWasSuccessful, con
 	}
 	else {
 		UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_Addbool("isLongin", true);
-		QP_LoadUserData();
-		QP_QueryAchievements();
+		QP_QueryAllData();
 	}
 }
 
@@ -198,11 +197,153 @@ void UQPGI_Online::QP_StartLogin(FString loginType) {
 	}
 	
 }
+void UQPGI_Online::QP_UploadStats(FName statsId, float num) {
 
+	if (statsId.IsNone()) {
+		return;
+	}
+
+	if (FMath::IsNearlyEqual(qp_onlineData->QP_GetUQPData("Stats")->QP_Getdouble(statsId),num)) {
+
+		return;
+	}
+
+	qp_onlineData->QP_GetUQPData("Stats")->QP_Adddouble(statsId,num);
+	qp_onlineData->QP_SaveData("UQPGI_Online");
+
+	if (qp_statsInterface.IsValid() && qp_userId.IsValid()) {
+		FUniqueNetIdRef UserId = qp_userId.ToSharedRef();
+		FOnlineStatsUserUpdatedStats st(UserId);
+
+		st.Stats.Add(
+			statsId.ToString(),
+			FOnlineStatUpdate(
+				FVariantData(num),
+				FOnlineStatUpdate::EOnlineStatModificationType::Unknown
+			)
+		);
+		TArray<FOnlineStatsUserUpdatedStats> s;
+		s.Add(st);
+		
+		qp_statsInterface->UpdateStats(
+			UserId,
+			s,
+			FOnlineStatsUpdateStatsComplete::CreateLambda([](const FOnlineError& Result)
+				{
+
+				})
+		);
+	}
+}
+void UQPGI_Online::QP_QueryAllData() {
+	QP_LoadUserData();
+	QP_QueryAchievements();
+	QP_QueryStats();
+}
+void UQPGI_Online::QP_QueryStats() {
+	if (qp_statsInterface.IsValid() && qp_userId.IsValid())
+	{
+		FUniqueNetIdRef UserId = qp_userId.ToSharedRef();
+		
+		qp_statsInterface->QueryStats(UserId, UserId, FOnlineStatsQueryUserStatsComplete::CreateLambda(
+			[this, UserId](const FOnlineError& ResultState, const TSharedPtr<const FOnlineStatsUserStats>& QueriedStats)
+			{
+				if (ResultState.bSucceeded)
+				{
+					double num = 0;
+					TArray<FOnlineStatsUserUpdatedStats> s;
+
+					for (auto v : QueriedStats.Get()->Stats)
+					{
+						FString StatName = v.Key;
+						const FVariantData& StatValue = v.Value;
+
+						switch (StatValue.GetType())
+						{
+							case EOnlineKeyValuePairDataType::Int32:
+							{
+								int32 numV;
+								StatValue.GetValue(numV);
+								num = numV;
+								break;
+							}
+							case EOnlineKeyValuePairDataType::UInt32:
+							{
+								uint32 numV;
+								StatValue.GetValue(numV);
+								num = numV;
+
+								break;
+							}
+							case EOnlineKeyValuePairDataType::Int64:
+							{
+								int64 numV;
+								StatValue.GetValue(numV);
+								num = numV;
+								break;
+							}
+							case EOnlineKeyValuePairDataType::UInt64:
+							{
+								uint64 numV;
+								StatValue.GetValue(numV);
+								num = numV;
+								break;
+							}
+							case EOnlineKeyValuePairDataType::Float: {
+								float numV;
+								StatValue.GetValue(numV);
+								num = numV;
+								break;
+							}
+							
+							case EOnlineKeyValuePairDataType::Double:
+							{
+								double numV;
+								StatValue.GetValue(numV);
+								num = numV;
+								break;
+							}
+							default:{
+								num = 0;
+								break;
+							}
+						}
+						
+						if (!FMath::IsNearlyEqual(qp_onlineData->QP_GetUQPData("Stats")->QP_Getdouble(*StatName),num)) {
+
+							FOnlineStatsUserUpdatedStats st(UserId);
+
+							st.Stats.Add(
+								StatName,
+								FOnlineStatUpdate(
+									FVariantData(num),
+									FOnlineStatUpdate::EOnlineStatModificationType::Unknown
+								)
+							);
+							s.Add(st);
+						}
+
+					}
+					if (s.Num() > 0) {
+						qp_statsInterface->UpdateStats(
+							UserId,
+							s,
+							FOnlineStatsUpdateStatsComplete::CreateLambda([](const FOnlineError& Result)
+								{
+
+								})
+						);
+					}
+					
+				}
+			}
+		));
+	}
+}
 void UQPGI_Online::QP_QueryAchievements() {
 		
 	
-	if (qp_identityInterface.IsValid() && qp_achievements.IsValid()&&qp_userId.IsValid())
+	if (qp_achievements.IsValid()&&qp_userId.IsValid())
 	{
 
 		
