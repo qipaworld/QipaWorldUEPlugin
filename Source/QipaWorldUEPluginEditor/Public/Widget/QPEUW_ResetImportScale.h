@@ -15,8 +15,8 @@ class QIPAWORLDUEPLUGINEDITOR_API UQPEUW_ResetImportScale : public UEditorUtilit
 {
 	GENERATED_BODY()
 
-	UFUNCTION(BlueprintCallable)
-	void QP_ResetScaleAndReImport(float scale);
+	//UFUNCTION(BlueprintCallable)
+	//void QP_ResetScaleAndReImport(float scale);
 
-	void QP_ChangeScale(UFbxAssetImportData* AssetImportData,float scale);
+	//void QP_ChangeScale(UFbxAssetImportData* AssetImportData,float scale);
 };

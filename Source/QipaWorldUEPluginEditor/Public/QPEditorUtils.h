@@ -22,4 +22,7 @@ public:
 	static void QP_ReplaceLevelActor();
 	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
 	static void QP_ReplaceLevelActorByMeshName(FName n);
+
+	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
+	static void QP_ResetScaleAndReImport(float scale);
 };

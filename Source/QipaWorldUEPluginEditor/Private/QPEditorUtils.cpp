@@ -11,6 +11,13 @@
 #include "Widget/QPTextBlock.h"
 #include "UObject/SavePackage.h"
 #include "EngineUtils.h"
+#include "Factories/FbxAssetImportData.h"
+
+#include "EditorUtilityLibrary.h"
+#include "Factories/FbxAssetImportData.h"
+#include "Engine/SkeletalMesh.h"
+#include "EditorAssetLibrary.h"
+#include "EditorReimportHandler.h"
 #include "Blueprint/WidgetTree.h"
 #include "Widget/QPTextBlock.h"
 
@@ -133,4 +140,41 @@ void UQPEditorUtils::QP_ReplaceLevelActorByMeshName(FName n) {
 		
 	}
 	GEditor->GetEditorWorldContext().World()->MarkPackageDirty();
+}
+
+void UQPEditorUtils::QP_ResetScaleAndReImport(float scale)
+{
+	TArray<UObject*> qp_objs = UEditorUtilityLibrary::GetSelectedAssets();
+
+	for (UObject* o : qp_objs)
+	{
+		if (USkeletalMesh* s = Cast<USkeletalMesh>(o)) {
+			(Cast<UFbxAssetImportData>(s->GetAssetImportData()))->ImportUniformScale = scale;
+		}
+		else {
+			FObjectProperty* Property = CastField<FObjectProperty>(o->GetClass()->FindPropertyByName("AssetImportData"));
+			//QP_ChangeScale(Cast<UFbxAssetImportData>(Property->ContainerPtrToValuePtr<UAssetImportData>(o)), scale);
+
+			if (Property) {
+				UFbxAssetImportData* ass = Cast<UFbxAssetImportData>(Property->GetObjectPropertyValue_InContainer(o));
+				if (ass) {
+					ass->ImportUniformScale = scale;
+				}
+				else {
+					//UQPUtil::QP_LOG();
+					UQPUtil::QP_LOG(o->GetName() + " do not have UFbxAssetImportData");
+
+				}
+				//QP_ChangeScale(Cast<UFbxAssetImportData>(Property->ContainerPtrToValuePtr<UAssetImportData>(o)), scale);
+			}
+			else {
+				UQPUtil::QP_LOG(o->GetName() + " do not have AssetImportData");
+			}
+
+
+		}
+
+	}
+	FReimportManager::Instance()->ReimportMultiple(qp_objs);
+	UEditorAssetLibrary::SaveLoadedAssets(qp_objs, false);
 }
