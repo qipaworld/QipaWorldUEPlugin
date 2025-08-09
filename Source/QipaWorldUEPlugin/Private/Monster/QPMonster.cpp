@@ -19,6 +19,7 @@ AQPMonster::AQPMonster(const FObjectInitializer& ObjectInitializer)
 	qp_footstepAudio->SetAutoActivate(false);
 	qp_footstepAudio->SetupAttachment(RootComponent);
 
+
 	qp_callAudio = CreateDefaultSubobject<UAudioComponent>("qp_callAudio");
 	qp_callAudio->SetAutoActivate(false);
 	qp_callAudio->SetupAttachment(RootComponent);
@@ -216,6 +217,10 @@ void AQPMonster::QPI_AnimNotifyFootstep(EQPFootstepType t, const FHitResult& v, 
 		}
 	//}
 }
+//void AQPMonster::QP_PlayHitSound(AActor* a) {
+	
+
+//}
  void AQPMonster::QP_PlayFootstepAudio() {
 
 	 //FVector Start = GetActorLocation(); // ÉäÏßÆðµã

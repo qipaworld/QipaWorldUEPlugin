@@ -113,6 +113,9 @@ public:
 	UAudioComponent* qp_footstepAudio = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	UAudioComponent* qp_weaponAudio = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	UQPC_PlayRandomSound* qp_playRandomSound = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
@@ -171,6 +174,9 @@ public:
 	class UQPData* QP_GetSaveData();
 	virtual void QPI_AnimNotify(const FName& k) override;
 	virtual void QPI_AnimNotifyFootstep(EQPFootstepType, const FHitResult&,float) override;
+
+	//UFUNCTION(BlueprintCallable)
+	//virtual void QP_PlayHitSound(AActor* a);
 
 	virtual void QP_PlayFootstepAudio();
 	UFUNCTION(BlueprintCallable)
