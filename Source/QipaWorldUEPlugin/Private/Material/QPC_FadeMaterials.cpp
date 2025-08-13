@@ -16,15 +16,25 @@ void UQPC_FadeMaterials::BeginPlay() {
 
         return;
     }
-    for (int32 i = 0; i < qp_mesh->GetNumMaterials(); ++i)
-    {
-        
-       qp_materials.Add(qp_mesh->CreateDynamicMaterialInstance(i, qp_mesh->GetMaterial(i)));
-	   qp_fadeValues.Add(0);
-	   qp_fadeSpeeds.Add(0);
-    }
-	
+	/*GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
+		{*/
+			for (int32 i = 0; i < qp_mesh->GetNumMaterials(); ++i)
+			{
 
+				qp_materials.Add(qp_mesh->CreateDynamicMaterialInstance(i, qp_mesh->GetMaterial(i)));
+				qp_fadeValues.Add(0);
+				qp_fadeSpeeds.Add(0);
+				if (qp_maxs.Num() - 1 < i) {
+					qp_maxs.Add(1);
+				}
+				if (qp_mins.Num() - 1 < i) {
+					qp_mins.Add(0);
+				}
+			}
+		//});
+    
+	
+	
 
 }
 void UQPC_FadeMaterials::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

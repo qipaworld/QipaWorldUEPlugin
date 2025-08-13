@@ -77,10 +77,11 @@ void AQPCharacter::BeginPlay()
 		UQPGIM_Character::qp_staticObject->QP_InitCharacterData(this);
 	}
 
-
-	Controller->SetControlRotation(qp_saveData->QP_GetFRotator("ControllerRotation"));
+	if (qp_saveData) {
+		Controller->SetControlRotation(qp_saveData->QP_GetFRotator("ControllerRotation"));
+		qp_springArm->TargetArmLength = qp_saveData->QP_Getfloat("TargetArmLength");
+	}
 	//qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
-	qp_springArm->TargetArmLength = qp_saveData->QP_Getfloat("TargetArmLength");
 	//qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
 
 }
@@ -190,8 +191,10 @@ void AQPCharacter::QP_MouseWheelAxis(float value)
 	  
  }
   void AQPCharacter::UnPossessed() {
-	  qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
-	  qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
+	  if (qp_saveData) {
+		  qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
+		  qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
+	  }
 	  //UQPUtil::QP_LOG(GetControlRotation().ToString());
 	  Super::UnPossessed();
 
