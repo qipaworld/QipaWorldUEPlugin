@@ -67,7 +67,7 @@ void UQPC_FadeMaterials::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 			}
 			qp_materials[i]->SetScalarParameterValue(qp_parameterValueName, qp_fadeValues[i]);
-			
+			//qp_mesh->SetCustomPrimitiveDataFloat(0, qp_fadeValues[i]);
 		}
 	}
 }
