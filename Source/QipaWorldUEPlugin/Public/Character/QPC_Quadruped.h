@@ -22,21 +22,21 @@ public:
 public:
 
 	/**发射的魔法技能的类*/
-	UPROPERTY(EditAnywhere, Category = "QipaWorld|QPSlime")
-		TSubclassOf<AQPS_CollisionMovement> qp_attackSkill;
+	//UPROPERTY(EditAnywhere, Category = "QipaWorld|QPSlime")
+		//TSubclassOf<AQPS_CollisionMovement> qp_attackSkill;
 
-	void QP_RestorSlime();
+	//void QP_RestorSlime();
 public:
 
 	//void QP_AnimNotifySwitchPlayer(UQPData* data);
-	virtual void QPI_AnimNotify(const FName& n);
+	//virtual void QPI_AnimNotify(const FName& n);
 
 
 	/**创建魔法技能*/
-	virtual void QP_Fire() override;
+	//virtual void QP_Fire() override;
 
 	//按下鼠标右键
-	virtual void QP_AttackTwoStart()override;
+	//virtual void QP_AttackTwoStart()override;
 	//松开鼠标右键
-	virtual void QP_AttackTwoEnd()override;
+	//virtual void QP_AttackTwoEnd()override;
 };

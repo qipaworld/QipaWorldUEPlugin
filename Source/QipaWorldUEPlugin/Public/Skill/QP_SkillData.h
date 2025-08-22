@@ -3,25 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DataAsset/QPDataAsset.h"
 #include "Character/QPCharacter.h"
-#include "Skill/QP_SkillData.h"
-#include "QPDA_Character.generated.h"
+
+#include "QP_SkillData.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPDA_Character : public UQPDataAsset
+class QIPAWORLDUEPLUGIN_API UQP_SkillData : public UQPDataAsset
 {
 	GENERATED_BODY()
 	public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	TSubclassOf<AQPCharacter> qp_character;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	TMap<FName, class UAnimMontage*> qp_montage;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	//TSubclassOf<AQPCharacter> qp_character;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	//TMap<FName, class UAnimMontage*> qp_montage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	TMap<FName, UQP_SkillData*> qp_skillDatas;
 	//UPROPERTY(EditAnywhere, AdvancedDisplay, Category = "QipaWorld|QPSlime", Meta = (ToolTip = "Material overrides."))
 	//TArray<TObjectPtr<class UMaterialInterface>> OverrideMaterials;
 
