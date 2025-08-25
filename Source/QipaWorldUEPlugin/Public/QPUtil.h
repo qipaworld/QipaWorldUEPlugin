@@ -56,6 +56,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "QPUtil")
 	static  FKey QP_GetKeyForAxis( FName AxisName, float ScaleSign, bool bExactMatch);
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+
+	static FString MakeRandomString(int32 Length);
 
 
 	template<typename T>

@@ -22,11 +22,7 @@ class QIPAWORLDUEPLUGIN_API UQPDA_Character : public UQPDataAsset
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	TMap<FName, UQP_SkillData*> qp_skillDatas;
-	//UPROPERTY(EditAnywhere, AdvancedDisplay, Category = "QipaWorld|QPSlime", Meta = (ToolTip = "Material overrides."))
-	//TArray<TObjectPtr<class UMaterialInterface>> OverrideMaterials;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-	//TSubclassOf<UAnimInstance> qp_animClass;
+	
 
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
@@ -36,26 +32,26 @@ class QIPAWORLDUEPLUGIN_API UQPDA_Character : public UQPDataAsset
 	//float qp_runSpeed = 600.0f;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-	//	float qp_walkMaxAcceleration = 2000.0f;
+		//float qp_walkMaxAcceleration = 2000.0f;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-	//	float qp_runMaxAcceleration = 4000.0f;
-	///**是否可以飞*/
+		//float qp_runMaxAcceleration = 4000.0f;
+	/**是否可以飞*/
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-	//	bool qp_fly = false;
+		//bool qp_fly = false;
 	///**是否可以在陆地走路*/
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-	//	bool qp_walk = false;
-	///**是否可以水下*/
+		//bool qp_walk = true;
+	//**是否可以水下*/
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-	//	bool qp_water = false;
+		//bool qp_water = false;
 	///**是否可以游泳*/
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-	//	bool qp_swim = false;
+		//bool qp_swim = false;
 	///**是否可以在水上行走*/
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-	//	bool qp_walkUpWater = false;
+		//bool qp_walkUpWater = false;
 	///**是否可以在水上行走*/
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-	//	bool qp_walkDownWater = false;
+		//bool qp_walkDownWater = false;
 };

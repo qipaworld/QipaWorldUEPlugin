@@ -175,3 +175,16 @@ void UQPUtil::QP_LOG(const FString& Message, const FColor& Color, float Duration
 
 	//FPlatformMisc::LowLevelOutputDebugString(*Message);
 }
+
+FString UQPUtil::MakeRandomString(int32 Length)
+{
+	FString Result;
+	const FString Charset = TEXT("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&*()_+=-[]}{';/?.>,<|");
+
+	for (int32 i = 0; i < Length; i++)
+	{
+		int32 Index = FMath::RandRange(0, Charset.Len() - 1);
+		Result.AppendChar(Charset[Index]);
+	}
+	return Result;
+}

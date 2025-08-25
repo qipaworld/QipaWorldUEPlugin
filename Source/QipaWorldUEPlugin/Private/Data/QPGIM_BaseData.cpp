@@ -6,6 +6,9 @@
 #include "Setting/QPDS_Default.h"
 #include "AudioDeviceManager.h"
 #include "AudioDevice.h"
+#include "Misc/AES.h"
+#include "Misc/Guid.h"
+#include "HAL/PlatformMisc.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Data/QPGIM_Data.h"
 
@@ -245,7 +248,18 @@ UQPData* UQPGIM_BaseData::QP_GetOnlineData() {
 UQPData* UQPGIM_BaseData::QP_GetHelperData() {
 	return qp_gameBaseData->QP_GetUQPData("QP_GetHelperData");
 }
-
+FString UQPGIM_BaseData::GetAESKey(FName key) {
+	UQPData* d = qp_gameBaseData->QP_GetUQPData("GetAESKey")->QP_GetUQPData(key);
+	//if()
+	if (d->QP_GetFString(key).IsEmpty()) {
+		d->QP_LoadData(key.ToString());
+		if (d->QP_GetFString(key).IsEmpty()) {
+			d->QP_AddFString(key, UQPUtil::MakeRandomString(32));
+			d->QP_SaveData(key.ToString());
+		}
+	}
+	return d->QP_GetFString(key);
+}
 //UQPData* QP_GetHelperData();
 
 

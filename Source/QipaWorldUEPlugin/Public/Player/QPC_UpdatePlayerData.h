@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Component/QPComponent.h"
 //#include "Material/QPC_UpdatePlayerDatas.h"
+#include "Data/QPGIM_BaseData.h"
+
 #include "QPC_UpdatePlayerData.generated.h"
 
 /**
@@ -15,9 +17,13 @@ class QIPAWORLDUEPLUGIN_API UQPC_UpdatePlayerData : public UQPComponent
 {
 	GENERATED_BODY()
 public:
+	UQPData* qp_playerData;
 	UQPC_UpdatePlayerData();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason)override;
+	virtual void QP_LoadData();
+	virtual void QP_SaveData();
 
 	//bool qp_isPlay = true;
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|FadeMaterial")

@@ -6,10 +6,16 @@
 UQPC_UpdatePlayerData::UQPC_UpdatePlayerData() {
 	PrimaryComponentTick.bCanEverTick = true;
 }
-
+void UQPC_UpdatePlayerData::QP_LoadData() {
+	qp_playerData = UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData();
+	qp_playerData->QP_LoadDataFAES("UQPC_UpdatePlayerDataSave", UQPGIM_BaseData::qp_staticObject->GetAESKey("UQPC_UpdatePlayerDataSaveA"));
+ }
+void UQPC_UpdatePlayerData::QP_SaveData() {
+	qp_playerData->QP_SaveDataFAES("UQPC_UpdatePlayerDataSave", UQPGIM_BaseData::qp_staticObject->GetAESKey("UQPC_UpdatePlayerDataSaveA"));
+ }
 void UQPC_UpdatePlayerData::BeginPlay() {
 	Super::BeginPlay();
-
+	
 	this->SetComponentTickEnabled(true);
 	/*if (!qp_mesh) {
 
@@ -19,8 +25,12 @@ void UQPC_UpdatePlayerData::BeginPlay() {
 
 	   qp_material=(qp_mesh->CreateDynamicMaterialInstance(0, qp_mesh->GetMaterial(0)));
 	*/
+	QP_LoadData();
 
-
+}
+void  UQPC_UpdatePlayerData::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
+	QP_SaveData();
 }
 void UQPC_UpdatePlayerData::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {

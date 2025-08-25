@@ -7,6 +7,7 @@
 #include "DataAsset/QPDS_DataAsset.h"
 #include "Data/QPBaseDataSave.h"
 #include "Data/QPData.h"
+
 #include "QPGIM_BaseData.generated.h"
 
 //class UQPData;
@@ -94,6 +95,7 @@ public:
 
 	void QP_SaveData();
 
+	FString GetAESKey(FName key);
 	//UFUNCTION()
 	//void QP_Set(UWorld* LoadedWorld);
 	//void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);
