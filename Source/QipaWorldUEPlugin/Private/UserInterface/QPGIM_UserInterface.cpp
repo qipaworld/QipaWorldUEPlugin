@@ -48,23 +48,38 @@ void UQPGIM_UserInterface::Deinitialize()
 	Super::Deinitialize();
 	qp_staticObject = nullptr;
 }
+UUserWidget* UQPGIM_UserInterface::QP_AddMainPopUserInterface(const FString& key) {
+	TSubclassOf<UUserWidget> w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainPopUserInterface.Get();
+	if (!IsValid(w)) {
+		w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainPopUserInterface.LoadSynchronous();
+	}
+	if (IsValid(w)) {
+		return QP_AddUserInterfaceByClass(w, key);
+	}
+	
+	UQPUtil::QP_LOG("MainUI not open");
 
-UUserWidget* UQPGIM_UserInterface::QP_AddMainUserInterface(const FString& key)
+	return nullptr;
+	
+}
+UUserWidget* UQPGIM_UserInterface::QP_AddMainUserInterface()
 {
 	//return QP_AddUserInterfaceByClass(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.Get(),key);
 	TSubclassOf<UUserWidget> w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.Get();
 	if (!IsValid(w)) {
 		w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.LoadSynchronous();
-
 	}
 	if (IsValid(w)) {
-		return QP_AddUserInterfaceByClass(w, key);
+		
+		UUserWidget* widget = CreateWidget<UUserWidget>(GetWorld(), w);
+		widget->AddToViewport();
+		return widget;
 	}
-	else {
-		UQPUtil::QP_LOG("MainUI not open");
+	
+	UQPUtil::QP_LOG("MainUI not open");
 
-		return nullptr;
-	}
+	return nullptr;
+	
 
 	
 }
@@ -176,7 +191,7 @@ void UQPGIM_UserInterface::QP_SetAutoMouse(bool b) {
 void UQPGIM_UserInterface::QP_KeyBoardEvent()
 {
 	if (qp_UIData.Num() < 1) {
-		QP_AddMainUserInterface();
+		QP_AddMainPopUserInterface();
 	}
 	else {
 		QP_RemoveUserInterface();
@@ -190,7 +205,9 @@ void UQPGIM_UserInterface::QP_BindKeyBoard(UQPData* data)
 	if (data->QP_IsChange<FName, bool>("autoPushAndPopUI", EQPDataValueType::BOOL)) {
 		QP_KeyBoardEvent();
 	}
-	
+	else if (data->QP_IsChange<FName, bool>("AddMainUI", EQPDataValueType::BOOL)) {
+		QP_AddMainUserInterface();
+	}
 }
 void UQPGIM_UserInterface::QP_ResetUIData()
 {

@@ -56,8 +56,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	void QP_SetAutoMouse(bool b);
 	/**添加主UI*/
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	UUserWidget* QP_AddMainUserInterface();
+
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	UUserWidget* QP_AddMainUserInterface(const FString& key = "MainUserInterface");
+	UUserWidget* QP_AddMainPopUserInterface(const FString& key = "MainUserInterface");
 
 	/**check user interface is open?*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")

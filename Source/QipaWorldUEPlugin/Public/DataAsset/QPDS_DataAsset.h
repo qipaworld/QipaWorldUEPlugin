@@ -26,6 +26,9 @@ public:
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	TSoftClassPtr<UUserWidget> QP_DefaultMainUserInterface ;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	TSoftClassPtr<UUserWidget> QP_DefaultMainPopUserInterface;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting", meta = ( LongPackageName))
 	FDirectoryPath QP_DefaultCharacterDataPath;
 
