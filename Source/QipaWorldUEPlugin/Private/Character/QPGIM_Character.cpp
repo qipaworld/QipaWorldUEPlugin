@@ -69,17 +69,9 @@ ACharacter* UQPGIM_Character::QP_GetCharacter(const FName qp_name) {
 	return nullptr;
 }
 UQPDA_Character* UQPGIM_Character::QP_GetCharacterData(const FName qp_name) {
-	return  LoadObject<UQPDA_Character>(nullptr, *("/Script/QipaWorld3DUE.QPDA_Character'" + (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultCharacterDataPath.Path) +"/"+ qp_name.ToString() + "." + qp_name.ToString() + "'"));
+	return  LoadObject<UQPDA_Character>(nullptr, *( (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultCharacterDataPath.Path) +"/"+ qp_name.ToString() + "." + qp_name.ToString()));
 }
-void UQPGIM_Character::QP_InitCharacterData(AQPCharacter* c, UQPDA_Character* data) {
-	if (!data) {
-		data = QP_GetCharacterData(c->qp_assetDataName);
-	}
-	if (data) {
-		c->qp_assetData = data;
-		c->qp_playMontage->qp_montage.Append(data->qp_montage);
-	}
-}
+
 ACharacter* UQPGIM_Character::QP_GetNewCharacter(const FName qp_name, FTransform T) {
 	AActor* a = UQPGIM_Actor::qp_staticObject->QP_PopActor(qp_name);
 	ACharacter* c;
@@ -95,8 +87,8 @@ ACharacter* UQPGIM_Character::QP_GetNewCharacter(const FName qp_name, FTransform
 		//qp_attackSkill->QP_GetMovement()->InitialSpeed = qp_skillSpeed + GetCharacterMovement()->GetLastUpdateVelocity()->Size();
 
 		c = GetWorld()->SpawnActor<ACharacter>(data->qp_character, T, qp_spawnP);
-		AQPCharacter* qpc = Cast<AQPCharacter>(c);
-		if (qpc) {
+		//AQPCharacter* qpc = Cast<AQPCharacter>(c);
+		/*if (qpc) {
 			QP_InitCharacterData(qpc, data);
 		}
 		else {
@@ -105,7 +97,7 @@ ACharacter* UQPGIM_Character::QP_GetNewCharacter(const FName qp_name, FTransform
 			if (pm) {
 				pm->qp_montage.Append(data->qp_montage);
 			}
-		}
+		}*/
 
 
 	}

@@ -11,7 +11,7 @@
 #include "Skill/QPS_CollisionMovement.h"
 #include "Component/QPSComponent.h"
 #include "Data/QPGIM_BaseData.h"
-
+//#include "InputAction.h"
 
 #include "Animation/QPC_MaterialAutoRestore.h"
 #include "Monster/QPMonster.h"
@@ -23,6 +23,10 @@ class UCameraComponent;
 class USpringArmComponent;
 class UAnimMontage;
 class UQPData;
+class UInputMappingContext;
+
+class UInputAction;
+struct FInputActionValue;
 //class UAnimInstance;
 UCLASS()
 class QIPAWORLDUEPLUGIN_API AQPCharacter : public AQPMonster
@@ -37,6 +41,8 @@ public:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void PreInitializeComponents() override;
 	/**
 	 * Called when an instance of this class is placed (in editor) or spawned.
 	 * @param	Transform			The transform the actor was constructed at.
@@ -50,6 +56,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Landed(const FHitResult& Hit) override;
+
+
 	/**初始化数据*/
 	//virtual void QP_InitQPData() override;
 	/**获得数据*/
@@ -60,55 +68,72 @@ public:
 
 	
 
-	
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	FName qp_mouseWhellAxis = "MouseWhell";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	FName qp_changeCharacter = "ChangeCharacter";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_moveForWard = "MoveForWard";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_moveRight = "MoveRight";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_turn = "Turn";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_lookUp = "LookUp";
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	FName qp_switchMouseShow = "SwitchMouseShow";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_jump = "Jump";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_run = "Run";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	FName qp_attack = "Attack";
-		/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	FName qp_sneak = "Sneak";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_mouseWheelUp = "MouseWheelUp";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_mouseWheelDown = "MouseWheelDown";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_attackTwo = "AttackTwo";
-	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_fixedCamera = "FixedCamera";
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
 
+	TArray<TObjectPtr<UInputMappingContext>> qp_inputMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_jumpInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_lookUPInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_TrunInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_moveForwardInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_moveRightInputAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_MoveUPInputAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+
+	bool qp_isPlayer = true;
+	
+	
 	
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_mouseLeftInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_mouseRightInputAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_runInputAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_sneakInputAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_fixedCameraInputAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_mouseWheelUpInputAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_mouseWheelDownInputAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_changeCharacterInputAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
+
+	TObjectPtr<UInputAction> qp_switchMouseShowInputAction;
 	
+	
+
+
+
 
 
 	
@@ -182,12 +207,15 @@ public:
 	//进入玩家控制时调用
 	virtual void QP_PlayerEnter();
 
-	virtual void QP_MouseWheelAxis(float value);
-	virtual void QP_TrunAxis(float value);
-	virtual void QP_LookUpAxis(float value);
+	//virtual void QP_MouseWheelAxis(float value);
 
-	virtual void QP_MoveForward(float value);
-	virtual void QP_MoveRight(float value);
+	virtual void QP_TrunAxis(const FInputActionValue& value);
+	virtual void QP_LookUP(const FInputActionValue& value);
+
+	virtual void QP_MoveUP(const FInputActionValue& value);
+
+	virtual void QP_MoveForward(const FInputActionValue& value);
+	virtual void QP_MoveRight(const FInputActionValue& value);
 	//跳跃开始
 	virtual void QP_JumpStart();
 	//跳跃结束
@@ -212,14 +240,14 @@ public:
 	virtual void QP_FixedCameraEnd();
 
 	//按下鼠标左键
-	virtual void QP_AttackStart();
+	virtual void QP_MouseLeftStart();
 	//松开鼠标左键
-	virtual void QP_AttackEnd();
+	virtual void QP_MouseLeftEnd();
 
 	//按下鼠标右键
-	virtual void QP_AttackTwoStart();
+	virtual void QP_MouseRightStart();
 	//松开鼠标右键
-	virtual void QP_AttackTwoEnd();
+	virtual void QP_MouseRightEnd();
 
 	//相机靠近角色
 	virtual void QP_mouseWheelUp();
@@ -249,4 +277,5 @@ public:
 	virtual void QP_InitSaveData() override;
 	virtual void QP_ChangeSaveData()override;
 	virtual void UnPossessed() override;
+	virtual void PossessedBy(AController* NewController) override;
 };

@@ -16,7 +16,10 @@
 #include "Sound/QPC_PlayRandomSound.h"
 #include "Components/StateTreeComponent.h"
 #include "Monster/QPCharacterMovementComponent.h"
+//#include "Character/QPDA_Character.h"
+#include "AbilitySystemComponent.h"
 
+#include "AbilitySystemInterface.h"
 //#include "Components/StateTreeReference.h"
 //#include "Sound/QP_RandomSoundData.h"
 #include "QPMonster.generated.h"
@@ -25,14 +28,14 @@
 
 
 UCLASS()
-class QIPAWORLDUEPLUGIN_API AQPMonster : public ACharacter, public IQPI_GetQPData, public IQPI_GetAnimData , public IQPI_AnimNotify, public IQPI_AnimNotifyFootstep
+class QIPAWORLDUEPLUGIN_API AQPMonster : public ACharacter, public IQPI_GetQPData, public IQPI_GetAnimData , public IQPI_AnimNotify, public IQPI_AnimNotifyFootstep, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 public:
 	static int qp_characterDataMaxNum;
 	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	FName qp_assetDataName = "assetDataName";
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	//FName qp_assetDataName = "assetDataName";
 	/**数据名称*/
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	//FName qp_playerDataKey = "qp_playerData";
@@ -94,8 +97,8 @@ public:
 
 	bool qp_isAttacking = false;
 	UQPCharacterMovementComponent* qp_movementC;
-	float qp_forwardV = 0.0f;
-	float qp_rightV = 0.0f;
+	/*float qp_forwardV = 0.0f;
+	float qp_rightV = 0.0f;*/
 	float qp_deltaTime = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
@@ -105,6 +108,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	float qp_playCallTimeMin = 60;
 	float qp_playCallTime = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+
 	class UQPDA_Character* qp_assetData = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	class UQPC_MaterialAutoRestore* qp_materialAutoRestore = nullptr;
@@ -131,6 +136,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	TMap<FName, class UAnimMontage*> qp_montage;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QipaWorld")
+	class UAbilitySystemComponent* qp_abilitySystemComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Abilities")
+	TArray<TSubclassOf<class UGameplayAbility>> qp_preloadedAbilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Abilities")
+	TArray<TSubclassOf<class UAttributeSet>> qp_preloadedAttributeSet;
+
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	//bool qp_AutoPlayStateTree = false;
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
@@ -220,5 +234,6 @@ public:
 
 	virtual void QP_PlayerDataChange(UQPData* data);
 
+	UAbilitySystemComponent* GetAbilitySystemComponent()const override;
 
 };

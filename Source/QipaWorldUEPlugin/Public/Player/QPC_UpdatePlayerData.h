@@ -10,7 +10,7 @@
 #include "QPC_UpdatePlayerData.generated.h"
 
 /**
- * 
+ *  ·ÏÆú
  */
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPC_UpdatePlayerData : public UQPComponent

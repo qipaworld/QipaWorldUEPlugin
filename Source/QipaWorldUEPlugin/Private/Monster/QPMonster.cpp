@@ -36,6 +36,9 @@ AQPMonster::AQPMonster(const FObjectInitializer& ObjectInitializer)
 	qp_sphereTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("qp_sphereTrigger"));
 	qp_sphereTrigger->SetupAttachment(RootComponent);
 	qp_playMontage = CreateDefaultSubobject<UQPC_PlayMontage>("qp_playMontage");
+
+	qp_abilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("qp_abilitySystem"));
+
 	//qp_stateTree = CreateDefaultSubobject<UStateTreeComponent>(TEXT("qp_stateTree"));
 	//qp_stateTree->setlo = false;
 	//qp_stateTree->SetStartLogicAutomatically(false);
@@ -78,6 +81,36 @@ void AQPMonster::BeginPlay()
 	QP_GetQPData()->qp_dataDelegate.AddUObject(this, &AQPMonster::QP_DataChange);
 	UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->qp_dataDelegate.AddUObject(this, &AQPMonster::QP_PlayerDataChange);
 
+
+	for (TSubclassOf<UAttributeSet> SetClass : qp_preloadedAttributeSet)
+	{
+		if (SetClass)
+		{
+			// 创建 AttributeSet 实例，并注册到 AbilitySystem
+			UAttributeSet* NewSet = NewObject<UAttributeSet>(qp_abilitySystemComponent, SetClass);
+			qp_abilitySystemComponent->AddAttributeSetSubobject(NewSet);
+		}
+	}
+
+	if (qp_abilitySystemComponent != nullptr)
+	{
+		//初始化技能
+		if (qp_preloadedAbilities.Num() > 0)
+		{
+			for (auto i = 0; i < qp_preloadedAbilities.Num(); i++)
+			{
+				if (qp_preloadedAbilities[i] != nullptr)
+				{
+
+					qp_abilitySystemComponent->GiveAbility(
+						FGameplayAbilitySpec(qp_preloadedAbilities[i].GetDefaultObject(), 1));
+				}
+			}
+		}
+
+		//初始化ASC
+		qp_abilitySystemComponent->InitAbilityActorInfo(this, this);
+	}
 }
 void AQPMonster::QP_PlayerDataChange(UQPData* data) {
 
@@ -285,4 +318,9 @@ void AQPMonster::QP_PlayAnim(FName name, FName StartSectionName) {
 }
 void AQPMonster::QP_DataChange(UQPData* data) {
 
+}
+
+UAbilitySystemComponent* AQPMonster::GetAbilitySystemComponent()const
+{ 
+	return qp_abilitySystemComponent;
 }

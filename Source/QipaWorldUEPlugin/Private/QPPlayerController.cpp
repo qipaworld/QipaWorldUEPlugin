@@ -6,7 +6,14 @@
 #include "QPUtil.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Online/QPGI_Online.h"
+
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "InputAction.h"
+#include "InputActionValue.h"
+
 #include "Data/QPGIM_BaseData.h"
+
 
 void AQPPlayerController::BeginPlay() {
     Super::BeginPlay();
@@ -38,13 +45,42 @@ void AQPPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
 
+    
     check(InputComponent); 
 
+    //if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        //if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
+        {
+            if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+            {
+                //Subsystem->RemoveMappingContext(DefaultMappingContext);
+                for (auto v : qp_inputMappingContext) {
+                    Subsystem->AddMappingContext(v,0);
+                }
+            }
+        }
+    }
+
+    UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(InputComponent);
+    //Input->BindAction()
+    if (qp_debugSwitchMouseShowInputAction) {
+
+        Input->BindAction(qp_debugSwitchMouseShowInputAction, ETriggerEvent::Started, this, &AQPPlayerController::QP_SwitchMouseShow);
+    }
+
     if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_UserInterfaceAutoPop) {
-        InputComponent->BindAction(*(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultUserInterfaceActionKey), IE_Released, this, &AQPPlayerController::QP_OnAutoUIKeyPressed);
+        if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->qp_defaultUserInterfaceAction) {
+
+            Input->BindAction(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->qp_defaultUserInterfaceAction, ETriggerEvent::Started, this, &AQPPlayerController::QP_OnAutoUIKeyPressed);
+        }
         if (GIsEditor)
         {
-            InputComponent->BindAction("DebugDefaultUserInterfaceAction", IE_Released, this, &AQPPlayerController::QP_OnAutoUIKeyPressed);
+            if (qp_debugDefaultUserInterfaceAction) {
+
+                Input->BindAction(qp_debugDefaultUserInterfaceAction, ETriggerEvent::Started, this, &AQPPlayerController::QP_OnAutoUIKeyPressed);
+            }
+            //InputComponent->BindAction("DebugDefaultUserInterfaceAction", IE_Released, this, &AQPPlayerController::QP_OnAutoUIKeyPressed);
         }
     }
 }
@@ -52,4 +88,8 @@ void AQPPlayerController::SetupInputComponent()
 void AQPPlayerController::QP_OnAutoUIKeyPressed()
 {
     UQPGIM_BaseData::qp_staticObject->QP_GetKeyBoardEventData()->QP_Addbool("autoPushAndPopUI", true,EQPDataBroadcastType::SYNC);    
+}
+
+void AQPPlayerController::QP_SwitchMouseShow() {
+    UQPUtil::QP_SwitchMouseShow(this);
 }

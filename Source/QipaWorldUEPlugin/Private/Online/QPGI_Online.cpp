@@ -1,4 +1,4 @@
-// QIPAWORLD
+ï»¿// QIPAWORLD
 
 
 #include "Online/QPGI_Online.h"
@@ -193,7 +193,7 @@ void UQPGI_Online::QP_StartLogin(FString loginType) {
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("IdentityInterface error£¡"));
+		UE_LOG(LogTemp, Error, TEXT("IdentityInterface errorï¼"));
 	}
 	
 }
@@ -414,7 +414,7 @@ void UQPGI_Online::QP_AddAchievement(FName qp_AchievementId, int32 qp_playerId, 
 			}
 
 			FOnlineAchievementsWritePtr WriteObject = MakeShareable(new FOnlineAchievementsWrite());
-			WriteObject->SetFloatStat(qp_AchievementId, num);
+			WriteObject->SetFloatStat(qp_AchievementId.ToString(), num);
 
 			FOnlineAchievementsWriteRef WriteRef = WriteObject.ToSharedRef();
 			qp_achievements->WriteAchievements(*qp_userId, WriteRef);

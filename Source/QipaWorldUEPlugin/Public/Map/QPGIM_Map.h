@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "World/QPWorldData.h"
+
 #include "QPGIM_Map.generated.h"
 
 /**
@@ -40,6 +42,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPMap")
 	bool qp_isLoadSubMap = false;
 
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPMap")
+	UQPWorldData* qp_worldBaseData = nullptr;
 	/** 这个是准备打开的地图名字*/
 	FName qp_readyOpenMapName;
 	/**带进度条地图的名字*/
@@ -73,7 +77,10 @@ public:
 	/*UFUNCTION(BlueprintCallable, Category = "QipaWorld|Map")*/
 	void QP_LoadMapEnd();
 
-
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")
+	inline UQPWorldData* QP_GetMapWorldData() {
+		return qp_worldBaseData;
+	}
 private:
 	
 

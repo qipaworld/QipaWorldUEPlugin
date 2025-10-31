@@ -263,7 +263,9 @@ FString UQPGIM_BaseData::GetAESKey(FName key) {
 //UQPData* QP_GetHelperData();
 
 
-
+UQPWorldData* UQPGIM_BaseData::QP_GetWorldData(const FName& k) {
+	return  LoadObject<UQPWorldData>(nullptr, *((qp_defaultDataAsset->QP_DefaultWorldDataPath.Path) + "/" + k.ToString() + "." + k.ToString()));
+}
 
 //UQPData* QP_GetUIEventData();
 

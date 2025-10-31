@@ -79,8 +79,8 @@ public:
 		UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
 		class UQPDA_Character* QP_GetCharacterData(const FName qp_name);
 
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
-	void QP_InitCharacterData(AQPCharacter* c, UQPDA_Character* data = nullptr);
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
+	//void QP_InitCharacterData(AQPCharacter* c, UQPDA_Character* data = nullptr);
 
 	void QP_BindMapData(class UQPData* data);
 };

@@ -57,6 +57,8 @@ void UQPGIM_Map::QP_OpenMap(FName LevelName)
 {
 	//qp_loadMapName = LevelName;
 	qp_mapData->QP_AddFName("changeLevelName", LevelName, EQPDataBroadcastType::SYNC);
+	qp_worldBaseData = UQPGIM_BaseData::qp_staticObject->QP_GetWorldData(LevelName);
+
 	UGameplayStatics::OpenLevel(GetWorld(), LevelName);
 	qp_mapData->QP_AddFName("baseLevelName", LevelName);
 
@@ -65,7 +67,6 @@ void UQPGIM_Map::QP_OpenMap(FName LevelName)
 void UQPGIM_Map::QP_LoadingAndOpenMap(FName MapName)
 {
 	qp_readyOpenMapName = MapName;
-
 	UWorld* w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultLoadingMap.Get();
 	if (!IsValid(w)) {
 		w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultLoadingMap.LoadSynchronous();

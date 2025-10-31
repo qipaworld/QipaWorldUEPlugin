@@ -7,7 +7,7 @@
 #include "DataAsset/QPDS_DataAsset.h"
 #include "Data/QPBaseDataSave.h"
 #include "Data/QPData.h"
-
+#include "World/QPWorldData.h"
 #include "QPGIM_BaseData.generated.h"
 
 //class UQPData;
@@ -92,6 +92,9 @@ public:
 
 	UFUNCTION()
 	void QP_OnPostLoadMap(UWorld* LoadedWorld);
+
+	UFUNCTION()
+	UQPWorldData* QP_GetWorldData(const FName& k);
 
 	void QP_SaveData();
 

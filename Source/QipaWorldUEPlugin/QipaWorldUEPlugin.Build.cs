@@ -54,12 +54,13 @@ public class QipaWorldUEPlugin : ModuleRules
                 "Niagara",
                 "NiagaraAnimNotifies",
                 "InputCore",
+                "EnhancedInput",
                 "Text3D",
                 "MetasoundEngine",
                 "NavigationSystem",
                 "AppFramework",
                 "AudioModulation",
-                
+                 "GameplayAbilities", "GameplayTags", "GameplayTasks"
                 //"RHI",
 				// ... add private dependencies that you statically link with here ...	
 			}

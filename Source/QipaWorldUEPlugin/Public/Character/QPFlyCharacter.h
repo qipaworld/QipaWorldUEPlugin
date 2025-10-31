@@ -24,11 +24,11 @@ public:
 
 public:
 	/**输入名称*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
-		FName qp_moveUp = "MoveUp";
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
+		//FName qp_moveUp = "MoveUp";
 
-	float qp_moveUpV = 0.0f;
-	float qp_lastRotatorYaw;
+	//float qp_moveUpV = 0.0f;
+	//float qp_lastRotatorYaw;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -41,11 +41,13 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 		//float qp_upSpeed = 250.0f;
 
+	
+	//virtual void QP_MoveRight(const FInputActionValue& value)override;
+	//virtual void QP_MoveForward(const FInputActionValue& value)override;
+	//virtual void QP_MoveUP(const FInputActionValue& value);
+	//virtual void QP_MoveRight(float value)override;
 
-	virtual void QP_MoveForward(float value)override;
-	virtual void QP_MoveRight(float value)override;
-
-	virtual void QP_MoveUp(float value);
+	//virtual void QP_MoveUp(float value);
 	/**更新移动速度，大了就跑，小了就走*/
 	virtual  inline void QP_UpdateMaxSpeed()override {
 		if (qp_movementC->MaxFlySpeed != qp_maxSpeed) {

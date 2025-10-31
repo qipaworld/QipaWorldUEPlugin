@@ -14,9 +14,12 @@
 #include "UObject/UnrealType.h"
 #include "Data/QPData.h"
 #include "QPUtil.h"
-
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "InputAction.h"
+#include "InputActionValue.h"
 #include "Character/QPGIM_Character.h"
-
+#include "Character/QPDA_Character.h"
 #include "Notify/QPGIM_AnimNotifyData.h"
 
 // Sets default values
@@ -44,7 +47,21 @@ AQPCharacter::AQPCharacter(const FObjectInitializer& ObjectInitializer)
 	//qp_restoreNg->SetupAttachment(RootComponent);
 	//qp_aterialDissolve->QP_SetRootComponent(RootComponent);
 
+	
 
+	
+
+
+}
+void AQPCharacter::PreInitializeComponents() {
+	Super::PreInitializeComponents();
+	//if (UQPGIM_Character::qp_staticObject) 
+	{
+
+		//qp_assetData = UQPGIM_Character::qp_staticObject->QP_GetCharacterData(qp_assetDataName);
+
+		
+	}
 }
 //void AQPCharacter::OnConstruction(const FTransform& Transform) {
 //	Super::OnConstruction(Transform);
@@ -63,7 +80,9 @@ void AQPCharacter::BeginPlay()
 		//qp_characterData = UQPGIM_Data::qp_staticObject->QP_GetQPData("AQPCharacter")->QP_GetUQPData("qp_Character" + qp_characterMaxNum);
 	//}
 	
-	
+	if (qp_assetData && !qp_assetData->qp_montage.IsEmpty()) {
+		qp_playMontage->qp_montage.Append(qp_assetData->qp_montage);
+	}
 	qp_movementC->bOrientRotationToMovement = true;
 	qp_movementC->MaxAcceleration = qp_walkMaxAcceleration;
 	qp_movementC->bRunPhysicsWithNoController = true;
@@ -73,14 +92,20 @@ void AQPCharacter::BeginPlay()
 	qp_maxSpeed = qp_walkSpeed;
 	//qp_characterData->QP_GetUQPData(UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyEvent);
 	
-	if (!qp_assetData) {
-		UQPGIM_Character::qp_staticObject->QP_InitCharacterData(this);
-	}
+	
 
 	if (qp_saveData) {
 		Controller->SetControlRotation(qp_saveData->QP_GetFRotator("ControllerRotation"));
 		qp_springArm->TargetArmLength = qp_saveData->QP_Getfloat("TargetArmLength");
 	}
+
+	if (qp_isPlayer) {
+		qp_springArm->SetVisibility(false, true);
+	}
+	else {
+		qp_springArm->SetVisibility(true, true);
+	}
+	
 	//qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
 	//qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
 
@@ -127,29 +152,111 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis(qp_mouseWhellAxis, this, &AQPCharacter::QP_MouseWheelAxis);
-	PlayerInputComponent->BindAxis(qp_moveForWard, this, &AQPCharacter::QP_MoveForward);
-	PlayerInputComponent->BindAxis(qp_moveRight, this, &AQPCharacter::QP_MoveRight);
-	PlayerInputComponent->BindAxis(qp_turn, this, &AQPCharacter::QP_TrunAxis);
-	PlayerInputComponent->BindAxis(qp_lookUp, this, &AQPCharacter::QP_LookUpAxis);
-	PlayerInputComponent->BindAction(qp_jump, IE_Pressed, this, &AQPCharacter::QP_JumpStart);
-	PlayerInputComponent->BindAction(qp_jump, IE_Released, this, &AQPCharacter::QP_JumpEnd);
-	PlayerInputComponent->BindAction(qp_run, IE_Pressed, this, &AQPCharacter::QP_Run);
-	PlayerInputComponent->BindAction(qp_sneak, IE_Released, this, &AQPCharacter::QP_Sneak);
-	PlayerInputComponent->BindAction(qp_attack, IE_Pressed, this, &AQPCharacter::QP_AttackStart);
-	PlayerInputComponent->BindAction(qp_attack, IE_Released, this, &AQPCharacter::QP_AttackEnd);
-	PlayerInputComponent->BindAction(qp_fixedCamera, IE_Pressed, this, &AQPCharacter::QP_FixedCamera);
-	PlayerInputComponent->BindAction(qp_attackTwo, IE_Pressed, this, &AQPCharacter::QP_AttackTwoStart);
-	PlayerInputComponent->BindAction(qp_attackTwo, IE_Released, this, &AQPCharacter::QP_AttackTwoEnd);
-	PlayerInputComponent->BindAction(qp_mouseWheelUp, IE_Pressed, this, &AQPCharacter::QP_mouseWheelUp);
-	PlayerInputComponent->BindAction(qp_mouseWheelDown, IE_Pressed, this, &AQPCharacter::QP_mouseWheelDown);
-	PlayerInputComponent->BindAction(qp_changeCharacter, IE_Pressed, this, &AQPCharacter::QP_ChangeCharacter);
-	PlayerInputComponent->BindAction(qp_switchMouseShow, IE_Pressed, this, &AQPCharacter::QP_SwitchMouseShow);
+	//UEnhancedInputLocalPlayerSubsystem* inputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 
-	if (GIsEditor)
+	/*if (APlayerController* PC = Cast<APlayerController>(GetController()))
 	{
-		PlayerInputComponent->BindAction("DebugSwitchMouseShow", IE_Pressed, this, &AQPCharacter::QP_SwitchMouseShow);
+		if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
+		{
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
+			{
+				
+				
+			}
+		}
+	}*/
+
+	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	//Input->BindAction()
+	if (qp_jumpInputAction) {
+
+		Input->BindAction(qp_jumpInputAction,ETriggerEvent::Started, this, &AQPCharacter::QP_JumpStart);
+		Input->BindAction(qp_jumpInputAction, ETriggerEvent::Completed, this, &AQPCharacter::QP_JumpEnd);
 	}
+	if (qp_moveForwardInputAction) {
+
+		Input->BindAction(qp_moveForwardInputAction, ETriggerEvent::Triggered, this, &AQPCharacter::QP_MoveForward);
+	}
+	if (qp_lookUPInputAction) {
+		Input->BindAction(qp_lookUPInputAction, ETriggerEvent::Triggered, this, &AQPCharacter::QP_LookUP);
+	}
+	if (qp_moveRightInputAction) {
+
+		Input->BindAction(qp_moveRightInputAction, ETriggerEvent::Triggered, this, &AQPCharacter::QP_MoveRight);
+	}
+	if (qp_TrunInputAction) {
+		Input->BindAction(qp_TrunInputAction, ETriggerEvent::Triggered, this, &AQPCharacter::QP_TrunAxis);
+	}
+	if (qp_MoveUPInputAction) {
+
+		Input->BindAction(qp_MoveUPInputAction, ETriggerEvent::Triggered, this, &AQPCharacter::QP_MoveUP);
+	}
+	//PlayerInputComponent->BindAxis(qp_moveForWard, this, &AQPCharacter::QP_MoveForward);
+	//PlayerInputComponent->BindAxis(qp_turn, this, &AQPCharacter::QP_TrunAxis);
+
+
+	//PlayerInputComponent->BindAxis(qp_mouseWhellAxis, this, &AQPCharacter::QP_MouseWheelAxis);
+
+	if (qp_mouseLeftInputAction) {
+
+		Input->BindAction(qp_mouseLeftInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_MouseLeftStart);
+		Input->BindAction(qp_mouseLeftInputAction, ETriggerEvent::Completed, this, &AQPCharacter::QP_MouseLeftEnd);
+	}
+
+	if (qp_mouseRightInputAction) {
+
+		Input->BindAction(qp_mouseRightInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_MouseRightStart);
+		Input->BindAction(qp_mouseRightInputAction, ETriggerEvent::Completed, this, &AQPCharacter::QP_MouseRightEnd);
+	}
+
+	if (qp_runInputAction) {
+
+		Input->BindAction(qp_runInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_Run);
+	}
+	if (qp_sneakInputAction) {
+
+		Input->BindAction(qp_sneakInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_Sneak);
+	}
+	if (qp_fixedCameraInputAction) {
+
+		Input->BindAction(qp_fixedCameraInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_FixedCamera);
+	}
+	if (qp_mouseWheelUpInputAction) {
+
+		Input->BindAction(qp_mouseWheelUpInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_mouseWheelUp);
+	}
+	if (qp_mouseWheelDownInputAction) {
+
+		Input->BindAction(qp_mouseWheelDownInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_mouseWheelDown);
+	}
+	if (qp_changeCharacterInputAction) {
+
+		Input->BindAction(qp_changeCharacterInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_ChangeCharacter);
+	}
+	if (qp_switchMouseShowInputAction) {
+
+		Input->BindAction(qp_switchMouseShowInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_SwitchMouseShow);
+	}
+	//PlayerInputComponent->BindAction(qp_run, IE_Pressed, this, &AQPCharacter::QP_Run);
+	//PlayerInputComponent->BindAction(qp_sneak, IE_Released, this, &AQPCharacter::QP_Sneak);
+	//PlayerInputComponent->BindAction(qp_attack, IE_Pressed, this, &AQPCharacter::QP_MouseLeftStart);
+	//PlayerInputComponent->BindAction(qp_attack, IE_Released, this, &AQPCharacter::QP_MouseLeftEnd);
+	//PlayerInputComponent->BindAction(qp_fixedCamera, IE_Pressed, this, &AQPCharacter::QP_FixedCamera);
+	//PlayerInputComponent->BindAction(qp_attackTwo, IE_Pressed, this, &AQPCharacter::QP_AttackTwoStart);
+	//PlayerInputComponent->BindAction(qp_attackTwo, IE_Released, this, &AQPCharacter::QP_AttackTwoEnd);
+	//PlayerInputComponent->BindAction(qp_mouseWheelUp, IE_Pressed, this, &AQPCharacter::QP_mouseWheelUp);
+	//PlayerInputComponent->BindAction(qp_mouseWheelDown, IE_Pressed, this, &AQPCharacter::QP_mouseWheelDown);
+	//PlayerInputComponent->BindAction(qp_changeCharacter, IE_Pressed, this, &AQPCharacter::QP_ChangeCharacter);
+	//PlayerInputComponent->BindAction(qp_switchMouseShow, IE_Pressed, this, &AQPCharacter::QP_SwitchMouseShow);
+
+	/*if (GIsEditor)
+	{
+		if (qp_debugSwitchMouseShowInputAction) {
+
+			Input->BindAction(qp_debugSwitchMouseShowInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_SwitchMouseShow);
+		}
+		*///PlayerInputComponent->BindAction("DebugSwitchMouseShow", IE_Pressed, this, &AQPCharacter::QP_SwitchMouseShow);
+	//}
 		
 		
 }
@@ -171,16 +278,19 @@ void AQPCharacter::QP_SetMatAmount(float amount)
 }
 
 //virtual void QP_MouseWheelAxis(float value);
-void AQPCharacter::QP_TrunAxis(float value) {
-	AddControllerYawInput(value);
+void AQPCharacter::QP_TrunAxis(const FInputActionValue& value) {
+	AddControllerYawInput(value.Get<float>());
 }
- void AQPCharacter::QP_LookUpAxis(float value){
-	 AddControllerPitchInput(value);
+ void AQPCharacter::QP_LookUP(const FInputActionValue& value){
+	 const FVector2D mv = value.Get<FVector2D>();
+
+	 //AddControllerYawInput(mv.X);
+	 AddControllerPitchInput(-value.Get<float>());
 }
-void AQPCharacter::QP_MouseWheelAxis(float value)
-{
-	
-}
+//void AQPCharacter::QP_MouseWheelAxis(float value)
+//{
+//	
+//}
  void AQPCharacter::QP_InitSaveData() {
 	 Super::QP_InitSaveData();
 	 qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
@@ -191,17 +301,101 @@ void AQPCharacter::QP_MouseWheelAxis(float value)
 	  
  }
   void AQPCharacter::UnPossessed() {
-	  if (qp_saveData) {
-		  qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
-		  qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
-	  }
+	  
 	  //UQPUtil::QP_LOG(GetControlRotation().ToString());
 	  Super::UnPossessed();
 
+	  if (IsLocallyControlled())
+	  {
+		  if (qp_saveData) {
+			  qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
+			  qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
+		  }
+
+		  if (APlayerController* PC = Cast<APlayerController>(GetController()))
+		  {
+			  if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
+			  {
+				  if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
+				  {
+					  //Subsystem->RemoveMappingContext(DefaultMappingContext);
+					  for (auto v : qp_inputMappingContext) {
+						  Subsystem->RemoveMappingContext(v);
+					  }
+				  }
+			  }
+		  }
+	  }
+
   }
-void AQPCharacter::QP_MoveForward(float value)
+  void AQPCharacter::PossessedBy(AController* NewController) {
+	  Super::PossessedBy(NewController);
+
+	  if (IsLocallyControlled())
+	  {
+		  if (APlayerController* PC = Cast<APlayerController>(NewController))
+		  {
+			  if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
+			  {
+				  if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
+				  {
+					  for (auto v : qp_inputMappingContext) {
+						  Subsystem->AddMappingContext(v, 0);
+					  }
+					  /*Subsystem->AddMappingContext(DefaultMappingContext, 0);*/
+				  }
+			  }
+		  }
+	  }
+  }
+
+  void AQPCharacter::QP_MoveUP(const FInputActionValue& value) {
+	  if (qp_movementC->MovementMode == MOVE_Flying || qp_movementC->MovementMode == MOVE_Swimming) {
+		 
+		  //AddMovementInput(GetControlRotation().Vector(), value.Get<float>());
+		  //qp_movementC->bOrientRotationToMovement = false;
+		  FRotator yawRotation = GetControlRotation();
+		  FVector rightVector = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::Z);
+		  AddMovementInput(rightVector, value.Get<float>());
+	  }
+	  else {
+		  FRotator yawRotation(0, GetControlRotation().Yaw, 0);
+		  FVector rightVector = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::Z);
+		  AddMovementInput(rightVector, value.Get<float>());
+	  }
+	  
+	  ;
+	  //FVector forwardVector = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::X);
+	  //FVector rightVector = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::Y);
+	  //AddMovementInput(yawRotation.Vector(), value.Get<float>());
+
+	  //qp_movementC->bOrientRotationToMovement = !qp_isFixedCamera;
+  }
+void AQPCharacter::QP_MoveForward(const FInputActionValue& value)
 {
-	 qp_forwardV = value;
+	//const FVector2D mv = value.Get<FVector2D>();
+	//FRotator yawRotation = GetControlRotation();
+	if (qp_movementC->MovementMode == MOVE_Flying || qp_movementC->MovementMode == MOVE_Swimming) {
+		FRotator yawRotation= GetControlRotation();
+		FVector rightVector = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(rightVector, value.Get<float>());
+		//AddMovementInput(GetControlRotation().Vector(), value.Get<float>());
+	}
+	else {
+		//FRotator yawRotation(0, GetControlRotation().Yaw, 0);
+		
+		FRotator yawRotation(0, GetControlRotation().Yaw, 0);
+		FVector rightVector = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(rightVector, value.Get<float>());
+	}
+	//FRotator yawRotation(0, GetControlRotation().Yaw,0);
+	;
+	//FVector forwardVector = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::X);
+	//FVector rightVector = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::Y);
+	
+	//AddMovementInput(rightVector, mv.X);
+
+	/* qp_forwardV = value;
 	if (value != 0) {
 		
 		FRotator rotator = GetControlRotation();
@@ -210,14 +404,31 @@ void AQPCharacter::QP_MoveForward(float value)
 
 		AddMovementInput(rotator.Vector(), value);
 
-	}
+	}*/
 
 	// animInst->PlaySlotAnimation(animSequence,"Slime_Anim_Armature_ForwardMove");
 }
 
-void AQPCharacter::QP_MoveRight(float value)
+void AQPCharacter::QP_MoveRight(const FInputActionValue& value)
 {
-	qp_rightV = value;
+
+	//FRotator yawRotation(0, GetControlRotation().Yaw, 0);
+	//FRotator yawRotation = GetControlRotation();
+	if (qp_movementC->MovementMode == MOVE_Flying || qp_movementC->MovementMode == MOVE_Swimming) {
+		
+		//AddMovementInput(GetControlRotation().Vector(), value.Get<float>());
+		FRotator yawRotation = GetControlRotation();
+		FVector rightVector = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::Y);
+		AddMovementInput(rightVector, value.Get<float>());
+	}
+	else {
+		FRotator yawRotation(0, GetControlRotation().Yaw, 0);
+		FVector rightVector = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::Y);
+		AddMovementInput(rightVector, value.Get<float>());
+	}
+	//FVector forwardVector = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::X);
+	
+	/*qp_rightV = value;
 	if (value != 0) {
 		
 		FRotator rotator = GetControlRotation();
@@ -226,7 +437,7 @@ void AQPCharacter::QP_MoveRight(float value)
 
 		FVector rightVector = FRotationMatrix(rotator).GetScaledAxis(EAxis::Y);
 		AddMovementInput(rightVector, value);
-	}
+	}*/
 }
 
 //前行的切换
@@ -276,7 +487,7 @@ void AQPCharacter::QP_Run()
  }
  //脱离玩家控制时调用
  void AQPCharacter::QP_PlayerExit() {
-	 qp_movementMode = GetCharacterMovement()->MovementMode;
+	 qp_movementMode = qp_movementC->MovementMode;
 
 	 qp_isExit = true;
 	 QP_Reset();
@@ -301,7 +512,7 @@ void AQPCharacter::QP_Run()
 		 QP_Run();
 	 }
 	 if (qp_characterData->QP_GetFString("characterAttack") == "start") {
-		 QP_AttackEnd();
+		 QP_MouseLeftEnd();
 	 }
  }
 void AQPCharacter::QP_ReReset() {
@@ -344,26 +555,27 @@ void AQPCharacter::QP_ReReset() {
  }
 
 //按下鼠标右键
- void AQPCharacter::QP_AttackTwoStart()
+ void AQPCharacter::QP_MouseRightStart()
  {
  }
 //松开鼠标右键
- void AQPCharacter::QP_AttackTwoEnd()
+ void AQPCharacter::QP_MouseRightEnd()
  {
  }
 
  void AQPCharacter::QP_JumpStart()
  {
 	 //如果是真的话，角色跳跃
-	 bPressedJump = true;
+	 Jump();
+	 //bPressedJump = true;
 	 qp_characterData->QP_AddFString("characterJump", "start");
 	 QP_PlayAnim("characterJump");
 
  }
  void AQPCharacter::QP_JumpEnd()
  {
-	 //如果是假的话，结束跳跃
-	 bPressedJump = false;
+	 StopJumping();
+	 //bPressedJump = false;
 	 //GLog->Log("jumpEnd");
 
  }
@@ -378,7 +590,7 @@ void AQPCharacter::QP_ReReset() {
  }
 
 
- void AQPCharacter::QP_AttackStart()
+ void AQPCharacter::QP_MouseLeftStart()
  {
 	 qp_characterData->QP_AddFString("characterAttack", "start");
 	 QP_PlayAnim("characterAttack");
@@ -386,7 +598,7 @@ void AQPCharacter::QP_ReReset() {
 	 qp_isAttacking = true;
  }
 
- void AQPCharacter::QP_AttackEnd()
+ void AQPCharacter::QP_MouseLeftEnd()
  {
 	 qp_characterData->QP_AddFString("characterAttack", "end");
 	 QP_PlayAnim("characterAttack", "end");
