@@ -23,19 +23,19 @@ class QIPAWORLDUEPLUGIN_API UQPTextBlock : public UTextBlock
 public:
 	/**国际化文件路径*/
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPTextBlock")
-	FString qp_fontPath = "";
+	//FString qp_fontPath = "";
 	/**是否根据国际化改变字体*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPTextBlock")
-	bool qp_changeSlate = true;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPTextBlock")
+	//bool qp_changeSlate = true;
 
 	UQPTextBlock();
 
 	/**监听国际化地区改变事件*/
-	void QP_L10NChange(UQPData* data);
+	//void QP_L10NChange(UQPData* data);
 	/**改变字体*/
-	virtual void QP_ChangeFontSlate();
+	//virtual void QP_ChangeFontSlate();
 	UFUNCTION()
-	void QP_Init();
+	//void QP_Init();
 #if WITH_EDITOR
 
 	virtual const FText GetPaletteCategory() override;

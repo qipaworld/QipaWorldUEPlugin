@@ -73,5 +73,8 @@ public class QipaWorldUEPlugin : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 			);
-	}
+
+        SetupIrisSupport(Target);
+
+    }
 }

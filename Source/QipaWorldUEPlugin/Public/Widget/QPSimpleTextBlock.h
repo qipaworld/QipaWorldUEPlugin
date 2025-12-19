@@ -21,5 +21,5 @@ class QIPAWORLDUEPLUGIN_API UQPSimpleTextBlock : public UQPTextBlock
 public:
 
 	/**改变字体*/
-	virtual void QP_ChangeFontSlate() override;
+	//virtual void QP_ChangeFontSlate() override;
 };

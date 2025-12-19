@@ -6,6 +6,8 @@
 #include "UObject/UnrealType.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Interface/QPI_InitAttributeSet.h"
+
 #include "Data/QPData.h"
 int AQPMonster::qp_characterDataMaxNum = 1;
 // Sets default values
@@ -38,7 +40,8 @@ AQPMonster::AQPMonster(const FObjectInitializer& ObjectInitializer)
 	qp_playMontage = CreateDefaultSubobject<UQPC_PlayMontage>("qp_playMontage");
 
 	qp_abilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("qp_abilitySystem"));
-
+	qp_abilitySystemComponent->SetIsReplicated(true);
+	qp_abilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 	//qp_stateTree = CreateDefaultSubobject<UStateTreeComponent>(TEXT("qp_stateTree"));
 	//qp_stateTree->setlo = false;
 	//qp_stateTree->SetStartLogicAutomatically(false);
@@ -67,12 +70,12 @@ void AQPMonster::BeginPlay()
 
 	QP_GetAnimData();
 
-	if (!qp_saveName.IsEmpty()) {
-		QP_GetSaveData()->QP_LoadData(qp_saveName);
-		if (!qp_saveData->QP_Getbool("qp_init")) {
+	//if (!qp_saveName.IsEmpty()) {
+		//QP_GetSaveData()->QP_LoadData(qp_saveName);
+		/*if (!qp_saveData->QP_Getbool("qp_init")) {
 			QP_InitSaveData();
-		}
-	}
+		}*/
+	//}
 
 	qp_playCallTime = FMath::FRandRange(qp_playCallTimeMin, qp_playCallTimeMax);
 	/*if (qp_AutoPlayStateTree) {
@@ -87,7 +90,15 @@ void AQPMonster::BeginPlay()
 		if (SetClass)
 		{
 			// 创建 AttributeSet 实例，并注册到 AbilitySystem
-			UAttributeSet* NewSet = NewObject<UAttributeSet>(qp_abilitySystemComponent, SetClass);
+			UAttributeSet* NewSet = NewObject<UAttributeSet>(this,SetClass);
+
+			;
+			if (IQPI_InitAttributeSet* di = Cast<IQPI_InitAttributeSet>(NewSet)) {
+				di->QPI_InitAttributeSet(this);
+				//di->QP_GetQPData()->QP_GetUQPData(UQPGIM_AnimNotify::QP_DATA_BASE_NAME)->QP_Addbool(qp_animNotifyName,true);
+				//return true;
+			}
+
 			qp_abilitySystemComponent->AddAttributeSetSubobject(NewSet);
 		}
 	}
@@ -97,28 +108,30 @@ void AQPMonster::BeginPlay()
 		//初始化技能
 		if (qp_preloadedAbilities.Num() > 0)
 		{
-			for (auto i = 0; i < qp_preloadedAbilities.Num(); i++)
+			for (auto v: qp_preloadedAbilities)
 			{
-				if (qp_preloadedAbilities[i] != nullptr)
-				{
-
-					qp_abilitySystemComponent->GiveAbility(
-						FGameplayAbilitySpec(qp_preloadedAbilities[i].GetDefaultObject(), 1));
-				}
+					qp_abilitySystemComponent->GiveAbility(v);
+				
 			}
 		}
 
 		//初始化ASC
 		qp_abilitySystemComponent->InitAbilityActorInfo(this, this);
 	}
+
+	FGameplayTagContainer baseAbiliteTags;
+	baseAbiliteTags.AddTag(QPTags::QPAbilites::BaseBuff);
+	//ddTags.AddTag(FGameplayTag::RequestGameplayTag("QPTags.QPAbilites.Attack"));
+	GetAbilitySystemComponent()->TryActivateAbilitiesByTag(baseAbiliteTags);
+
 }
 void AQPMonster::QP_PlayerDataChange(UQPData* data) {
 
 }
-void AQPMonster::QP_SetSaveDataName(const FString& n) {
-	qp_saveName = n;
-	this->QP_GetSaveData()->QP_LoadData(qp_saveName);
-}
+//void AQPMonster::QP_SetSaveDataName(const FString& n) {
+//	qp_saveName = n;
+//	this->QP_GetSaveData()->QP_LoadData(qp_saveName);
+//}
 void AQPMonster::QP_OnCapsuleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	//UQPUtil::QP_LOG("Hit");
@@ -126,10 +139,15 @@ void AQPMonster::QP_OnCapsuleHit(UPrimitiveComponent* HitComponent, AActor* Othe
 }
 
 void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {
-	if (!qp_saveName.IsEmpty()) {
+	/*if (!qp_saveName.IsEmpty()) {
 		QP_ChangeSaveData();
 		QP_GetSaveData()->QP_SaveData(qp_saveName);
-	}
+	}*/
+	//FGameplayTagContainer baseAbiliteTags;
+	//baseAbiliteTags.AddTag(QPTags::QPAbilites::BaseBuff);
+	//ddTags.AddTag(FGameplayTag::RequestGameplayTag("QPTags.QPAbilites.Attack"));
+	//GetAbilitySystemComponent()->TryActivateAbilitiesByTag(baseAbiliteTags);
+	GetAbilitySystemComponent()->CancelAllAbilities();
 	Super::EndPlay(EndPlayReason);
 }
  void AQPMonster::QP_OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -167,12 +185,12 @@ void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {
  void AQPMonster::QP_PlayCall() {
 
  }
-void AQPMonster::QP_ChangeSaveData() {
-
-}
-void AQPMonster::QP_InitSaveData() {
-	qp_saveData->QP_Addbool("qp_init", true);
-}
+//void AQPMonster::QP_ChangeSaveData() {
+//
+//}
+//void AQPMonster::QP_InitSaveData() {
+//	qp_saveData->QP_Addbool("qp_init", true);
+//}
 
 // Called every frame
 void AQPMonster::Tick(float DeltaTime)
@@ -305,13 +323,13 @@ UQPData* AQPMonster::QP_GetAnimData() {
 	}
 	return qp_animData;
 }
-UQPData* AQPMonster::QP_GetSaveData() {
-	if (!qp_saveData) {
-		qp_saveData = QP_GetQPData()->QP_GetUQPData("qp_saveData");
-
-	}
-	return qp_saveData;
-}
+//UQPData* AQPMonster::QP_GetSaveData() {
+//	if (!qp_saveData) {
+//		qp_saveData = QP_GetQPData()->QP_GetUQPData("qp_saveData");
+//
+//	}
+//	return qp_saveData;
+//}
 void AQPMonster::QP_PlayAnim(FName name, FName StartSectionName) {
 	qp_animData->QP_AddFName("playAnim", name);
 	qp_animData->QP_AddFName("startSectionName", StartSectionName);

@@ -46,10 +46,10 @@ public class QPWUEGPUCompute : ModuleRules
                 //"Text3D",
                 //"MetasoundEngine",
                 //"NavigationSystem",
-                "RenderCore",
+                //"RenderCore",
                 //"ShaderCore",
 				//"Renderer",
-                "RHI",
+                //"RHI",
 				// ... add private dependencies that you statically link with here ...	
 			}
             );

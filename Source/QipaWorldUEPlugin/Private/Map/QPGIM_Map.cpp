@@ -118,3 +118,10 @@ void UQPGIM_Map::QP_LoadMapEnd()
 {
 	qp_isLoadSubMap = true;
 }
+
+UQPWorldData* UQPGIM_Map::QP_GetMapWorldData() {
+	if (!IsValid(qp_worldBaseData)) {
+		qp_worldBaseData = UQPGIM_BaseData::qp_staticObject->QP_GetWorldData(*UGameplayStatics::GetCurrentLevelName(GetWorld()));
+	}
+	return qp_worldBaseData;
+}

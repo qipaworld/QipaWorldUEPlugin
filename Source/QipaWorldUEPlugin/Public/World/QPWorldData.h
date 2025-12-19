@@ -15,7 +15,12 @@ class QIPAWORLDUEPLUGIN_API UQPWorldData : public UQPDataAsset
 	GENERATED_BODY()
 	public:
 	
-	
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+		float qp_temperature = 10;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+		float qp_humidity = 10;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+		float qp_oxygen = 2;
 
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")

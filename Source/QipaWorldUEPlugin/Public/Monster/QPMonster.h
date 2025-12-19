@@ -20,6 +20,8 @@
 #include "AbilitySystemComponent.h"
 
 #include "AbilitySystemInterface.h"
+#include "GamePlay/Tags/QPTags.h"
+#include "GameplayTagContainer.h"
 //#include "Components/StateTreeReference.h"
 //#include "Sound/QP_RandomSoundData.h"
 #include "QPMonster.generated.h"
@@ -51,10 +53,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	UQPData* qp_animData = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	UQPData* qp_saveData = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-	FString qp_saveName;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	//UQPData* qp_saveData = nullptr;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	//FString qp_saveName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	UQPC_PlayMontage* qp_playMontage;
@@ -182,10 +184,10 @@ public:
 	virtual UQPData* QP_GetQPData_BP();
 	virtual class UQPData* QP_GetAnimData() override;
 	//if you want set save data,rewrite this function
-	virtual void QP_ChangeSaveData();
-	virtual void QP_InitSaveData();
+	//virtual void QP_ChangeSaveData();
+	//virtual void QP_InitSaveData();
 
-	class UQPData* QP_GetSaveData();
+	//class UQPData* QP_GetSaveData();
 	virtual void QPI_AnimNotify(const FName& k) override;
 	virtual void QPI_AnimNotifyFootstep(EQPFootstepType, const FHitResult&,float) override;
 
@@ -198,8 +200,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void QP_PlayCall();
-	UFUNCTION(BlueprintCallable)
-	virtual void QP_SetSaveDataName(const FString& name);
+	//UFUNCTION(BlueprintCallable)
+	//virtual void QP_SetSaveDataName(const FString& name);
 	UFUNCTION()
 	virtual void QP_OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 

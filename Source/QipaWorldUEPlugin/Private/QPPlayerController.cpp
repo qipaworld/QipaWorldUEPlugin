@@ -11,35 +11,63 @@
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
-
+#include "Data/QPGIM_PlayerData.h"
 #include "Data/QPGIM_BaseData.h"
 
 
 void AQPPlayerController::BeginPlay() {
+    //UE_LOG(LogTemp, Warning, TEXT("AQPPlayerController::BeginPlaye______ 1"));
     Super::BeginPlay();
-    if (!UQPGIM_BaseData::qp_staticObject->QP_IsInitKey("QP_AutoSetingGameQuality")) {
-        UGameUserSettings* Settings = GEngine->GetGameUserSettings();
-        Settings->SetDynamicResolutionEnabled(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DynamicResolutionEnabled); 
-        Settings->ApplySettings(false);               
-        Settings->SaveSettings();                     
+    if (IsLocalPlayerController()) {
+        if (!UQPGIM_BaseData::qp_staticObject->QP_IsInitKey("QP_AutoSetingGameQuality")) {
+            UGameUserSettings* Settings = GEngine->GetGameUserSettings();
+            Settings->SetDynamicResolutionEnabled(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DynamicResolutionEnabled);
+            Settings->ApplySettings(false);
+            Settings->SaveSettings();
 
-        if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_AutoSetingGameQuality) {
-            UQPUtil::QP_AutoSetingGameQuality();
+            if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_AutoSetingGameQuality) {
+                UQPUtil::QP_AutoSetingGameQuality();
+            }
+            UQPGIM_BaseData::qp_staticObject->QP_SetInitKey("QP_AutoSetingGameQuality", true);
         }
-        UQPGIM_BaseData::qp_staticObject->QP_SetInitKey("QP_AutoSetingGameQuality", true);
-    }
-    UQPGIM_BaseData::qp_staticObject->QP_GetSoundData()->QP_Addbool("ActivateBusMix", true);
-    //UQPGIM_BaseData::qp_staticObject->QP_GetUIEventData()->QP_Addbool("AddMainUI", true);
-    UQPGIM_BaseData::qp_staticObject->QP_GetKeyBoardEventData()->QP_Addbool("AddMainUI", true, EQPDataBroadcastType::DEFAULT);
 
-    
+        UQPGI_Online::qp_staticObject->QP_Init();
 
-    
-    UQPGI_Online::qp_staticObject->QP_Init();
-           
-     
-      
+        if (UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Getbool("qp_autoControllerRotation")) {
+            SetControlRotation(UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetFRotator("ControllerRotation"));
+        }
         
+        UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Addbool("qp_autoControllerRotation", true);
+        
+    }
+    
+    //UQPGIM_BaseData::qp_staticObject->QP_GetSoundData()->QP_Addbool("ActivateBusMix", true);
+    //UQPGIM_BaseData::qp_staticObject->QP_GetUIEventData()->QP_Addbool("AddMainUI", true);
+    // this move to QPHUD 
+    //UQPGIM_BaseData::qp_staticObject->QP_GetKeyBoardEventData()->QP_Addbool("AddMainUI", true, EQPDataBroadcastType::DEFAULT);
+
+
+
+
+    
+    //QP_LoadData();
+
+    //UE_LOG(LogTemp, Warning, TEXT("AQPPlayerController::BeginPlaye______ 2"));
+
+}
+
+void  AQPPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+    if (IsLocalController()) {
+        
+        UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_AddFRotator("ControllerRotation", GetControlRotation());
+        
+        UQPGIM_PlayerData::qp_staticObject->QP_SaveLocalData();
+    }
+    //UE_LOG(LogTemp, Warning, TEXT("AQPPlayerController::EndPlay______ 1"));
+
+    Super::EndPlay(EndPlayReason);
+    //QP_SaveData();
+    //UE_LOG(LogTemp, Warning, TEXT("AQPPlayerController::EndPlay______ 2"));
 }
 void AQPPlayerController::SetupInputComponent()
 {
@@ -93,3 +121,21 @@ void AQPPlayerController::QP_OnAutoUIKeyPressed()
 void AQPPlayerController::QP_SwitchMouseShow() {
     UQPUtil::QP_SwitchMouseShow(this);
 }
+
+void AQPPlayerController::OnPossess(APawn* InPawn) {
+    Super::OnPossess(InPawn);
+
+    //if (UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Getbool("qp_autoControllerRotation")) {
+        //SetControlRotation(UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetFRotator("ControllerRotation"));
+        //qp_springArm->TargetArmLength = UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Getfloat("TargetArmLength");
+    //}
+}
+//void AQPPlayerController::QP_LoadData() {
+//    qp_savePlayerData = UQPGIM_BaseData::qp_staticObject->QP_GetPlayerData()->QP_GetUQPData(qp_savePlayerDataName);
+//    qp_savePlayerData->QP_LoadDataFAES("AQPPlayerControllerPlayerDataSave", UQPGIM_BaseData::qp_staticObject->GetAESKey("AQPPlayerControllerPlayerDataSaveA"));
+//}
+//void AQPPlayerController::QP_SaveData() {
+//
+//    qp_savePlayerData->QP_SaveDataFAES("AQPPlayerControllerPlayerDataSave", UQPGIM_BaseData::qp_staticObject->GetAESKey("AQPPlayerControllerPlayerDataSaveA"));
+//}
+

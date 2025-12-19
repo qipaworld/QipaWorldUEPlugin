@@ -59,7 +59,9 @@ void UQPUtil::QP_UpdateMouse(bool b, APlayerController* controller, UWidget* InW
 		//return;
 		controller = UGameplayStatics::GetPlayerController(UQPGIM_BaseData::qp_staticObject->GetWorld(), 0);
 	}
-	
+	if (!controller) {
+		return;
+	}
 	controller->SetShowMouseCursor(b);
 	if (b) {
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(controller, InWidgetToFocus, InMouseLockMode, bHideCursorDuringCapture, bFlushInput);

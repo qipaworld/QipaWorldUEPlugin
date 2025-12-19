@@ -94,9 +94,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
 
 	TObjectPtr<UInputAction> qp_MoveUPInputAction;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 
-	bool qp_isPlayer = true;
+	//bool qp_isPlayer = true;
 	
 	
 	
@@ -274,8 +274,11 @@ public:
 	
 	virtual void QP_PlayerDataChange(UQPData* data)override;
 
-	virtual void QP_InitSaveData() override;
-	virtual void QP_ChangeSaveData()override;
+	//virtual void QP_InitSaveData() override;
+	//virtual void QP_ChangeSaveData()override;
 	virtual void UnPossessed() override;
 	virtual void PossessedBy(AController* NewController) override;
+
+	bool qp_isAddLocalBuff = false;
+	void QP_AddLocalBuff();
 };

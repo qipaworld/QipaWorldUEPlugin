@@ -24,7 +24,7 @@ public:
 public:
 		virtual void BeginPlay() override;
 
-		FString qp_fontPath = "";
+		//FString qp_fontPath = "";
 
 
 		/**监听国际化地区改变事件*/

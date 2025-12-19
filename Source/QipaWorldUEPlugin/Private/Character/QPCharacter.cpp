@@ -20,6 +20,8 @@
 #include "InputActionValue.h"
 #include "Character/QPGIM_Character.h"
 #include "Character/QPDA_Character.h"
+#include "Data/QPGIM_PlayerData.h"
+#include "GamePlay/AttributeSet/QPAS_BaseBuff.h"
 #include "Notify/QPGIM_AnimNotifyData.h"
 
 // Sets default values
@@ -72,6 +74,8 @@ void AQPCharacter::PreInitializeComponents() {
 // Called when the game starts or when spawned
 void AQPCharacter::BeginPlay()
 {
+	//UQPUtil::QP_LOG("_______________________dd_________________dd____________________");
+
 	Super::BeginPlay();
 	
 
@@ -92,23 +96,20 @@ void AQPCharacter::BeginPlay()
 	qp_maxSpeed = qp_walkSpeed;
 	//qp_characterData->QP_GetUQPData(UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyEvent);
 	
+	QP_AddLocalBuff();
+
 	
 
-	if (qp_saveData) {
-		Controller->SetControlRotation(qp_saveData->QP_GetFRotator("ControllerRotation"));
-		qp_springArm->TargetArmLength = qp_saveData->QP_Getfloat("TargetArmLength");
-	}
-
-	if (qp_isPlayer) {
+	/*if (qp_isPlayer) {
 		qp_springArm->SetVisibility(false, true);
 	}
 	else {
 		qp_springArm->SetVisibility(true, true);
-	}
+	}*/
 	
 	//qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
 	//qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
-
+	//UQPUtil::QP_LOG("_______________________dd_____________________________________");
 }
 
 // Called every frame
@@ -291,7 +292,7 @@ void AQPCharacter::QP_TrunAxis(const FInputActionValue& value) {
 //{
 //	
 //}
- void AQPCharacter::QP_InitSaveData() {
+ /*void AQPCharacter::QP_InitSaveData() {
 	 Super::QP_InitSaveData();
 	 qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
 	 qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
@@ -299,41 +300,95 @@ void AQPCharacter::QP_TrunAxis(const FInputActionValue& value) {
   void AQPCharacter::QP_ChangeSaveData() {
 	  Super::QP_ChangeSaveData();
 	  
- }
+ }*/
   void AQPCharacter::UnPossessed() {
 	  
 	  //UQPUtil::QP_LOG(GetControlRotation().ToString());
-	  Super::UnPossessed();
-
-	  if (IsLocallyControlled())
-	  {
-		  if (qp_saveData) {
-			  qp_saveData->QP_AddFRotator("ControllerRotation", GetControlRotation());
-			  qp_saveData->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
-		  }
-
-		  if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	  
+	  if (APlayerController* PC = Cast<APlayerController>(GetController())) {
+		  if (PC->IsLocalPlayerController())
 		  {
-			  if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
-			  {
-				  if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
-				  {
-					  //Subsystem->RemoveMappingContext(DefaultMappingContext);
-					  for (auto v : qp_inputMappingContext) {
-						  Subsystem->RemoveMappingContext(v);
-					  }
-				  }
-			  }
+			  //if (qp_saveData) {
+			  //UQPUtil::QP_LOG(GetControlRotation().ToString() + "_________________");
+			  //UQPUtil::QP_LOG(GetActorTransform().ToString() + "_________________");
+			  //UQPUtil::QP_LOG(GetControlRotation().ToString());
+			  UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_AddFTransform("Transform", GetActorTransform());
+			  UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
+			  
+			  //}
+
+			  
+			if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
+			{
+				if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
+				{
+					//Subsystem->RemoveMappingContext(DefaultMappingContext);
+					for (auto v : qp_inputMappingContext) {
+						Subsystem->RemoveMappingContext(v);
+					}
+				}
+			}
+
+
+			if (qp_isAddLocalBuff) {
+
+				if (const UAttributeSet* uset = qp_abilitySystemComponent->GetAttributeSet(UQPAS_BaseBuff::StaticClass())) {
+					
+					//UQPData* baseBuffData = UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetUQPData("slimeBaseBuffData");
+
+					UQPData* baseBuffData_Add = QP_GetQPData()->QP_GetUQPData("baseBuffDataSet_Add");
+					UQPData* baseBuffData = QP_GetQPData()->QP_GetUQPData("baseBuffDataSet");
+					
+					TMap<FName, FProperty*> t;
+					for (TFieldIterator<FProperty> It(qp_assetData->GetClass()); It; ++It)
+					{
+						FProperty* Property = *It;
+						t.Add(Property->GetFName(), Property);
+					}
+					
+					for (TFieldIterator<FProperty> It(uset->GetClass()); It; ++It)
+					{
+						FProperty* Property = *It;
+						
+						if (Property->HasMetaData(TEXT("QP_LocalData"))) {
+							baseBuffData->QP_Addfloat(Property->GetFName(), qp_abilitySystemComponent->GetNumericAttributeBase(FGameplayAttribute(Property)));
+						}
+						else if (Property->HasMetaData(TEXT("QP_LocalDataBase"))) {
+							FGameplayAttribute p(Property);
+							float num = qp_abilitySystemComponent->GetNumericAttributeBase(p);
+							float num2 = 0;
+							if (t.Contains(Property->GetFName())) {
+								if (FFloatProperty* FloatProp = CastField<FFloatProperty>(t[Property->GetFName()]))
+								{
+									num2 = FloatProp->GetPropertyValue_InContainer(qp_assetData);
+								}
+							}
+							else {
+								UQPUtil::QP_LOG("not qp_assetData name " + Property->GetFName().ToString());
+							}
+							
+							baseBuffData_Add->QP_Addfloat(Property->GetFName(), num - num2);
+						}
+
+						//UE_LOG(LogTemp, Log, TEXT("____%s"), *Property->GetFName().ToString());
+					}
+					baseBuffData_Add->QP_SaveDataFAES("baseBuffDataSet_Add" + qp_assetData->qp_name.ToString(), UQPGIM_BaseData::qp_staticObject->GetAESKey(FName("baseBuffDataSet_Add_A" + qp_assetData->qp_name.ToString())));
+					baseBuffData->QP_SaveDataFAES("baseBuffDataSet" + qp_assetData->qp_name.ToString(), UQPGIM_BaseData::qp_staticObject->GetAESKey(FName("baseBuffDataSet_A" + qp_assetData->qp_name.ToString())));
+				}
+			}
 		  }
 	  }
+	  Super::UnPossessed();
 
   }
   void AQPCharacter::PossessedBy(AController* NewController) {
+	 
 	  Super::PossessedBy(NewController);
-
-	  if (IsLocallyControlled())
+	 
+	 
+	  if (APlayerController* PC = Cast<APlayerController>(NewController))
 	  {
-		  if (APlayerController* PC = Cast<APlayerController>(NewController))
+		  if (PC->IsLocalPlayerController())
 		  {
 			  if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
 			  {
@@ -344,11 +399,65 @@ void AQPCharacter::QP_TrunAxis(const FInputActionValue& value) {
 					  }
 					  /*Subsystem->AddMappingContext(DefaultMappingContext, 0);*/
 				  }
-			  }
+			   }
+				if (UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Getbool("qp_autoTransform")) 
+				{
+					SetActorTransform(UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetFTransform("Transform"));
+				}
+				if (UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Getbool("qp_autoTargetArmLength"))
+				{
+					qp_springArm->TargetArmLength = UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Getfloat("TargetArmLength");
+				}
+				UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Addbool("qp_autoTargetArmLength", true);
+				UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Addbool("qp_autoTransform", true);
+				//UQPUtil::QP_LOG(UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetFTransform("Transform").ToString() + "_________________");
+				//UQPUtil::QP_LOG(UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetFRotator("ControllerRotation").ToString() + "_________________");
+
+				
+
+
+			  
+		   }
+	   }
+	  QP_AddLocalBuff();
+	 
+  }
+  void AQPCharacter::QP_AddLocalBuff() {
+	  if (!qp_isAddLocalBuff) {
+		  const UAttributeSet* uset = qp_abilitySystemComponent->GetAttributeSet(UQPAS_BaseBuff::StaticClass());
+		  if (Controller && Controller->IsLocalPlayerController()&& uset) {
+			  qp_isAddLocalBuff = true;
+			  //UQPData* baseBuffData = UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetUQPData("slimeBaseBuffData");
+			  
+			  UQPData* baseBuffData_Add = QP_GetQPData()->QP_GetUQPData("baseBuffDataSet_Add");
+			  baseBuffData_Add->QP_LoadDataFAES("baseBuffDataSet_Add" + qp_assetData->qp_name.ToString(), UQPGIM_BaseData::qp_staticObject->GetAESKey(FName("baseBuffDataSet_Add_A" + qp_assetData->qp_name.ToString())));
+			  
+			  UQPData* baseBuffData = QP_GetQPData()->QP_GetUQPData("baseBuffDataSet");
+			  baseBuffData->QP_LoadDataFAES("baseBuffDataSet" + qp_assetData->qp_name.ToString(), UQPGIM_BaseData::qp_staticObject->GetAESKey(FName("baseBuffDataSet_A" + qp_assetData->qp_name.ToString())));
+
+				
+
+				for (TFieldIterator<FProperty> It(uset->GetClass()); It; ++It)
+				{
+					FProperty* Property = *It;
+					
+					//FString Name = Property->GetName();
+					//;
+
+					//if(Property->GetFName().ToString() == "qp_health")
+					if (Property->HasMetaData(TEXT("QP_LocalData"))) { 
+						qp_abilitySystemComponent->SetNumericAttributeBase(FGameplayAttribute(Property), baseBuffData->QP_Getfloat(Property->GetFName()));
+					}else if(Property->HasMetaData(TEXT("QP_LocalDataBase"))) {
+						FGameplayAttribute p(Property);
+						float num = qp_abilitySystemComponent->GetNumericAttributeBase(p);
+						qp_abilitySystemComponent->SetNumericAttributeBase(p, num + baseBuffData_Add->QP_Getfloat(Property->GetFName()));
+					}
+					
+					//UE_LOG(LogTemp, Log, TEXT("____%s"), *Property->GetFName().ToString());
+				}
 		  }
 	  }
   }
-
   void AQPCharacter::QP_MoveUP(const FInputActionValue& value) {
 	  if (qp_movementC->MovementMode == MOVE_Flying || qp_movementC->MovementMode == MOVE_Swimming) {
 		 
@@ -615,6 +724,7 @@ void AQPCharacter::QP_ReReset() {
 	 //AutoPossessPlayer = EAutoReceiveInput::Type::Disabled;
 
 	 //UQPGIM_Character::qp_staticObject->QP_GetCharacter("FlySlime")->AutoPossessPlayer = EAutoReceiveInput::Type::Player0;
+	 UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Addbool("qp_autoTransform", false);
 	 UQPGIM_Character::qp_staticObject->QP_Possess(GetController(), qp_changeCharacterName, qp_unchangeMovementMode);
 	 //->Possess(QP_GetCharacter());
  //GetController()->Possess(UQPGIM_Character::qp_staticObject->QP_GetCharacter("FlySlime"));

@@ -35,7 +35,9 @@ void UQPGIM_Sound::Initialize(FSubsystemCollectionBase& Collection)
 	qp_soundData->QP_LoadData("UQPGIM_Sound");
 	qp_soundVolumeData = qp_soundData->QP_GetUQPData("qp_soundVolumeData");
 	QP_LoadSoundData();
-	
+
+
+	//QP_SoundDataChange(nullptr);
 	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
 }
 void UQPGIM_Sound::QP_InitStaticObject() {
@@ -264,33 +266,9 @@ void UQPGIM_Sound::QP_SoundDataChange(UQPData* data)
 	//	//qp_UISound->SetPitchMultiplier(qp_pitch);
 	//	qp_UISound->SetVolumeMultiplier(QP_GetSoundVolume());
 	//}
-	if (data->QP_IsChange<FName, bool>("ActivateBusMix", EQPDataValueType::BOOL)) {
-		if (!IsValid(qp_busMix)) {
-			qp_busMix = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultUserAudioSetting.LoadSynchronous();
-			qp_busMix->AddToRoot();
-		}
-		if (IsValid(qp_busMix))
-		{
-			if (!UAudioModulationStatics::IsControlBusMixActive(GetWorld(), qp_busMix)) {
-				for (int i = 0; i < qp_busMix->MixStages.Num(); ++i) {
-					qp_soundVolumeData->QP_Addint32(qp_busMix->MixStages[i].Bus.GetFName(), i);
-					//qp_soundVolumeData->QP_AddFNameExI( i, qp_busMix->MixStages[i].Bus.GetFName());
-					if (qp_soundVolumeData->QP_Contains<FName, float>(qp_busMix->MixStages[i].Bus.GetFName(), EQPDataValueType::FLOAT)) {
-						qp_busMix->MixStages[i].Value.TargetValue = qp_soundVolumeData->QP_Getfloat(qp_busMix->MixStages[i].Bus.GetFName());
-					}
-					else {
-						qp_soundVolumeData->QP_Addfloat(qp_busMix->MixStages[i].Bus.GetFName(),qp_busMix->MixStages[i].Value.TargetValue);
-					}
-					
-				}
-				
-				UAudioModulationStatics::ActivateBusMix(GetWorld(), qp_busMix);
-			}
-		}
-		else {
-			UQPUtil::QP_LOG("load Control Bus Mix Error");
-		}
-	}
+	//if (data->QP_IsChange<FName, bool>("ActivateBusMix", EQPDataValueType::BOOL)) {
+		
+	//}
 }
 
 void UQPGIM_Sound::QP_SaveSoundData()
@@ -373,6 +351,32 @@ void UQPGIM_Sound::QP_LoadSoundData()
 	*/
 	//qp_handle = qp_soundData->qp_dataDelegate.AddUObject(this, &UQPGIM_Sound::QP_BindSoundData);
 	qp_soundData->qp_dataDelegate.AddUObject(this, &UQPGIM_Sound::QP_SoundDataChange);
+
+	//if (!IsValid(qp_busMix)) {
+		qp_busMix = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultUserAudioSetting.LoadSynchronous();
+		//qp_busMix->AddToRoot();
+	//}
+	if (IsValid(qp_busMix))
+	{
+		if (!UAudioModulationStatics::IsControlBusMixActive(GetWorld(), qp_busMix)) {
+			for (int i = 0; i < qp_busMix->MixStages.Num(); ++i) {
+				qp_soundVolumeData->QP_Addint32(qp_busMix->MixStages[i].Bus.GetFName(), i);
+				//qp_soundVolumeData->QP_AddFNameExI( i, qp_busMix->MixStages[i].Bus.GetFName());
+				if (qp_soundVolumeData->QP_Contains<FName, float>(qp_busMix->MixStages[i].Bus.GetFName(), EQPDataValueType::FLOAT)) {
+					qp_busMix->MixStages[i].Value.TargetValue = qp_soundVolumeData->QP_Getfloat(qp_busMix->MixStages[i].Bus.GetFName());
+				}
+				else {
+					qp_soundVolumeData->QP_Addfloat(qp_busMix->MixStages[i].Bus.GetFName(), qp_busMix->MixStages[i].Value.TargetValue);
+				}
+
+			}
+
+			UAudioModulationStatics::ActivateBusMix(this, qp_busMix);
+		}
+	}
+	else {
+		UQPUtil::QP_LOG("load Control Bus Mix Error");
+	}
 
 }
 

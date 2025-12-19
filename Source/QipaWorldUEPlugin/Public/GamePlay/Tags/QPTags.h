@@ -1,0 +1,14 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "NativeGameplayTags.h"
+
+namespace QPTags
+{
+	namespace QPAbilites
+	{
+		QIPAWORLDUEPLUGIN_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attack);
+		QIPAWORLDUEPLUGIN_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseBuff);
+	}
+
+}

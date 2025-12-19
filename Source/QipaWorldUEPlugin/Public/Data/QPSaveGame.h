@@ -20,7 +20,7 @@ class QIPAWORLDUEPLUGIN_API UQPSaveGame : public USaveGame
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|UQPSaveGame")
 	int32 qp_saveId = 0;
 
-	//static FString qp_save_;
+	static FString qp_saveType;
 public:
 	//static FString QP_GetSaveKey();
 	static FString QP_GenerateSaveKey(const FString& key);

@@ -21,7 +21,10 @@ class QIPAWORLDUEPLUGIN_API UQPDA_Character : public UQPDataAsset
 	TMap<FName, class UAnimMontage*> qp_montage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	TMap<FName, UQP_SkillData*> qp_skillDatas;
+	FName qp_name;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	//TMap<FName, UQP_SkillData*> qp_skillDatas;
 	
 
 

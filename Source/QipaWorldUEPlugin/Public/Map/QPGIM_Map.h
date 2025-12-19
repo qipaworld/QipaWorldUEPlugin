@@ -78,9 +78,7 @@ public:
 	void QP_LoadMapEnd();
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")
-	inline UQPWorldData* QP_GetMapWorldData() {
-		return qp_worldBaseData;
-	}
+	UQPWorldData* QP_GetMapWorldData();
 private:
 	
 

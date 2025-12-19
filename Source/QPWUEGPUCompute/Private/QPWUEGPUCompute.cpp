@@ -6,9 +6,9 @@
 
 void FQPWUEGPUComputeModule::StartupModule()
 {
-	FString PluginShaderDir =
-		FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("QipaWorldUEPlugin"))->GetBaseDir(), TEXT("Shaders"));
-	AddShaderSourceDirectoryMapping("/QipaWorldUEPlugin", PluginShaderDir);
+	//FString PluginShaderDir =
+		//FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("QipaWorldUEPlugin"))->GetBaseDir(), TEXT("Shaders"));
+	//AddShaderSourceDirectoryMapping("/QipaWorldUEPlugin", PluginShaderDir);
 
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 }

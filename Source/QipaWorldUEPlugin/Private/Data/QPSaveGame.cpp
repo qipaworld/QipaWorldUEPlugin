@@ -7,15 +7,26 @@
 #include "Data/QPGIM_BaseData.h"
 
 #include "QPUtil.h"
-//FString UQPSaveGame::qp_save_ = "NONE";
+FString UQPSaveGame::qp_saveType = "NONE";
 
 FString UQPSaveGame::QP_GenerateSaveKey(const FString& key) {
-	if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType == "NONE" || UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType.IsEmpty()) {
-		return key;
+	if (qp_saveType == "NONE") {
+		if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType != "NONE" && !UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType.IsEmpty()) {
+			qp_saveType = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType;
+		}
+		else {
+			return FPaths::ProjectUserDir()+ key + ".qp";
+		}
 	}
+	/*else {
+
+	}*/
+	/*if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType == "NONE" || UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType.IsEmpty()) {
+		return key;
+	}*/
 	//FString s =;
 	//return key + "sdfsdf";
-	FString CustomSaveDir = FPaths::ProjectUserDir() + UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_SaveKeyType;// +UQPGI_Online::qp_staticObject->QP_GetPlatform() + "/";
+	FString CustomSaveDir = FPaths::ProjectUserDir() + qp_saveType;// +UQPGI_Online::qp_staticObject->QP_GetPlatform() + "/";
 	IFileManager::Get().MakeDirectory(*CustomSaveDir, true);
 	//UQPUtil::QP_LOG(CustomSaveDir + key + ".qp");
 	//QP_GetPlatform()
