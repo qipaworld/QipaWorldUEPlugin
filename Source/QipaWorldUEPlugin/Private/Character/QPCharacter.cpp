@@ -425,36 +425,39 @@ void AQPCharacter::QP_TrunAxis(const FInputActionValue& value) {
   void AQPCharacter::QP_AddLocalBuff() {
 	  if (!qp_isAddLocalBuff) {
 		  const UAttributeSet* uset = qp_abilitySystemComponent->GetAttributeSet(UQPAS_BaseBuff::StaticClass());
-		  if (Controller && Controller->IsLocalPlayerController()&& uset) {
+		  if ((Controller && Controller->IsLocalPlayerController()&& uset)||(qp_forceAddLocalBuff&& uset)) {
 			  qp_isAddLocalBuff = true;
 			  //UQPData* baseBuffData = UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetUQPData("slimeBaseBuffData");
-			  
+			  //UE_LOG(LogTemp, Log, TEXT("____%s"), *qp_assetData->qp_name.ToString());
 			  UQPData* baseBuffData_Add = QP_GetQPData()->QP_GetUQPData("baseBuffDataSet_Add");
 			  baseBuffData_Add->QP_LoadDataFAES("baseBuffDataSet_Add" + qp_assetData->qp_name.ToString(), UQPGIM_BaseData::qp_staticObject->GetAESKey(FName("baseBuffDataSet_Add_A" + qp_assetData->qp_name.ToString())));
 			  
 			  UQPData* baseBuffData = QP_GetQPData()->QP_GetUQPData("baseBuffDataSet");
 			  baseBuffData->QP_LoadDataFAES("baseBuffDataSet" + qp_assetData->qp_name.ToString(), UQPGIM_BaseData::qp_staticObject->GetAESKey(FName("baseBuffDataSet_A" + qp_assetData->qp_name.ToString())));
+			  if (baseBuffData->QP_Getbool("qp_isinit")) {
+				  for (TFieldIterator<FProperty> It(uset->GetClass()); It; ++It)
+				  {
+					  FProperty* Property = *It;
+
+					  //FString Name = Property->GetName();
+					  //;
+
+					  //if(Property->GetFName().ToString() == "qp_health")
+					  if (Property->HasMetaData(TEXT("QP_LocalData"))) {
+						  qp_abilitySystemComponent->SetNumericAttributeBase(FGameplayAttribute(Property), baseBuffData->QP_Getfloat(Property->GetFName()));
+					  }
+					  else if (Property->HasMetaData(TEXT("QP_LocalDataBase"))) {
+						  FGameplayAttribute p(Property);
+						  float num = qp_abilitySystemComponent->GetNumericAttributeBase(p);
+						  qp_abilitySystemComponent->SetNumericAttributeBase(p, num + baseBuffData_Add->QP_Getfloat(Property->GetFName()));
+					  }
+
+					  //UE_LOG(LogTemp, Log, TEXT("____%s"), *Property->GetFName().ToString());
+				  }
+			  }
+			  baseBuffData->QP_Addbool("qp_isinit", true);
 
 				
-
-				for (TFieldIterator<FProperty> It(uset->GetClass()); It; ++It)
-				{
-					FProperty* Property = *It;
-					
-					//FString Name = Property->GetName();
-					//;
-
-					//if(Property->GetFName().ToString() == "qp_health")
-					if (Property->HasMetaData(TEXT("QP_LocalData"))) { 
-						qp_abilitySystemComponent->SetNumericAttributeBase(FGameplayAttribute(Property), baseBuffData->QP_Getfloat(Property->GetFName()));
-					}else if(Property->HasMetaData(TEXT("QP_LocalDataBase"))) {
-						FGameplayAttribute p(Property);
-						float num = qp_abilitySystemComponent->GetNumericAttributeBase(p);
-						qp_abilitySystemComponent->SetNumericAttributeBase(p, num + baseBuffData_Add->QP_Getfloat(Property->GetFName()));
-					}
-					
-					//UE_LOG(LogTemp, Log, TEXT("____%s"), *Property->GetFName().ToString());
-				}
 		  }
 	  }
   }

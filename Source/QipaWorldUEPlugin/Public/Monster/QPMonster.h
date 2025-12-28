@@ -47,11 +47,11 @@ public:
 	/**结束跳跃的事件名字*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	FName QP_AnimNotifyJunmEndName = "qp_slimeJunmEnd";
-	/**玩家数据*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	/** monster  data */
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	UQPData* qp_characterData = nullptr;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	UQPData* qp_animData = nullptr;
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	//UQPData* qp_saveData = nullptr;
@@ -135,16 +135,16 @@ public:
 	bool qp_isPlayFootstepAudio = false;
 
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	TMap<FName, class UAnimMontage*> qp_montage;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QipaWorld")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
 	class UAbilitySystemComponent* qp_abilitySystemComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Abilities")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|Abilities")
 	TArray<TSubclassOf<class UGameplayAbility>> qp_preloadedAbilities;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|Abilities")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|Abilities")
 	TArray<TSubclassOf<class UAttributeSet>> qp_preloadedAttributeSet;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")

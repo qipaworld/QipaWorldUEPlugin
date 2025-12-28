@@ -8,11 +8,14 @@
 #include "World/QPWorldData.h"
 #include "Character/QP_SurvivalData.h"
 #include "Map/QPGIM_Map.h"
+#include "Data/QPGIM_PlayerData.h"
 #include "GameplayEffectExtension.h"
 
 
 void UQPAS_BaseBuff::QPI_InitAttributeSet(AQPMonster* v) {
 
+    qp_monster = v;
+    qp_localPlayerData_Status = UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerData()->QP_GetUQPData("qp_localPlayerData_Status");
     UQP_SurvivalData * d = (UQP_SurvivalData*) v->qp_assetData;
     UQPWorldData* wd = UQPGIM_Map::qp_staticObject->QP_GetMapWorldData();
     //Initqp_health(v->qp_assetData->)
@@ -76,9 +79,9 @@ void UQPAS_BaseBuff::QPI_InitAttributeSet(AQPMonster* v) {
      //Initqp_energyNeedSugar(d->qp_energyNeedSugar);
      Initqp_energyMax(d->qp_energyMax);
      Initqp_energyRecharge(d->qp_energyRecharge);
-     Initqp_energyToTemperature(d->qp_energyToTemperature);
+     //Initqp_energyToTemperature(d->qp_energyToTemperature);
      //------------------------------------------------------------
-     Initqp_temperature((d->qp_temperatureMax - d->qp_temperatureMin) * 0.5 + d->qp_temperatureMin);
+     Initqp_temperature(d->qp_temperatureMid);
      Initqp_temperatureMid(d->qp_temperatureMid);
      Initqp_temperatureRecharge(d->qp_temperatureRecharge);
      Initqp_temperatureDischarge(d->qp_temperatureDischarge);
@@ -87,11 +90,16 @@ void UQPAS_BaseBuff::QPI_InitAttributeSet(AQPMonster* v) {
      Initqp_temperatureMin(d->qp_temperatureMin);
      Initqp_temperatureMax(d->qp_temperatureMax);
      Initqp_temperatureKeep(d->qp_temperatureKeep);
-     Initqp_aroundHumidity(wd->qp_humidity);
+
      Initqp_humidity(d->qp_humidity);
-     Initqp_aroundTemperature(wd->qp_temperature);
+     if (wd) {
+     Initqp_aroundTemperatureMin(wd->qp_temperatureMin);
+     Initqp_aroundTemperatureRange(wd->qp_temperatureRange);
 
+     Initqp_aroundHumidity(wd->qp_humidity);
+     Initqp_aroundOxygen(wd->qp_oxygen);
 
+     }
      //----------------------------------------------
 
      //-----------------------------------------------
@@ -103,7 +111,6 @@ void UQPAS_BaseBuff::QPI_InitAttributeSet(AQPMonster* v) {
      Initqp_vitaminMax(d->qp_vitaminMax);
      //-----------------------------------------
      Initqp_oxygen(d->qp_oxygenMax);
-     Initqp_aroundOxygen(wd->qp_oxygen);
      Initqp_oxygenMax(d->qp_oxygenMax);
      //--------------------------------------------
      Initqp_water(d->qp_waterMax);
@@ -193,6 +200,9 @@ void UQPAS_BaseBuff::PostAttributeChange(const FGameplayAttribute& Attribute, fl
         Setqp_temperatureMid((d->qp_temperatureMax - d->qp_temperatureMin) * 0.5 + d->qp_temperatureMin);
 
     }*/
+    if (Attribute == Getqp_dieAttribute()) {
+        qp_localPlayerData_Status->QP_Addfloat("qp_die", NewValue);
+    }
 }
 void UQPAS_BaseBuff::PostAttributeBaseChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) const {
     Super::PostAttributeBaseChange(Attribute, OldValue, NewValue);
@@ -261,7 +271,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
 
     float healthTask__ = Getqp_healthTask();
 
-    //UQPUtil::QP_LOG_EX("PostAttributeChange %d", Getqp_health());
+    
     float health__ = Getqp_health();
     float R_healthNeedProtein__ = Getqp_R_healthNeedProtein();
     float healthRecharge__ = Getqp_healthRecharge() * healthTask__;
@@ -323,7 +333,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
     //float energyNeedSugar__ = Getqp_energyNeedSugar();
     float energyMax__ = Getqp_energyMax();
     float energyRecharge__ = Getqp_energyRecharge() * healthTask__;
-    float energyToTemperature__ = Getqp_energyToTemperature();
+    //float energyToTemperature__ = Getqp_energyToTemperature();
 
    
     //------------------------------------------------------------
@@ -341,7 +351,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
     //----------------------------------------------
     float humidity__ = Getqp_humidity();
     float aroundHumidity__ = Getqp_aroundHumidity();
-    float aroundTemperature__ = Getqp_aroundTemperature();
+   
 
     //-----------------------------------------------
 
@@ -359,9 +369,9 @@ void UQPAS_BaseBuff::QP_HealthTask() {
     float waterConsume__ = Getqp_waterConsume() * healthTask__;
     float waterToHumidity__ = Getqp_waterToHumidity() * healthTask__;
     float urine__ = Getqp_urine();
-    //float urineMax__ = Getqp_urineMax();
+    float urineMax__ = Getqp_urineMax();
     float excrement__ = Getqp_excrement();
-    //float excrementMax__ = Getqp_excrementMax();
+    float excrementMax__ = Getqp_excrementMax();
     float waterMax__ = Getqp_waterMax();
     //----------------------------------------
     float mineral__ = Getqp_mineral();
@@ -377,14 +387,20 @@ void UQPAS_BaseBuff::QP_HealthTask() {
     oxygen__ += (aroundOxygen__ * healthTask__);
 
    
-
+    //UQPUtil::QP_LOG_EX("PostAttributeChange %d", water__);
     
     if (aroundHumidity__ < humidity__) {
         water__ -= ((aroundHumidity__ - humidity__) * healthTask__ * waterToHumidity__);
     }
+    //UQPUtil::QP_LOG_EX("aroundTemperature__ %d", aroundTemperature__);
+    //UQPUtil::QP_LOG_EX("temperature__ %d", temperature__);
+    //UQPUtil::QP_LOG_EX("NeedWater %d", NeedWater);
 
-    temperature__ += ((aroundTemperature__ - temperature__) * healthTask__ * temperatureKeep__);
+    //float aroundTemperature__ = ;
+   
+    temperature__ += ((Getqp_aroundTemperatureMin() + Getqp_aroundTemperatureRange()* UQPGIM_Map::qp_staticObject->qp_mapTimeEx - temperature__) * healthTask__ * (1 - temperatureKeep__));
 
+    //UQPUtil::QP_LOG_EX("temperature__ %d", temperature__);
 
     
    
@@ -400,6 +416,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
         float NeedWater = temperatureDischarge__ * D_temperatureNeedWater__;
         if (NeedWater < water__) {
             water__ -= NeedWater;
+            //UQPUtil::QP_LOG_EX("NeedWater %d", NeedWater);
             temperature__ += (temperatureDischarge__ *(1- aroundHumidity__));
         }
     }
@@ -415,7 +432,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
         float NeedMineral = R_fatNeedMineral__ * fatRecharge__;
         float NeedEnergy = R_fatNeedEnergy__ * fatRecharge__;
         float NeedWater = R_fatNeedWater__ * fatRecharge__;
-
+        
         if (mineral__ > NeedMineral &&
             vitamin__ > NeedVitamin &&
             energy__ > NeedEnergy &&
@@ -427,6 +444,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
             oxygen__ -= NeedOxygen;
             energy__ -= NeedEnergy;
             water__ -= NeedWater;
+            
             fat__ += fatRecharge__;
         }
     }else if (sugar__ < sugarMax__) {
@@ -457,7 +475,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
         float NeedMineral = R_proteinNeedMineral__ * proteinRecharge__;
         float NeedEnergy = R_proteinNeedEnergy__ * proteinRecharge__;
         float NeedWater = R_proteinNeedWater__ * proteinRecharge__;
-
+       
         if (mineral__ > NeedMineral &&
             vitamin__ > NeedVitamin &&
             energy__ > NeedEnergy &&
@@ -469,6 +487,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
             oxygen__ -= NeedOxygen;
             energy__ -= NeedEnergy;
             water__ -= NeedWater;
+            
             protein__ += proteinRecharge__;
 
         }
@@ -565,8 +584,35 @@ void UQPAS_BaseBuff::QP_HealthTask() {
     //qp_urine.SetCurrentValue(urine__);
     //qp_excrement.SetCurrentValue(excrement__);
     //qp_mineral.SetCurrentValue(mineral__);
+    if (qp_monster->Controller&&qp_monster->Controller->IsLocalPlayerController()) {
+        qp_localPlayerData_Status->QP_Addfloat("qp_excrement", excrement__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_health", health__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_sugar", sugar__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_protein", protein__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_fat", fat__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_energy", energy__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_temperature", temperature__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_vitamin", vitamin__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_oxygen", oxygen__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_water", water__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_urine", urine__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_mineral", mineral__);
 
+        qp_localPlayerData_Status->QP_Addfloat("qp_excrementMax", excrementMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_healthMax", healthMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_sugarMax", sugarMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_proteinMax", proteinMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_fatMax", fatMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_energyMax", energyMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_temperatureMax", temperatureMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_vitaminMax", vitaminMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_oxygenMax", oxygenMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_waterMax", waterMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_urineMax", urineMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_mineralMax", mineralMax__);
+    }
     
+
     if (qp_ASC)
     {
         //qp_ASC->ForceReplication();

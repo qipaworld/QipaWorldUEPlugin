@@ -16,7 +16,9 @@ class QIPAWORLDUEPLUGIN_API UQPWorldData : public UQPDataAsset
 	public:
 	
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-		float qp_temperature = 10;
+		float qp_temperatureMin = 10;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+		float qp_temperatureRange = 20;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 		float qp_humidity = 10;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")

@@ -13,6 +13,20 @@
 #include "EngineUtils.h"
 #include "Factories/FbxAssetImportData.h"
 
+#include "IAssetTools.h"
+#include "AssetToolsModule.h"
+#include "Materials/MaterialInstanceConstant.h"
+#include "MaterialEditingLibrary.h"
+#include "EditorAssetLibrary.h"
+#include "Engine/Engine.h"
+#include "IAssetTools.h"
+#include "AssetToolsModule.h"
+#include "Materials/MaterialInstanceConstant.h"
+#include "MaterialEditingLibrary.h"
+#include "EditorAssetLibrary.h"
+#include "Engine/StaticMesh.h"
+#include "Materials/MaterialInterface.h"
+#include "Editor.h"
 #include "EditorUtilityLibrary.h"
 #include "Factories/FbxAssetImportData.h"
 #include "Engine/SkeletalMesh.h"
@@ -177,4 +191,98 @@ void UQPEditorUtils::QP_ResetScaleAndReImport(float scale)
 	}
 	FReimportManager::Instance()->ReimportMultiple(qp_objs);
 	UEditorAssetLibrary::SaveLoadedAssets(qp_objs, false);
+}
+
+//void UQPEditorUtils::QP_CreateSetTextureParameterAndApply(
+//	const FString& AssetName,
+//	const FString& PackagePath,
+//	UMaterialInterface* ParentMaterial,
+//	UTexture* NewTexture,
+//	const FName& TextureParamName,
+//	UStaticMesh* StaticMeshAsset,
+//	int32 MaterialIndex = 0
+//)
+//{
+//	if (!ParentMaterial || !NewTexture || !StaticMeshAsset)
+//	{
+//		UE_LOG(LogTemp, Error, TEXT("Invalid input parameters"));
+//		return;
+//	}
+//
+//	// 创建材质实例
+//	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
+//	UObject* NewAsset = AssetTools.CreateAsset(AssetName, PackagePath, UMaterialInstanceConstant::StaticClass(), nullptr);
+//	UMaterialInstanceConstant* MIC = Cast<UMaterialInstanceConstant>(NewAsset);
+//	if (!MIC)
+//	{
+//		UE_LOG(LogTemp, Error, TEXT("Failed to create MaterialInstanceConstant asset"));
+//		return;
+//	}
+//
+//	// 设置父材质
+//	UMaterialEditingLibrary::SetMaterialInstanceParent(MIC, ParentMaterial);
+//
+//	// 设置Texture参数（编辑器专用函数）
+//	MIC->SetTextureParameterValueEditorOnly(TextureParamName, NewTexture);
+//
+//	// 保存材质实例资产
+//	TArray<UObject*> AssetsToSave;
+//	AssetsToSave.Add(MIC);
+//	UEditorAssetLibrary::SaveLoadedAssets(AssetsToSave, false);
+//
+//	// 应用材质实例到StaticMesh指定Material槽
+//	if (StaticMeshAsset->GetStaticMaterials().IsValidIndex(MaterialIndex))
+//	{
+//		StaticMeshAsset->SetMaterial(MaterialIndex, MIC);
+//		StaticMeshAsset->MarkPackageDirty();
+//		// 保存StaticMesh资产更改
+//		UPackage* MeshPackage = StaticMeshAsset->GetOutermost();
+//		FSavePackageArgs SaveArgs;
+//		SaveArgs.TopLevelFlags = RF_Standalone;
+//		UPackage::SavePackage(MeshPackage, StaticMeshAsset, *MeshPackage->GetName(), SaveArgs);
+//	}
+//	else
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("MaterialIndex %d invalid for StaticMesh"), MaterialIndex);
+//	}
+//
+//	UE_LOG(LogTemp, Log, TEXT("Material Instance created, texture parameter set, and applied to StaticMesh."));
+//}
+
+UMaterialInstanceConstant* UQPEditorUtils::QP_CreateSetTextureParameterAndApply(
+	UMaterialInterface* ParentMaterial,
+	UTexture* NewTexture,
+	const FName& TextureParamName
+)
+{
+	if (!ParentMaterial || !NewTexture)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid input parameters"));
+		return nullptr;
+	}
+	
+	// 创建材质实例
+	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
+	UObject* NewAsset = AssetTools.CreateAsset(NewTexture->GetName()+"_MI", FPackageName::GetLongPackagePath(NewTexture->GetOutermost()->GetName()), UMaterialInstanceConstant::StaticClass(), nullptr);
+	UMaterialInstanceConstant* MIC = Cast<UMaterialInstanceConstant>(NewAsset);
+	if (!MIC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to create MaterialInstanceConstant asset"));
+		return nullptr;
+	}
+
+	// 设置父材质
+	UMaterialEditingLibrary::SetMaterialInstanceParent(MIC, ParentMaterial);
+
+	// 设置Texture参数（编辑器专用函数）
+	MIC->SetTextureParameterValueEditorOnly(TextureParamName, NewTexture);
+
+	// 保存材质实例资产
+	TArray<UObject*> AssetsToSave;
+	AssetsToSave.Add(MIC);
+	UEditorAssetLibrary::SaveLoadedAssets(AssetsToSave, false);
+
+	return MIC;
+
+	//UE_LOG(LogTemp, Log, TEXT("Material Instance created, texture parameter set, and applied to StaticMesh."));
 }

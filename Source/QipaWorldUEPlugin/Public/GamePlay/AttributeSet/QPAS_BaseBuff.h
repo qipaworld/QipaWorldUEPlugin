@@ -262,9 +262,9 @@ public:
     FGameplayAttributeData qp_energyRecharge;
     ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_energyRecharge)
 
-        UPROPERTY(BlueprintReadOnly, Category = "QipaWorld|Attributes", meta = (QP_LocalDataBase))
-    FGameplayAttributeData qp_energyToTemperature;
-    ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_energyToTemperature)
+        //UPROPERTY(BlueprintReadOnly, Category = "QipaWorld|Attributes", meta = (QP_LocalDataBase))
+    //FGameplayAttributeData qp_energyToTemperature;
+    //ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_energyToTemperature)
 
     //------------------------------------------------------------
 
@@ -308,8 +308,13 @@ public:
        
   
         UPROPERTY(BlueprintReadOnly, Category = "QipaWorld|Attributes")
-    FGameplayAttributeData qp_aroundTemperature;
-    ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_aroundTemperature)
+    FGameplayAttributeData qp_aroundTemperatureMin;
+    ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_aroundTemperatureMin)
+        UPROPERTY(BlueprintReadOnly, Category = "QipaWorld|Attributes")
+    FGameplayAttributeData qp_aroundTemperatureRange;
+    ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_aroundTemperatureRange)
+
+
     UPROPERTY(BlueprintReadOnly, Category = "QipaWorld|Attributes")
     FGameplayAttributeData qp_aroundHumidity;
     ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_aroundHumidity)
@@ -417,5 +422,6 @@ public:
         virtual void QP_HealthTask();
 
         UAbilitySystemComponent* qp_ASC;
-	
+        class UQPData* qp_localPlayerData_Status;
+        class AQPMonster* qp_monster;
 };

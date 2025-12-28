@@ -32,6 +32,12 @@ public:
 	virtual void Deinitialize();
 
 public:
+	// range 0 - 1   0:00 = 0  23:59 = 1
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPMap")
+	float qp_mapTime = 0.5;
+	// range 0 - 1   0:00  and 23:59 = 0  12:00 = 1
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPMap")
+	float qp_mapTimeEx = 0.5;
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPMap")
 	class UQPData* qp_mapData;
 	/** 是否加载完成*/

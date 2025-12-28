@@ -280,5 +280,8 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 
 	bool qp_isAddLocalBuff = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+
+	bool qp_forceAddLocalBuff = false;
 	void QP_AddLocalBuff();
 };

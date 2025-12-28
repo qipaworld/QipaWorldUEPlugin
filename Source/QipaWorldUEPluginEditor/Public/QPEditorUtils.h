@@ -25,4 +25,21 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
 	static void QP_ResetScaleAndReImport(float scale);
+
+	//UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
+	/*void QP_CreateSetTextureParameterAndApply(
+		const FString& AssetName,
+		const FString& PackagePath,
+		UMaterialInterface* ParentMaterial,
+		UTexture* NewTexture,
+		const FName& TextureParamName,
+		UStaticMesh* StaticMeshAsset,
+		int32 MaterialIndex = 0
+	);*/
+	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
+	static UMaterialInstanceConstant* QP_CreateSetTextureParameterAndApply(
+		UMaterialInterface* ParentMaterial,
+		UTexture* NewTexture,
+		const FName& TextureParamName
+	);
 };

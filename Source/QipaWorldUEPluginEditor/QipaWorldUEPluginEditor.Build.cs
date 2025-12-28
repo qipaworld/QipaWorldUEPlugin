@@ -50,6 +50,7 @@ public class QipaWorldUEPluginEditor : ModuleRules
                 "ToolMenus",
                 "LevelEditor",
                 "QipaWorldUEPlugin",
+                "MaterialEditor",
 
 				// ... add private dependencies that you statically link with here ...	
 			}
