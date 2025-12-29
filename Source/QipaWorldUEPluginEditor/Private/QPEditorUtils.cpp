@@ -252,7 +252,10 @@ void UQPEditorUtils::QP_ResetScaleAndReImport(float scale)
 UMaterialInstanceConstant* UQPEditorUtils::QP_CreateSetTextureParameterAndApply(
 	UMaterialInterface* ParentMaterial,
 	UTexture* NewTexture,
-	const FName& TextureParamName
+	UTexture* N_Texture,
+	bool is_N_Texture,
+	const FName& TextureParamName,
+	const FName& N_TextureParamName
 )
 {
 	if (!ParentMaterial || !NewTexture)
@@ -276,7 +279,10 @@ UMaterialInstanceConstant* UQPEditorUtils::QP_CreateSetTextureParameterAndApply(
 
 	// 设置Texture参数（编辑器专用函数）
 	MIC->SetTextureParameterValueEditorOnly(TextureParamName, NewTexture);
+	if (is_N_Texture) {
+		MIC->SetTextureParameterValueEditorOnly(N_TextureParamName, N_Texture);
 
+	}
 	// 保存材质实例资产
 	TArray<UObject*> AssetsToSave;
 	AssetsToSave.Add(MIC);

@@ -40,6 +40,9 @@ public:
 	static UMaterialInstanceConstant* QP_CreateSetTextureParameterAndApply(
 		UMaterialInterface* ParentMaterial,
 		UTexture* NewTexture,
-		const FName& TextureParamName
+		UTexture* N_Texture,
+		bool is_N_Texture,
+		const FName& TextureParamName,
+		const FName& N_TextureParamName
 	);
 };
