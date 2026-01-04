@@ -22,6 +22,7 @@ public:
 	//太阳的移动速度
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSun")
 	float qp_speed = 10.0f;
+	float qp_sunRotation = 0;
 	//如果是真，则太阳为静止状态。
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSun")
 	bool qp_static = false;

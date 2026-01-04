@@ -125,3 +125,91 @@ UQPWorldData* UQPGIM_Map::QP_GetMapWorldData() {
 	}
 	return qp_worldBaseData;
 }
+
+void UQPGIM_Map::QP_SetSunRotation(float v) {
+	qp_mapSunTime = v;
+	//qp_mapTimeEx = (1.0f - FMath::Abs(qp_mapTime - 0.5f) * 2.0f);
+	//UQPUtil::QP_LOG_EX("________________",v);
+	if (qp_mapSunTime < 0.209) {
+		if (qp_mapSunType != EQPSunType::MORNING) {
+			qp_mapSunType = EQPSunType::MORNING;
+			qp_mapData->QP_Addbool("sumTypeChange", true);
+			//UQPUtil::QP_LOG("MORNING");
+		}
+		qp_mapSunTimeEx = qp_mapSunTime / 0.209;
+	}
+	else if (qp_mapSunTime < 0.291) {
+
+		if (qp_mapSunType != EQPSunType::NOON) {
+			qp_mapSunType = EQPSunType::NOON;
+
+			//qp_mapSunTimeStart = 0.209;
+			//qp_mapSunTimeNext = 0.291;
+			//UQPUtil::QP_LOG("NOON");
+
+			qp_mapData->QP_Addbool("sumTypeChange", true);
+		}
+			qp_mapSunTimeEx = (qp_mapSunTime - 0.209) /0.082;
+
+
+	}
+	else if (qp_mapSunTime < 0.5) {
+
+		if (qp_mapSunType != EQPSunType::AFTERNOON) {
+			qp_mapSunType = EQPSunType::AFTERNOON;
+			//qp_mapSunTimeStart = 0.291;
+			//qp_mapSunTimeNext = 0.5;0.209
+			//UQPUtil::QP_LOG("AFTERNOON");
+
+			qp_mapData->QP_Addbool("sumTypeChange", true);
+		}
+		qp_mapSunTimeEx = (qp_mapSunTime - 0.291) / 0.209;
+
+
+	}
+	else if (qp_mapSunTime < 0.709) {
+		if (qp_mapSunType != EQPSunType::NIGHT) {
+			//UQPUtil::QP_LOG("NIGHT");
+
+			qp_mapSunType = EQPSunType::NIGHT;
+			//qp_mapSunTimeStart = 0.5;
+			//qp_mapSunTimeNext = 0.709;
+
+			qp_mapData->QP_Addbool("sumTypeChange", true);
+		}
+		qp_mapSunTimeEx = (qp_mapSunTime - 0.5) / 0.209;
+
+	}
+	else if (qp_mapSunTime < 0.791) {
+		if (qp_mapSunType != EQPSunType::MIDNIGHT) {
+			qp_mapSunType = EQPSunType::MIDNIGHT;
+			//qp_mapSunTimeStart = 0.709;
+			//qp_mapSunTimeNext = 1;
+			//UQPUtil::QP_LOG("MIDNIGHT");
+
+			qp_mapData->QP_Addbool("sumTypeChange", true);
+		}
+		qp_mapSunTimeEx = (qp_mapSunTime - 0.709) / 0.082;
+	}
+	else {
+		if (qp_mapSunType != EQPSunType::AFTERMIDNIGHT) {
+			qp_mapSunType = EQPSunType::AFTERMIDNIGHT;
+			//qp_mapSunTimeStart = 0.709;
+			//qp_mapSunTimeNext = 1;
+			//UQPUtil::QP_LOG("AFTERMIDNIGHT");
+
+			qp_mapData->QP_Addbool("sumTypeChange", true);
+		}
+		qp_mapSunTimeEx = (qp_mapSunTime - 0.791) / 0.209;
+
+	}
+	
+	if (qp_mapSunTemperature  <= 0.25f)
+	{
+		qp_mapSunTemperature = qp_mapSunTime /  0.25f;
+	}
+	else
+	{
+		qp_mapSunTemperature =  1.f - (qp_mapSunTime - 0.25f) / 0.75f;
+	}
+}

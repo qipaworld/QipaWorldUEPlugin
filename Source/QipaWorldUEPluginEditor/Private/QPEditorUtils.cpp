@@ -12,7 +12,7 @@
 #include "UObject/SavePackage.h"
 #include "EngineUtils.h"
 #include "Factories/FbxAssetImportData.h"
-
+#include "Engine/StaticMeshActor.h"
 #include "IAssetTools.h"
 #include "AssetToolsModule.h"
 #include "Materials/MaterialInstanceConstant.h"
@@ -291,4 +291,45 @@ UMaterialInstanceConstant* UQPEditorUtils::QP_CreateSetTextureParameterAndApply(
 	return MIC;
 
 	//UE_LOG(LogTemp, Log, TEXT("Material Instance created, texture parameter set, and applied to StaticMesh."));
+}
+
+void UQPEditorUtils::QP_CheckStaticMeshActorsForMissingMeshes(UWorld* World)
+{
+	if (!World)
+	{
+		if (GEditor)
+		{
+			const FWorldContext& EditorWorldContext = GEditor->GetEditorWorldContext();
+			World =  EditorWorldContext.World();
+		}
+
+		if (!World)
+		{
+			UQPUtil::QP_LOG(" world is missing ");
+			return;
+		}
+	}
+
+	for (TActorIterator<AStaticMeshActor> It(World); It; ++It)
+	{
+		AStaticMeshActor* SMActor = *It;
+		if (!SMActor)
+		{
+			continue;
+		}
+
+		UStaticMeshComponent* MeshComp = SMActor->GetStaticMeshComponent();
+		if (!MeshComp)
+		{
+			UQPUtil::QP_LOG( SMActor->GetName() + "is missing");
+			continue;
+		}
+
+		if (MeshComp->GetStaticMesh() == nullptr)
+		{
+			UQPUtil::QP_LOG(SMActor->GetName() + "is missing StaticMesh");
+
+
+		}
+	}
 }

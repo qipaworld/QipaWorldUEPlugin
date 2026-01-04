@@ -398,7 +398,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
 
     //float aroundTemperature__ = ;
    
-    temperature__ += ((Getqp_aroundTemperatureMin() + Getqp_aroundTemperatureRange()* UQPGIM_Map::qp_staticObject->qp_mapTimeEx - temperature__) * healthTask__ * (1 - temperatureKeep__));
+    temperature__ += ((Getqp_aroundTemperatureMin() + Getqp_aroundTemperatureRange()* UQPGIM_Map::qp_staticObject->qp_mapSunTemperature - temperature__) * healthTask__ * (1 - temperatureKeep__));
 
     //UQPUtil::QP_LOG_EX("temperature__ %d", temperature__);
 

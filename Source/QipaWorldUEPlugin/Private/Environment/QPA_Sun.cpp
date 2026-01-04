@@ -20,7 +20,7 @@ AQPA_Sun::AQPA_Sun()
 void AQPA_Sun::BeginPlay()
 {
 	Super::BeginPlay();
-
+	qp_sunRotation = GetActorRotation().Pitch;
 }
 
 // Called every frame
@@ -28,9 +28,15 @@ void AQPA_Sun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (!qp_static) {
-		
+		qp_sunRotation += (DeltaTime * qp_speed);
+		if (qp_sunRotation > 360) {
+			qp_sunRotation -= 360;
+		}
 		AddActorLocalRotation(FRotator( DeltaTime * qp_speed, 0, 0));
-		UQPGIM_Map::qp_staticObject->qp_mapTime = (GetActorRotation().Pitch+180.f )/ 360.f;
-		UQPGIM_Map::qp_staticObject->qp_mapTimeEx = (1.0f - FMath::Abs(UQPGIM_Map::qp_staticObject->qp_mapTime - 0.5f) * 2.0f);
+		SetActorRotation(FRotator(qp_sunRotation, 0, 0));
+		
+
+		UQPGIM_Map::qp_staticObject->QP_SetSunRotation(qp_sunRotation / 360.f);
+		
 	}
 }

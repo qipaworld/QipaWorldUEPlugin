@@ -45,4 +45,8 @@ public:
 		const FName& TextureParamName,
 		const FName& N_TextureParamName
 	);
+	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
+
+	static void QP_CheckStaticMeshActorsForMissingMeshes(UWorld* World);
+
 };
