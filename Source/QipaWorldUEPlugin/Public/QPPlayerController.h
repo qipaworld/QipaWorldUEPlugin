@@ -24,6 +24,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	void QP_OnAutoUIKeyPressed();
+	void QP_OnOpenPlayerInformation();
 
 	void QP_SwitchMouseShow();
 
@@ -41,6 +42,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|input")
 
 	TObjectPtr<UInputAction> qp_debugDefaultUserInterfaceAction;
+
+	//qppop d  UI
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+
+	TObjectPtr<UInputAction> qp_openDefaultUIAction = nullptr;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+	TSubclassOf<UUserWidget> qp_openDefaultUI;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+
+	TObjectPtr<UInputAction> qp_openPlayerInformation = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+	TSubclassOf<UUserWidget> qp_openPlayerInformationUI;
 
 	//UQPData* qp_savePlayerData;
 	//virtual void QP_LoadData();

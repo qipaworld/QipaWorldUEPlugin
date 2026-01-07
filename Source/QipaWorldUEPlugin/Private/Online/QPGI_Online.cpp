@@ -87,6 +87,35 @@ void UQPGI_Online::QP_Init() {
 		
 	
 }
+void UQPGI_Online::QP_ShowStore(bool addToCart) {
+	FString SteamAppID;
+	GConfig->GetString(
+		TEXT("OnlineSubsystemSteam"),
+		TEXT("SteamAppId"),
+		SteamAppID,
+		GEngineIni
+	);
+	//GConfig->GetString(TEXT("OnlineSubsystem"), TEXT("SteamDevAppId"), PlatformService, GEngineIni);
+	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
+	if (!OnlineSub)
+	{
+		UQPUtil::QP_LOG("No OnlineSubsystem");
+		return;
+	}
+
+	IOnlineExternalUIPtr ExternalUI = OnlineSub->GetExternalUIInterface();
+	if (!ExternalUI.IsValid())
+	{
+		UQPUtil::QP_LOG("No External UI Interface");
+		return;
+	}
+	//UQPUtil::QP_LOG( SteamAppID);
+
+	FShowStoreParams s;
+	s.bAddToCart = addToCart;
+	s.ProductId = SteamAppID;
+	ExternalUI->ShowStoreUI(0,s);
+}
 void UQPGI_Online::QP_QueryUserInfo(int32 LocalUserNum, bool bWasSuccessful, const TArray<TSharedRef<const FUniqueNetId>>& UserIds, const FString& ErrorStr) {
 
 	if (bWasSuccessful)

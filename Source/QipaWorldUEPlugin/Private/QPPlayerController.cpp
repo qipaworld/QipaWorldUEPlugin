@@ -13,6 +13,7 @@
 #include "InputActionValue.h"
 #include "Data/QPGIM_PlayerData.h"
 #include "Data/QPGIM_BaseData.h"
+#include "UserInterface/QPGIM_UserInterface.h"
 
 
 void AQPPlayerController::BeginPlay() {
@@ -97,10 +98,10 @@ void AQPPlayerController::SetupInputComponent()
         Input->BindAction(qp_debugSwitchMouseShowInputAction, ETriggerEvent::Started, this, &AQPPlayerController::QP_SwitchMouseShow);
     }
 
-    if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_UserInterfaceAutoPop) {
-        if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->qp_defaultUserInterfaceAction) {
+    //if (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_UserInterfaceAutoPop) {
+        if (qp_openDefaultUIAction) {
 
-            Input->BindAction(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->qp_defaultUserInterfaceAction, ETriggerEvent::Started, this, &AQPPlayerController::QP_OnAutoUIKeyPressed);
+            Input->BindAction(qp_openDefaultUIAction, ETriggerEvent::Started, this, &AQPPlayerController::QP_OnAutoUIKeyPressed);
         }
         if (GIsEditor)
         {
@@ -110,14 +111,30 @@ void AQPPlayerController::SetupInputComponent()
             }
             //InputComponent->BindAction("DebugDefaultUserInterfaceAction", IE_Released, this, &AQPPlayerController::QP_OnAutoUIKeyPressed);
         }
+    //}
+    if (qp_openPlayerInformation) {
+        Input->BindAction(qp_openPlayerInformation, ETriggerEvent::Started, this, &AQPPlayerController::QP_OnOpenPlayerInformation);
     }
 }
 
 void AQPPlayerController::QP_OnAutoUIKeyPressed()
 {
-    UQPGIM_BaseData::qp_staticObject->QP_GetKeyBoardEventData()->QP_Addbool("autoPushAndPopUI", true,EQPDataBroadcastType::SYNC);    
+    UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClass(qp_openDefaultUI);
+   // UQPGIM_BaseData::qp_staticObject->QP_GetKeyBoardEventData()->QP_Addbool("autoPushAndPopUI", true,EQPDataBroadcastType::SYNC);    
 }
+void AQPPlayerController::QP_OnOpenPlayerInformation() {
 
+   /* TSubclassOf<UUserWidget> w = qp_openPlayerInformationUI.Get();
+    if (!IsValid(w)) {
+        w = qp_openPlayerInformationUI.LoadSynchronous();
+    }
+    if (IsValid(w)) {
+        return QP_AddUserInterfaceByClass(w, key);
+    }*/
+    
+    UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_openPlayerInformationUI,"qp_openPlayerInformationUI");
+    //UQPGIM_BaseData::qp_staticObject->QP_GetKeyBoardEventData()->QP_Addbool("autoPushAndPopUI", true, EQPDataBroadcastType::SYNC);
+}
 void AQPPlayerController::QP_SwitchMouseShow() {
     UQPUtil::QP_SwitchMouseShow(this);
 }

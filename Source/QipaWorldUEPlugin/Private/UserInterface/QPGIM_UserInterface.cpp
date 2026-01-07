@@ -48,41 +48,55 @@ void UQPGIM_UserInterface::Deinitialize()
 	Super::Deinitialize();
 	qp_staticObject = nullptr;
 }
-UUserWidget* UQPGIM_UserInterface::QP_AddMainPopUserInterface(const FString& key) {
-	TSubclassOf<UUserWidget> w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainPopUserInterface.Get();
-	if (!IsValid(w)) {
-		w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainPopUserInterface.LoadSynchronous();
-	}
-	if (IsValid(w)) {
-		return QP_AddUserInterfaceByClass(w, key);
-	}
-	
-	UQPUtil::QP_LOG("MainUI not open");
-
-	return nullptr;
-	
-}
-UUserWidget* UQPGIM_UserInterface::QP_AddMainUserInterface()
-{
-	//return QP_AddUserInterfaceByClass(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.Get(),key);
-	TSubclassOf<UUserWidget> w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.Get();
-	if (!IsValid(w)) {
-		w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.LoadSynchronous();
-	}
-	if (IsValid(w)) {
-		
-		UUserWidget* widget = CreateWidget<UUserWidget>(GetWorld(), w);
-		widget->AddToViewport();
-		return widget;
-	}
-	
-	UQPUtil::QP_LOG("MainUI not open");
-
-	return nullptr;
-	
-
-	
-}
+//UUserWidget* UQPGIM_UserInterface::QP_AddMainPopUserInterface(UUserWidget* widget, const FString& key) {
+//	/*TSubclassOf<UUserWidget> w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainPopUserInterface.Get();
+//	if (!IsValid(w)) {
+//		w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainPopUserInterface.LoadSynchronous();
+//	}
+//	if (IsValid(w)) {*/
+//		return QP_AddUserInterfaceByClass(w, key);
+//	//}
+//	
+//	UQPUtil::QP_LOG("MainUI not open");
+//
+//	return nullptr;
+//	
+//}
+//UUserWidget* QP_AddMainPopUserInterfaceByClass(TSubclassOf<UUserWidget>  widgetClass, const FString& key) {
+//	/*TSubclassOf<UUserWidget> w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainPopUserInterface.Get();
+//	if (!IsValid(w)) {
+//		w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainPopUserInterface.LoadSynchronous();
+//	}
+//	if (IsValid(w)) {*/
+//	return QP_AddUserInterfaceByClass(w, key);
+//	//}
+//
+//	UQPUtil::QP_LOG("MainUI not open");
+//
+//	return nullptr;
+//
+//}
+//UUserWidget* UQPGIM_UserInterface::QP_AddMainUserInterface()
+//{
+//	//return QP_AddUserInterfaceByClass(UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.Get(),key);
+//	TSubclassOf<UUserWidget> w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.Get();
+//	if (!IsValid(w)) {
+//		w = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultMainUserInterface.LoadSynchronous();
+//	}
+//	if (IsValid(w)) {
+//		
+//		UUserWidget* widget = CreateWidget<UUserWidget>(GetWorld(), w);
+//		widget->AddToViewport();
+//		return widget;
+//	}
+//	
+//	UQPUtil::QP_LOG("MainUI not open");
+//
+//	return nullptr;
+//	
+//
+//	
+//}
 
 UUserWidget* UQPGIM_UserInterface::QP_AddUserInterfaceByPath(const FString& path, const FString& key)
 {
@@ -188,13 +202,22 @@ void UQPGIM_UserInterface::QP_RemoveAllUserInterface()
 void UQPGIM_UserInterface::QP_SetAutoMouse(bool b) {
 	qp_autoMouse = b;
 }
-void UQPGIM_UserInterface::QP_KeyBoardEvent()
+void UQPGIM_UserInterface::QP_AutoPopOrPushByClass(TSubclassOf<UUserWidget>  widgetClass)
 {
 	if (qp_UIData.Num() < 1) {
-		QP_AddMainPopUserInterface();
+		if (IsValid(widgetClass)) {
+			QP_AddUserInterfaceByClass(widgetClass);
+		}
 	}
 	else {
 		QP_RemoveUserInterface();
+	}
+}
+void UQPGIM_UserInterface::QP_AutoPopOrPushByClassEx(TSubclassOf<UUserWidget>  widgetClass, const FString& key) {
+	if (QP_CheckUserInterface(key)) {
+		QP_RemoveUserInterface(key);
+	}else if (IsValid(widgetClass)) {
+		QP_AddUserInterfaceByClass(widgetClass,key);
 	}
 }
 int32 UQPGIM_UserInterface::QP_GetPopUINum() {
@@ -202,12 +225,13 @@ int32 UQPGIM_UserInterface::QP_GetPopUINum() {
 }
 void UQPGIM_UserInterface::QP_BindKeyBoard(UQPData* data)
 {
-	if (data->QP_IsChange<FName, bool>("autoPushAndPopUI", EQPDataValueType::BOOL)) {
+	/*if (data->QP_IsChange<FName, bool>("autoPushAndPopUI", EQPDataValueType::BOOL)) {
 		QP_KeyBoardEvent();
 	}
-	else if (data->QP_IsChange<FName, bool>("AddMainUI", EQPDataValueType::BOOL)) {
+	else*/
+		/*if (data->QP_IsChange<FName, bool>("AddMainUI", EQPDataValueType::BOOL)) {
 		QP_AddMainUserInterface();
-	}
+	}*/
 }
 void UQPGIM_UserInterface::QP_ResetUIData()
 {

@@ -57,10 +57,13 @@ public:
 	void QP_SetAutoMouse(bool b);
 	/**添加主UI*/
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	UUserWidget* QP_AddMainUserInterface();
+	//UUserWidget* QP_AddMainUserInterface();
 
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	UUserWidget* QP_AddMainPopUserInterface(const FString& key = "MainUserInterface");
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	//UUserWidget* QP_AddMainPopUserInterface(UUserWidget* widget, const FString& key = "MainUserInterface");
+
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	//UUserWidget* QP_AddMainPopUserInterfaceByClass(TSubclassOf<UUserWidget>  widgetClass, const FString& key = "MainUserInterface");
 
 	/**check user interface is open?*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
@@ -100,9 +103,15 @@ public:
 	* 这里绑定的player0，没有player0可能就不能用了，所以在蓝图里监听一下也可以
 	* 但是在项目设置的qipaworld插件中关闭ui事件。
 	*/
-	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	void QP_KeyBoardEvent();
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	//void QP_AutoPopOrPush(UUserWidget* widget);
 
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+
+	void QP_AutoPopOrPushByClass(TSubclassOf<UUserWidget>  widgetClass);
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+
+	void QP_AutoPopOrPushByClassEx(TSubclassOf<UUserWidget>  widgetClass, const FString& key);
 	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPUserInterface")
 	int32 QP_GetPopUINum();
 

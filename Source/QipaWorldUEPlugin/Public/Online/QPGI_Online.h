@@ -81,4 +81,7 @@ public:
 	void QP_QueryAchievements();
 	void QP_QueryStats();
 	void QP_QueryAllData();
+
+	UFUNCTION(BlueprintCallable)
+	void QP_ShowStore(bool addToCart);
 };

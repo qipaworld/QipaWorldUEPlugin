@@ -385,17 +385,20 @@ void AQPCharacter::QP_TrunAxis(const FInputActionValue& value) {
 	 
 	  Super::PossessedBy(NewController);
 	 
-	 
+
 	  if (APlayerController* PC = Cast<APlayerController>(NewController))
 	  {
+
 		  if (PC->IsLocalPlayerController())
 		  {
 			  if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
 			  {
 				  if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
 				  {
+					  int index = 0;
 					  for (auto v : qp_inputMappingContext) {
-						  Subsystem->AddMappingContext(v, 0);
+						  Subsystem->AddMappingContext(v, index);
+						  index++;
 					  }
 					  /*Subsystem->AddMappingContext(DefaultMappingContext, 0);*/
 				  }
