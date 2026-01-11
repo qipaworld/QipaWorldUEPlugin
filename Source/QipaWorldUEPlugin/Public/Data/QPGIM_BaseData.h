@@ -8,6 +8,8 @@
 #include "Data/QPBaseDataSave.h"
 #include "Data/QPData.h"
 #include "World/QPWorldData.h"
+#include "DataAsset/QPD_Textures.h"
+
 #include "QPGIM_BaseData.generated.h"
 
 //class UQPData;
@@ -25,6 +27,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPData")
 	UQPDS_DataAsset* qp_defaultDataAsset;
+
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPData")
+	TObjectPtr< UQPD_Textures> qp_defaultTextures;
+
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
 
@@ -53,6 +59,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	int32 QP_GetUUID(const FString& key);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UTexture2D* QP_GetTexture(FName n);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetPlayerData();
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetGameStatusData();
@@ -69,7 +78,7 @@ public:
 	UQPData* QP_GetHelperData();
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	//class UQPDS_DataAsset* QP_GetDefaultSettingDataAsset();
-	void QP_InitDefaultSetting();
+	void QP_InitDefaultDataAsset();
 
 	UFUNCTION(BlueprintCallable)
 	float QP_GetVersion();
@@ -99,6 +108,10 @@ public:
 	void QP_SaveData();
 
 	FString GetAESKey(FName key);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	UQPData* QP_GetShowInformationData();
+
 	//UFUNCTION()
 	//void QP_Set(UWorld* LoadedWorld);
 	//void QP_SavedDelegate(const FString& SlotName, const int32 UserIndex, bool bSuccess);

@@ -783,4 +783,17 @@ void AQPCharacter::QP_ReReset() {
 
   void AQPCharacter::QP_PlayerDataChange(UQPData* data) {
 	  Super::QP_PlayerDataChange(data);
+
+	  //if (data->QP_IsChange<FName, UObject>("showInformationObj", EQPDataValueType::UOBJECT)) {
+		 // qp_camera->HiddenActors;
+		 // //qp_isMouseMove = data->QP_Getbool("mouseMove");
+	  //}
+
+	  //if (APlayerController* PC = Cast<APlayerController>(GetController())) 
+	  //{
+		 // if (PC->IsLocalPlayerController())
+		 // {
+
+		 // }
+	  //}
  }

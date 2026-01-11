@@ -65,4 +65,5 @@ public:
 	//把事件从管理器里删除
 
 	void QP_RemoveBroadcastUQPData(UQPData* data);
+	
 };

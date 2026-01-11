@@ -13,5 +13,7 @@ UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
-	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	FName qp_name;
 };

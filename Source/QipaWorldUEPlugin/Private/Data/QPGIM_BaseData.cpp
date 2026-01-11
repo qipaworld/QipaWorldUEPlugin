@@ -38,7 +38,7 @@ void UQPGIM_BaseData::Initialize(FSubsystemCollectionBase& Collection)
 
 	qp_gameBaseData = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_BaseData");
 	qp_baseDataSave = UQPGIM_Data::qp_staticObject->QP_GetUQPData("UQPGIM_BaseDataSave");
-	QP_InitDefaultSetting();
+	QP_InitDefaultDataAsset();
 	qp_baseDataSave->QP_LoadData("qp_baseDataSave");
 	
 	
@@ -166,9 +166,13 @@ UQPData* UQPGIM_BaseData::QP_GetGameBaseData()
 //UQPData* UQPGIM_BaseData::QP_GetDefaultSetting() {
 //	return qp_gameBaseData->QP_GetUQPData("QP_GetDefaultSetting");
 //}
-void UQPGIM_BaseData::QP_InitDefaultSetting() {
+void UQPGIM_BaseData::QP_InitDefaultDataAsset() {
 	qp_defaultDataAsset = UQPDS_Default::QP_GET()->QP_SetingDataAsset.LoadSynchronous();
 	qp_defaultDataAsset->AddToRoot();
+	if (qp_defaultDataAsset->QP_DefaultTextures.IsValid()) {
+		qp_defaultTextures = qp_defaultDataAsset->QP_DefaultTextures.LoadSynchronous();
+		qp_defaultTextures->AddToRoot();
+	}
 	/*qp_defaultDataAsset = LoadObject<UQPDS_DataAsset>(nullptr, TEXT("/Script/QipaWorldUEPlugin.QPDS_DataAsset'/Game/QipaWorld3D/DataAsset/QP_DefaultSetting.QP_DefaultSetting'"));
 	if (!qp_defaultDataAsset) {
 		qp_defaultDataAsset = LoadObject<UQPDS_DataAsset>(nullptr, TEXT("/Script/QipaWorldUEPlugin.QPDS_DataAsset'/QipaWorldUEPlugin/DataAsset/QP_DefaultSetting.QP_DefaultSetting'"));
@@ -191,6 +195,13 @@ void UQPGIM_BaseData::QP_InitDefaultSetting() {
 		//qpuuid->QP_Addint32(uuid.Key, uuid.Value);
 	//}
 	
+}
+UTexture2D* UQPGIM_BaseData::QP_GetTexture(FName n) {
+	if (IsValid(qp_defaultTextures)&& qp_defaultTextures->qp_textureMap.Contains(n)) {
+
+		return qp_defaultTextures->qp_textureMap[n];
+	}
+	return nullptr;
 }
 void UQPGIM_BaseData::QP_OnPostLoadMap(UWorld* LoadedWorld)
 {
@@ -267,6 +278,10 @@ UQPWorldData* UQPGIM_BaseData::QP_GetWorldData(const FName& k) {
 	return  LoadObject<UQPWorldData>(nullptr, *((qp_defaultDataAsset->QP_DefaultWorldDataPath.Path) + "/" + k.ToString() + "." + k.ToString()));
 }
 
+UQPData* UQPGIM_BaseData::QP_GetShowInformationData() {
+	return qp_gameBaseData->QP_GetUQPData("QP_GetShowInformationData");
+
+}
 //UQPData* QP_GetUIEventData();
 
 

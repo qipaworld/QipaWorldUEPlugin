@@ -112,6 +112,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 
 	void QP_AutoPopOrPushByClassEx(TSubclassOf<UUserWidget>  widgetClass, const FString& key);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+
+	void QP_AutoPopOrPush(UUserWidget* widget);
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+
+	void QP_AutoPopOrPushEx(UUserWidget* widget, const FString& key);
+
 	UFUNCTION(BlueprintPure, Category = "QipaWorld|QPUserInterface")
 	int32 QP_GetPopUINum();
 

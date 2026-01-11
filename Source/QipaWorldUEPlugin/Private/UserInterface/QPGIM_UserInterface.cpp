@@ -220,6 +220,27 @@ void UQPGIM_UserInterface::QP_AutoPopOrPushByClassEx(TSubclassOf<UUserWidget>  w
 		QP_AddUserInterfaceByClass(widgetClass,key);
 	}
 }
+
+void UQPGIM_UserInterface::QP_AutoPopOrPush(UUserWidget* widget)
+{
+	if (qp_UIData.Num() < 1) {
+		if (IsValid(widget)) {
+			QP_AddUserInterface(widget);
+		}
+	}
+	else {
+		QP_RemoveUserInterface();
+	}
+}
+void UQPGIM_UserInterface::QP_AutoPopOrPushEx(UUserWidget* widget, const FString& key) {
+	if (QP_CheckUserInterface(key)) {
+		QP_RemoveUserInterface(key);
+	}
+	else if (IsValid(widget)) {
+		QP_AddUserInterface(widget, key);
+	}
+}
+
 int32 UQPGIM_UserInterface::QP_GetPopUINum() {
 	return qp_UIData.Num();
 }

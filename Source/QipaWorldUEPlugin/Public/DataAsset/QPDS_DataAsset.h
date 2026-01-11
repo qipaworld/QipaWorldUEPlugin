@@ -7,6 +7,8 @@
 //#include "SoundControlBus.h"
 #include "InputAction.h"
 #include "SoundControlBusMix.h"
+#include "DataAsset/QPD_Textures.h"
+
 #include "QPDS_DataAsset.generated.h"
 
 /**
@@ -24,8 +26,8 @@ public:
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	TSoftObjectPtr<UWorld> QP_DefaultLoadingMap;
 	/**默认的ui蓝图路径*/
-	//UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
-	//TSoftClassPtr<UUserWidget> QP_DefaultMainUserInterface ;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	TSoftObjectPtr<UQPD_Textures> QP_DefaultTextures;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting", meta = ( LongPackageName))
