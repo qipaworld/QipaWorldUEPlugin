@@ -7,6 +7,9 @@
 #include "Data/QPData.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Components/ListView.h"
+#include "Components/VerticalBox.h"
+#include "Widget/QP_ShowInformationCell.h"
+
 #include "QPGIM_UserInterface.generated.h"
 
 class UQPData;
@@ -203,4 +206,9 @@ public:
 	UQPData* QP_GetEventData(FName key);
 
 	TMap<FName, FDelegateHandle> qp_viewDataHandele;
+
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	void QP_InitShowInformation(UPanelWidget* root,TSubclassOf<UQP_ShowInformationCell>  widgetClass,UQPData* d, int startIndex = 0,int cellMax = 13);
+
 };

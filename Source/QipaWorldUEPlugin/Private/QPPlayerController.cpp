@@ -6,6 +6,7 @@
 #include "QPUtil.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Online/QPGI_Online.h"
+#include "Monster/QPMonster.h"
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -132,6 +133,7 @@ void AQPPlayerController::QP_OnOpenPlayerInformation() {
         return QP_AddUserInterfaceByClass(w, key);
     }*/
     
+    UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData()->QP_AddUObject("dataAsset", (UObject*)((AQPMonster*)GetPawn())->qp_assetData);
     UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_openPlayerInformationUI,"qp_openPlayerInformationUI");
     //UQPGIM_BaseData::qp_staticObject->QP_GetKeyBoardEventData()->QP_Addbool("autoPushAndPopUI", true, EQPDataBroadcastType::SYNC);
 }

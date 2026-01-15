@@ -15,6 +15,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Data/QPData.h"
 #include "Data/QPGIM_BaseData.h"
+#include "DataAsset/QPDataAsset.h"
+
 #include "QPUtil.h"
 UQPGIM_UserInterface* UQPGIM_UserInterface::qp_staticObject = nullptr;
 
@@ -313,4 +315,43 @@ void UQPGIM_UserInterface::QP_ListViewUnbindData( FName key, class UListView* vi
 UQPData* UQPGIM_UserInterface::QP_GetEventData(FName key) {
 
 	return UQPGIM_BaseData::qp_staticObject->QP_GetUIEventData()->QP_GetUQPData(key);
+}
+
+void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassOf<UQP_ShowInformationCell>  widgetClass, UQPData* d, int startIndex, int cellMax) {
+	//UPanelWidget* dddd;
+	UQPDataAsset* DA =(UQPDataAsset*) (UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData()->QP_GetUObject("dataAsset"));
+	if (!DA) {
+		return;
+	}
+	int i = 0;
+	for (TFieldIterator<FProperty> It(DA->GetClass()); It; ++It)
+	{
+		FProperty* Property = *It;
+
+		//FString Name = Property->GetName();
+		//;
+		UUserWidget* widget = CreateWidget<UUserWidget>(GetWorld(), widgetClass);
+		//if(Property->GetFName().ToString() == "qp_health")
+		if (Property->HasMetaData(TEXT("QP_LocalData"))) {
+			//qp_abilitySystemComponent->SetNumericAttributeBase(FGameplayAttribute(Property), baseBuffData->QP_Getfloat(Property->GetFName()));
+		}
+		else if (Property->HasMetaData(TEXT("QP_LocalDataBase"))) {
+			//FGameplayAttribute p(Property);
+			//float num = qp_abilitySystemComponent->GetNumericAttributeBase(p);
+			//qp_abilitySystemComponent->SetNumericAttributeBase(p, num + baseBuffData_Add->QP_Getfloat(Property->GetFName()));
+		}
+
+		UE_LOG(LogTemp, Log, TEXT("____%s"), *Property->GetFName().ToString());
+	}
+	//for (auto v: root->GetAllChildren())
+	//{
+	//	if (UVerticalBox* VB = Cast<UVerticalBox>(v))
+	//	{
+	//		if (i >= startIndex) {
+
+	//		}
+	//		++i;
+	//		// 这是一个 VerticalBox
+	//	}
+	//}
 }
