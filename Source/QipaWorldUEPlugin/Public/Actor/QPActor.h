@@ -28,7 +28,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "QipaWorld|QPActor")
 		float qp_autoDestroy = 0;
 	/**是否在规定时间内销毁*/
-	bool qp_isAutoDestroy = false;
+	//bool qp_isAutoDestroy = false;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

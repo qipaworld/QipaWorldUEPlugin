@@ -75,5 +75,5 @@ void AQPS_Collision::QP_End() {
 	qp_bustNiagara->Activate();
 	qp_skillNiagara->DestroyInstance();
 	SetLifeSpan(qp_bustDestroy);
-	qp_isAutoDestroy = false;
+	//qp_isAutoDestroy = false;
 }

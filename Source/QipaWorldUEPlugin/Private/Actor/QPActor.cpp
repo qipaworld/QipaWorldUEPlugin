@@ -18,24 +18,24 @@ void AQPActor::BeginPlay()
 	Super::BeginPlay();
 	if (qp_autoDestroy!=0) {
 		//SetLifeSpan(qp_autoDestroy);
-		qp_isAutoDestroy = true;
+		SetLifeSpan(qp_autoDestroy);
 	}
 }
 void AQPActor::QP_End() {
-	if (qp_isAutoDestroy) {
+	/*if (qp_isAutoDestroy) {
 		Destroy();
 	}
-	qp_isAutoDestroy = false;
+	qp_isAutoDestroy = false;*/
 }
 // Called every frame
 void AQPActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (qp_isAutoDestroy) {
+	/*if (qp_isAutoDestroy) {
 		qp_autoDestroy -= DeltaTime;
 		if (qp_autoDestroy <= 0) {
 			QP_End();
 		}
-	}
+	}*/
 }
 

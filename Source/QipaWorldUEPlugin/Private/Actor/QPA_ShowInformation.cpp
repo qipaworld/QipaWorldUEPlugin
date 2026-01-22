@@ -69,7 +69,7 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 	
 	
 	USkeletalMesh* sm = Cast<USkeletalMesh>(qp_data->QP_GetUObject("qp_showMesh"));
-	isStatic = sm;
+	isStatic = sm !=nullptr;
 	qp_showSkeletalMesh->SetVisibility(isStatic);
 	qp_showSkeletalMesh->SetActive(isStatic);
 	qp_showStaticMesh->SetActive(!isStatic);

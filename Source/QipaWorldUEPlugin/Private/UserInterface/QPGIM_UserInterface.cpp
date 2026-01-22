@@ -549,6 +549,14 @@ void UQPGIM_UserInterface::QP_AutoPosition(UUserWidget* Widget, UPanelWidget* c,
 
 
 
+	FGeometry Geo = c->GetCachedGeometry();
+
+	//FVector2D AbsoluteSize = Geo.GetAbsoluteSize();
+
+	//FVector2D AbsolutePosition = Geo.GetAbsolutePosition();
+	//UQPUtil::QP_LOG(AbsoluteSize.ToString() + "_____________________AbsoluteSize");
+	//UQPUtil::QP_LOG(AbsoluteSize.ToString() + "_____________________AbsoluteSize");
+
 	if (!Widget || !c)
 	{
 		return;
@@ -561,12 +569,16 @@ void UQPGIM_UserInterface::QP_AutoPosition(UUserWidget* Widget, UPanelWidget* c,
 		if (!PC) return;
 	}
 	
+	
 	FVector2D WidgetSize = c->GetDesiredSize();
 
 	FVector2D ViewportSize = UWidgetLayoutLibrary::GetViewportSize(Widget);
 	float ViewportScale = UWidgetLayoutLibrary::GetViewportScale(Widget);
+
 	ViewportSize = ViewportSize / ViewportScale;
 	FVector2D MousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(Widget);
+	//UQPUtil::QP_LOG(MousePosition.ToString() + "_____________________AbsoluteSize");
+	//UQPUtil::QP_LOG_EX("____________", ViewportScale);
 
 	FVector2D MousePos;
 	MousePos.Y = MousePosition.Y - WidgetSize.Y - offset;
@@ -575,9 +587,6 @@ void UQPGIM_UserInterface::QP_AutoPosition(UUserWidget* Widget, UPanelWidget* c,
 	if (MousePos.Y < 0)
 	{
 		MousePos.Y = MousePosition.Y  + offset;
-		//MousePos.X = MousePosition.X - WidgetSize.X / 2;
-		//isY = true;
-
 	}
 
 	if (MousePos.X + WidgetSize.X /2 > ViewportSize.X)
@@ -592,7 +601,6 @@ void UQPGIM_UserInterface::QP_AutoPosition(UUserWidget* Widget, UPanelWidget* c,
 	UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(c->Slot);
 	if (!CanvasSlot)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Border 不是挂在 CanvasPanel 下"));
 		return;
 	}
 
