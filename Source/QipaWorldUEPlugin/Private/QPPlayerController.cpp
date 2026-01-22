@@ -133,7 +133,7 @@ void AQPPlayerController::QP_OnOpenPlayerInformation() {
         return QP_AddUserInterfaceByClass(w, key);
     }*/
     
-    UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData()->QP_AddUObject("dataAsset", (UObject*)((AQPMonster*)GetPawn())->qp_assetData);
+    UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData()->QP_AddUObject("dataAsset", (UObject*)((AQPMonster*)GetPawn()));
     UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_openPlayerInformationUI,"qp_openPlayerInformationUI");
     //UQPGIM_BaseData::qp_staticObject->QP_GetKeyBoardEventData()->QP_Addbool("autoPushAndPopUI", true, EQPDataBroadcastType::SYNC);
 }

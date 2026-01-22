@@ -24,7 +24,7 @@ void UQPGIM_Course::Initialize(FSubsystemCollectionBase& Collection)
 
 	Super::Initialize(Collection);
 
-	QP_InitStaticObject();
+	//QP_InitStaticObject();
 
 }
 void UQPGIM_Course::QP_InitStaticObject() {

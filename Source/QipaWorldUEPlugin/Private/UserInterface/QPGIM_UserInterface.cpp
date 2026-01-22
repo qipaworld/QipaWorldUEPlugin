@@ -4,16 +4,22 @@
 #include "UserInterface/QPGIM_UserInterface.h"
 //#include <Subsystems/PanelExtensionSubsystem.h>
 //#include "WidgetBlueprint.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Blueprint/UserWidget.h"
 #include "Map/QPGIM_Map.h"
-
-
+#include "GamePlay/AttributeSet/QPAS_BaseBuff.h"
+#include "Internationalization/Text.h"
+#include "Monster/QPMonster.h"
+#include "Internationalization/StringTable.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Setting/QPDS_Default.h"
 #include "Data/QPGIM_Data.h"
+#include "Components/Border.h"
+#include "Components/CanvasPanel.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Data/QPData.h"
+#include "Character/QPDA_Character.h"
 #include "Data/QPGIM_BaseData.h"
 #include "DataAsset/QPDataAsset.h"
 
@@ -317,41 +323,280 @@ UQPData* UQPGIM_UserInterface::QP_GetEventData(FName key) {
 	return UQPGIM_BaseData::qp_staticObject->QP_GetUIEventData()->QP_GetUQPData(key);
 }
 
-void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassOf<UQP_ShowInformationCell>  widgetClass, UQPData* d, int startIndex, int cellMax) {
+void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassOf<UQP_ShowInformationCell>  widgetClass, int startIndex, int cellMax, bool isEx) {
 	//UPanelWidget* dddd;
-	UQPDataAsset* DA =(UQPDataAsset*) (UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData()->QP_GetUObject("dataAsset"));
-	if (!DA) {
+	UQPData* inData = UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData();
+	TMap<FName, UQP_ShowInformationCell*> cells;
+	UQP_ShowInformationCell* widget;
+
+	if (AQPMonster* m = Cast<AQPMonster>(inData->QP_GetUObject("dataAsset"))) {
+		if (const UAttributeSet* uset = m->qp_abilitySystemComponent->GetAttributeSet(UQPAS_BaseBuff::StaticClass())) {
+			
+			FString sKey; 
+			int32 exKey; 
+			
+			if (isEx) {
+				sKey = inData->QP_GetFString("qp_showExKey");
+				exKey = inData->QP_Getint32("qp_showExKeyI");
+				inData->QP_AddFText("qp_showMeshName", FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", sKey));
+				sKey = sKey.Mid(2);
+			}
+			else {
+				inData->QP_AddFText("qp_showMeshName", FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", m->qp_assetData->qp_name.ToString()));
+			}
+			//inData->QP_AddFVector("qp_showMeshVector", m->qp_assetData->qp_vector);
+			inData->QP_AddUObject("qp_showMesh", m->GetMesh()->GetSkeletalMeshAsset());
+			//inData->QP_Addbool("isStatic", true);
+			inData->QP_GetUQPData("ControlData")->QP_Addbool("changeMesh", true);
+			UClass* usetClass = uset->GetClass();
+			UObject* DefaultObj = usetClass->GetDefaultObject();
+
+			FProperty* Property;
+			int DefaultValue = 0;
+			float nowValue = 0;
+			FStructProperty* StructProp;
+			FName n;
+			
+			
+			for (TFieldIterator<FProperty> It(usetClass); It; ++It)
+			{
+				Property = *It;
+				StructProp = CastField<FStructProperty>(Property);
+				if (StructProp)
+				{
+					if (StructProp->Struct == TBaseStructure<FGameplayAttributeData>::Get())
+					{
+						DefaultValue = (static_cast<FGameplayAttributeData*>(StructProp->ContainerPtrToValuePtr<void>(DefaultObj)))->GetBaseValue();
+
+						nowValue = (static_cast<const FGameplayAttributeData*>(StructProp->ContainerPtrToValuePtr<void>(uset)))->GetBaseValue();
+						n = Property->GetFName();
+						if (isEx) {
+							if (DefaultValue & exKey) {
+								if (n.ToString().Contains(sKey)) {
+									widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+
+									widget->qp_now = nowValue;
+
+									widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", n.ToString());
+
+									cells.Add(n, widget);
+								}
+								
+							}
+						}
+						else if (DefaultValue & (uint16)EQPBaseBuffDataType::ShowInformation) {
+
+							widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+							widget->qp_dataName = n;
+							widget->qp_max = nowValue;
+							widget->qp_now = nowValue;
+							widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(n);
+							//UQPUtil::QP_LOG(FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", TEXT("qp_health")).ToString() + "_____1");
+							//FSoftObjectPath TablePath(TEXT("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation"));
+							//UStringTable* StringTable = Cast<UStringTable>(TablePath.TryLoad());
+
+							//check(StringTable);
+							//IStringTableEngineBridge::FullyLoadStringTableAsset(FName("DST_QP_ShowInformation"));
+
+
+							//FText::FromStringTable(n, n);
+							widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", n.ToString());
+							//UQPUtil::QP_LOG(n.ToString());
+							//UQPUtil::QP_LOG(widget->qp_nameText.ToString());
+
+							widget->qp_isBind = false;
+							cells.Add(n, widget);
+						}
+						else if (DefaultValue & (uint16)EQPBaseBuffDataType::ShowInformationNow) {
+							if (cells.Contains(n)) {
+								widget = cells[n];
+							}
+							else {
+								widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+
+								cells.Add(n, widget);
+							}
+							widget->qp_dataName = n;
+							widget->qp_isBind = true;
+							widget->qp_now = nowValue;
+							widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(n);
+							widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", n.ToString());
+							//UQPUtil::QP_LOG(n.ToString());
+							//UQPUtil::QP_LOG(widget->qp_nameText.ToString());
+
+
+						}
+						else if (DefaultValue & (uint16)EQPBaseBuffDataType::ShowInformationMax) {
+							/*FString Str =;
+
+							Str.LeftChop(3);*/
+
+							
+							 FName newN = FName(*(n.ToString().LeftChop(3)));
+							if (cells.Contains(newN)) {
+								widget = cells[newN];
+							}
+							else {
+								widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+								//widget->qp_dataName = n;
+
+								cells.Add(newN, widget);
+							}
+							widget->qp_max = nowValue;
+							//widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(n);
+							//widget->qp_nameText = FText::FromStringTable("DST_QP_ShowInformation", n.ToString());
+						}
+						else if (DefaultValue & (uint16)EQPBaseBuffDataType::ShowInformationMin) {
+							/*FString Str =;
+
+							Str.LeftChop(3);*/
+
+
+							FName newN = FName(*(n.ToString().LeftChop(3)));
+							if (cells.Contains(newN)) {
+								widget = cells[newN];
+							}
+							else {
+								widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+								//widget->qp_dataName = n;
+
+								cells.Add(newN, widget);
+							}
+							widget->qp_min = nowValue;
+							//widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(n);
+							//widget->qp_nameText = FText::FromStringTable("DST_QP_ShowInformation", n.ToString());
+						}
+
+					}
+
+				}
+
+
+				//UE_LOG(LogTemp, Log, TEXT("____%s"), *Property->GetFName().ToString());
+			}
+			//baseBuffData_Add->QP_SaveDataFAES("baseBuffDataSet_Add" + qp_assetData->qp_name.ToString(), UQPGIM_BaseData::qp_staticObject->GetAESKey(FName("baseBuffDataSet_Add_A" + qp_assetData->qp_name.ToString())));
+			//baseBuffData->QP_SaveDataFAES("baseBuffDataSet" + qp_assetData->qp_name.ToString(), UQPGIM_BaseData::qp_staticObject->GetAESKey(FName("baseBuffDataSet_A" + qp_assetData->qp_name.ToString())));
+		}
+	}
+	else if (UQPDataAsset* DA = Cast<UQPDataAsset>(inData->QP_GetUObject("dataAsset"))) {
+		//inData->QP_Addbool("isStatic", false);
+		
+		//for (TFieldIterator<FProperty> It(DA->GetClass()); It; ++It)
+		//{
+		//	FProperty* Property = *It;
+
+		//	//FString Name = Property->GetName();
+		//	//;
+		//	//UUserWidget* widget = CreateWidget<UUserWidget>(GetWorld(), widgetClass);
+		//	//if(Property->GetFName().ToString() == "qp_health")
+		//	if (Property->HasMetaData(TEXT("QP_LocalData"))) {
+		//		//qp_abilitySystemComponent->SetNumericAttributeBase(FGameplayAttribute(Property), baseBuffData->QP_Getfloat(Property->GetFName()));
+		//	}
+		//	else if (Property->HasMetaData(TEXT("QP_LocalDataBase"))) {
+		//		//FGameplayAttribute p(Property);
+		//		//float num = qp_abilitySystemComponent->GetNumericAttributeBase(p);
+		//		//qp_abilitySystemComponent->SetNumericAttributeBase(p, num + baseBuffData_Add->QP_Getfloat(Property->GetFName()));
+		//	}
+
+		//	//UE_LOG(LogTemp, Log, TEXT("____%s"), *Property->GetFName().ToString());
+		//}
+	}
+
+	
+	
+	UVerticalBox* VB = nullptr;
+	UWidget* w = nullptr;
+	int i = 0;
+	int j = 0;
+	int z = 0;
+	for (auto v2 : cells) {
+
+		if (!VB) {
+			
+			while (true)
+			{
+				w = root->GetChildAt(z);
+				if (!w) {
+					break;
+				}
+				z++;
+				VB = Cast<UVerticalBox>(w);
+				if (VB )
+				{
+					++i;
+					if (i > startIndex) {
+						break;
+					}
+					// 这是一个 VerticalBox
+				}
+			}
+			if (!VB) {
+				break;
+			}
+		}
+		VB->AddChildToVerticalBox(v2.Value);
+		j++;
+		if ( j >= cellMax) {
+			VB = nullptr;
+			j = 0;
+		}
+		
+	}
+	
+}
+
+void UQPGIM_UserInterface::QP_AutoPosition(UUserWidget* Widget, UPanelWidget* c, float offset) {
+
+
+
+	if (!Widget || !c)
+	{
 		return;
 	}
-	int i = 0;
-	for (TFieldIterator<FProperty> It(DA->GetClass()); It; ++It)
+
+	APlayerController* PC = Widget->GetOwningPlayer();
+	if (!PC)
 	{
-		FProperty* Property = *It;
-
-		//FString Name = Property->GetName();
-		//;
-		UUserWidget* widget = CreateWidget<UUserWidget>(GetWorld(), widgetClass);
-		//if(Property->GetFName().ToString() == "qp_health")
-		if (Property->HasMetaData(TEXT("QP_LocalData"))) {
-			//qp_abilitySystemComponent->SetNumericAttributeBase(FGameplayAttribute(Property), baseBuffData->QP_Getfloat(Property->GetFName()));
-		}
-		else if (Property->HasMetaData(TEXT("QP_LocalDataBase"))) {
-			//FGameplayAttribute p(Property);
-			//float num = qp_abilitySystemComponent->GetNumericAttributeBase(p);
-			//qp_abilitySystemComponent->SetNumericAttributeBase(p, num + baseBuffData_Add->QP_Getfloat(Property->GetFName()));
-		}
-
-		UE_LOG(LogTemp, Log, TEXT("____%s"), *Property->GetFName().ToString());
+		PC = GEngine->GetFirstLocalPlayerController(Widget->GetWorld());
+		if (!PC) return;
 	}
-	//for (auto v: root->GetAllChildren())
-	//{
-	//	if (UVerticalBox* VB = Cast<UVerticalBox>(v))
-	//	{
-	//		if (i >= startIndex) {
+	
+	FVector2D WidgetSize = c->GetDesiredSize();
 
-	//		}
-	//		++i;
-	//		// 这是一个 VerticalBox
-	//	}
-	//}
+	FVector2D ViewportSize = UWidgetLayoutLibrary::GetViewportSize(Widget);
+	float ViewportScale = UWidgetLayoutLibrary::GetViewportScale(Widget);
+	ViewportSize = ViewportSize / ViewportScale;
+	FVector2D MousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(Widget);
+
+	FVector2D MousePos;
+	MousePos.Y = MousePosition.Y - WidgetSize.Y - offset;
+	MousePos.X = MousePosition.X - WidgetSize.X/2;
+	
+	if (MousePos.Y < 0)
+	{
+		MousePos.Y = MousePosition.Y  + offset;
+		//MousePos.X = MousePosition.X - WidgetSize.X / 2;
+		//isY = true;
+
+	}
+
+	if (MousePos.X + WidgetSize.X /2 > ViewportSize.X)
+	{
+		MousePos.X = MousePosition.X - offset - WidgetSize.X;
+	}else if (MousePos.X - WidgetSize.X / 2 < 0)
+	{
+		MousePos.X = MousePosition.X + offset;
+	}
+	
+
+	UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(c->Slot);
+	if (!CanvasSlot)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Border 不是挂在 CanvasPanel 下"));
+		return;
+	}
+
+	CanvasSlot->SetPosition(MousePos);
+
+	
 }

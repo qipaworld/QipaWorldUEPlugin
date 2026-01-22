@@ -46,7 +46,7 @@ public:
 
 	void QP_DataChange(UQPData* qp_data);
 	void QP_UpdateStatus();
-	bool qp_isStatic = false;
+	//bool qp_isCharacter = false;
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
@@ -64,7 +64,8 @@ public:
 
 	float qp_autoSpeed = 100;
 	bool qp_isMouseMove = false;
-
+	//FVector qp_targetVector;
+	FVector qp_targetSize;
 	virtual void Tick(float DeltaTime) override;
 
 };

@@ -9,6 +9,7 @@
 #include "Data/QPData.h"
 #include "World/QPWorldData.h"
 #include "DataAsset/QPD_Textures.h"
+#include "DataAsset/QPD_Colors.h"
 
 #include "QPGIM_BaseData.generated.h"
 
@@ -30,6 +31,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPData")
 	TObjectPtr< UQPD_Textures> qp_defaultTextures;
+
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPData")
+	TObjectPtr< UQPD_Colors> qp_defaultColors;
 
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
@@ -60,6 +64,8 @@ public:
 	int32 QP_GetUUID(const FString& key);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UTexture2D* QP_GetTexture(FName n);
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
+	FLinearColor QP_GetColor(FName n);
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPData")
 	UQPData* QP_GetPlayerData();

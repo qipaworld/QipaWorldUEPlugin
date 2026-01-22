@@ -32,6 +32,7 @@ void UQPGIM_Helper::Initialize(FSubsystemCollectionBase& Collection)
 	//qp_loadMapName = UQPDeveloperSettings::QP_GET()->QP_DefaultStartMap;
 }
 void UQPGIM_Helper::QP_InitStaticObject() {
+	//UQPUtil::QP_LOG("___________________QP_InitStaticObject_______________");
 	UQPGIM_Helper::qp_staticObject = this;
 }
 void UQPGIM_Helper::Deinitialize()

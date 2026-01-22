@@ -169,10 +169,14 @@ UQPData* UQPGIM_BaseData::QP_GetGameBaseData()
 void UQPGIM_BaseData::QP_InitDefaultDataAsset() {
 	qp_defaultDataAsset = UQPDS_Default::QP_GET()->QP_SetingDataAsset.LoadSynchronous();
 	qp_defaultDataAsset->AddToRoot();
-	if (qp_defaultDataAsset->QP_DefaultTextures.IsValid()) {
+	//if (qp_defaultDataAsset->QP_DefaultTextures) {
 		qp_defaultTextures = qp_defaultDataAsset->QP_DefaultTextures.LoadSynchronous();
 		qp_defaultTextures->AddToRoot();
-	}
+	//}
+	//if (qp_defaultDataAsset->QP_DefaultColors) {
+		qp_defaultColors = qp_defaultDataAsset->QP_DefaultColors.LoadSynchronous();
+		qp_defaultColors->AddToRoot();
+	//}
 	/*qp_defaultDataAsset = LoadObject<UQPDS_DataAsset>(nullptr, TEXT("/Script/QipaWorldUEPlugin.QPDS_DataAsset'/Game/QipaWorld3D/DataAsset/QP_DefaultSetting.QP_DefaultSetting'"));
 	if (!qp_defaultDataAsset) {
 		qp_defaultDataAsset = LoadObject<UQPDS_DataAsset>(nullptr, TEXT("/Script/QipaWorldUEPlugin.QPDS_DataAsset'/QipaWorldUEPlugin/DataAsset/QP_DefaultSetting.QP_DefaultSetting'"));
@@ -202,6 +206,13 @@ UTexture2D* UQPGIM_BaseData::QP_GetTexture(FName n) {
 		return qp_defaultTextures->qp_textureMap[n];
 	}
 	return nullptr;
+}
+FLinearColor UQPGIM_BaseData::QP_GetColor(FName n) {
+	if (IsValid(qp_defaultColors) && qp_defaultColors->qp_colorMap.Contains(n)) {
+
+		return qp_defaultColors->qp_colorMap[n];
+	}
+	return FLinearColor();
 }
 void UQPGIM_BaseData::QP_OnPostLoadMap(UWorld* LoadedWorld)
 {

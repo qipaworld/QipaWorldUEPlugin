@@ -9,15 +9,28 @@
 #include "QPGIM_Map.generated.h"
 
 UENUM(BlueprintType)
-enum class EQPSunType : uint8
+enum class EQPSunType : uint8 
 {
-	MORNING        UMETA(DisplayName = "morning"),
-	NOON        UMETA(DisplayName = "noon"),
-	AFTERNOON        UMETA(DisplayName = "afternoon"),
-	NIGHT       UMETA(DisplayName = "night"),
-	MIDNIGHT         UMETA(DisplayName = "midnight"),
-	AFTERMIDNIGHT         UMETA(DisplayName = "after midnight"),
+	NONE = 0        UMETA(DisplayName = "none"),
+	MORNING = 1        UMETA(DisplayName = "morning"),
+	NOON = 1<<1      UMETA(DisplayName = "noon"),
+	AFTERNOON = 1 << 2       UMETA(DisplayName = "afternoon"),
+	NIGHT = 1 << 3    UMETA(DisplayName = "night"), 
+	MIDNIGHT = 1 << 4       UMETA(DisplayName = "midnight"),
+	AFTERMIDNIGHT = 1 << 5      UMETA(DisplayName = "after midnight"),
 };
+//FORCEINLINE EQPSunType operator|(EQPSunType A, EQPSunType B)
+//{
+//	return static_cast<EQPSunType>(
+//		static_cast<uint8>(A) | static_cast<uint8>(B)
+//		);
+//}
+ENUM_CLASS_FLAGS(EQPSunType)
+
+//FORCEINLINE bool operator&(EQPSunType A, EQPSunType B)
+//{
+//	return static_cast<uint8>(A) & static_cast<uint8>(B);
+//}
 //USTRUCT(BlueprintType)
 //struct FQPSunTime 
 //{
@@ -92,6 +105,11 @@ public:
 
 	/**子地图加载的action*/
 	FLatentActionInfo qp_actionInfo;
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")
+	FORCEINLINE bool QP_IsInSunType(EQPSunType A) {
+		return static_cast<uint8>(A)& static_cast<uint8>(qp_mapSunType);
+	}
 
 	/** 加载新地图，并且保持原来的地图*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPMap")

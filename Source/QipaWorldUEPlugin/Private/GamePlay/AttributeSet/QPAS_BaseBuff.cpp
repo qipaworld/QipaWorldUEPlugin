@@ -11,7 +11,30 @@
 #include "Data/QPGIM_PlayerData.h"
 #include "GameplayEffectExtension.h"
 
-
+//UQPAS_BaseBuff::UQPAS_BaseBuff(){
+//    if (qp_dataTypes.IsEmpty()) {
+//        UClass* MyClass = UQPAS_BaseBuff::StaticClass();
+//        if (!MyClass) return;
+//
+//        UMyAttributeSet* DefaultObj = Cast<UMyAttributeSet>(MyClass->GetDefaultObject());
+//        if (!DefaultObj) return;
+//
+//        TMap<FName, float> AttributeDefaults;
+//
+//        for (TFieldIterator<FProperty> It(MyClass); It; ++It)
+//        {
+//            FProperty* Prop = *It;
+//            if (FStructProperty* StructProp = CastField<FStructProperty>(Prop))
+//            {
+//                if (StructProp->Struct->GetFName() == TEXT("GameplayAttributeData"))
+//                {
+//                    FGameplayAttributeData* DataPtr = StructProp->ContainerPtrToValuePtr<FGameplayAttributeData>(DefaultObj);
+//                    AttributeDefaults.Add(StructProp->GetFName(), DataPtr->GetCurrentValue());
+//                }
+//            }
+//        }
+//    }
+//}
 void UQPAS_BaseBuff::QPI_InitAttributeSet(AQPMonster* v) {
 
     qp_monster = v;
@@ -585,18 +608,18 @@ void UQPAS_BaseBuff::QP_HealthTask() {
     //qp_excrement.SetCurrentValue(excrement__);
     //qp_mineral.SetCurrentValue(mineral__);
     if (qp_monster->Controller&&qp_monster->Controller->IsLocalPlayerController()) {
-        qp_localPlayerData_Status->QP_Addfloat("qp_excrement", excrement__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_health", health__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_sugar", sugar__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_protein", protein__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_fat", fat__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_energy", energy__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_temperature", temperature__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_vitamin", vitamin__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_oxygen", oxygen__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_water", water__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_urine", urine__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_mineral", mineral__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_excrement", excrement__/ excrementMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_health", health__ / healthMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_sugar", sugar__ / sugarMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_protein", protein__ / proteinMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_fat", fat__/ fatMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_energy", energy__ / energyMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_temperature", temperature__ / (temperatureMax__ - temperatureMin__) );
+        qp_localPlayerData_Status->QP_Addfloat("qp_vitamin", vitamin__/ vitaminMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_oxygen", oxygen__ / oxygenMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_water", water__ / waterMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_urine", urine__ / urineMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_mineral", mineral__ / mineralMax__);
 
         qp_localPlayerData_Status->QP_Addfloat("qp_excrementMax", excrementMax__);
         qp_localPlayerData_Status->QP_Addfloat("qp_healthMax", healthMax__);
@@ -604,7 +627,8 @@ void UQPAS_BaseBuff::QP_HealthTask() {
         qp_localPlayerData_Status->QP_Addfloat("qp_proteinMax", proteinMax__);
         qp_localPlayerData_Status->QP_Addfloat("qp_fatMax", fatMax__);
         qp_localPlayerData_Status->QP_Addfloat("qp_energyMax", energyMax__);
-        qp_localPlayerData_Status->QP_Addfloat("qp_temperatureMax", temperatureMax__);
+        qp_localPlayerData_Status->QP_Addfloat("qp_temperatureMax", temperatureMax__); 
+            qp_localPlayerData_Status->QP_Addfloat("qp_temperatureMin", temperatureMin__);
         qp_localPlayerData_Status->QP_Addfloat("qp_vitaminMax", vitaminMax__);
         qp_localPlayerData_Status->QP_Addfloat("qp_oxygenMax", oxygenMax__);
         qp_localPlayerData_Status->QP_Addfloat("qp_waterMax", waterMax__);

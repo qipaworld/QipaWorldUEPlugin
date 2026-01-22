@@ -342,33 +342,53 @@ void AQPCharacter::QP_TrunAxis(const FInputActionValue& value) {
 					TMap<FName, FProperty*> t;
 					for (TFieldIterator<FProperty> It(qp_assetData->GetClass()); It; ++It)
 					{
-						FProperty* Property = *It;
-						t.Add(Property->GetFName(), Property);
+						//Property = ;
+						t.Add((*It)->GetFName(), (*It));
 					}
 					
-					for (TFieldIterator<FProperty> It(uset->GetClass()); It; ++It)
+					UClass* usetClass = uset->GetClass();
+					UObject* DefaultObj = usetClass->GetDefaultObject();
+					
+					FProperty* Property;
+					int DefaultValue = 0;
+					float nowValue = 0;
+					float num2 = 0;
+					FStructProperty* StructProp;
+					FName n;
+					for (TFieldIterator<FProperty> It(usetClass); It; ++It)
 					{
-						FProperty* Property = *It;
-						
-						if (Property->HasMetaData(TEXT("QP_LocalData"))) {
-							baseBuffData->QP_Addfloat(Property->GetFName(), qp_abilitySystemComponent->GetNumericAttributeBase(FGameplayAttribute(Property)));
-						}
-						else if (Property->HasMetaData(TEXT("QP_LocalDataBase"))) {
-							FGameplayAttribute p(Property);
-							float num = qp_abilitySystemComponent->GetNumericAttributeBase(p);
-							float num2 = 0;
-							if (t.Contains(Property->GetFName())) {
-								if (FFloatProperty* FloatProp = CastField<FFloatProperty>(t[Property->GetFName()]))
-								{
-									num2 = FloatProp->GetPropertyValue_InContainer(qp_assetData);
+						Property = *It;
+						StructProp = CastField<FStructProperty>(Property);
+						if (StructProp)
+						{
+							if (StructProp->Struct == TBaseStructure<FGameplayAttributeData>::Get())
+							{
+								DefaultValue = (static_cast<FGameplayAttributeData*>(StructProp->ContainerPtrToValuePtr<void>(DefaultObj)))->GetBaseValue();
+								nowValue = (static_cast<const FGameplayAttributeData*>(StructProp->ContainerPtrToValuePtr<void>(uset)))->GetBaseValue();
+								n = Property->GetFName();
+								if (DefaultValue & (uint16)EQPBaseBuffDataType::LocalData_Add) {
+									
+									num2 = 0;
+									if (t.Contains(n)) {
+										if (FFloatProperty* FloatProp = CastField<FFloatProperty>(t[n]))
+										{
+											num2 = FloatProp->GetPropertyValue_InContainer(qp_assetData);
+										}
+									}
+									else {
+										UQPUtil::QP_LOG("not qp_assetData name " + n.ToString());
+									}
+
+									baseBuffData_Add->QP_Addfloat(n, nowValue - num2);
 								}
-							}
-							else {
-								UQPUtil::QP_LOG("not qp_assetData name " + Property->GetFName().ToString());
+								else if (DefaultValue & (uint16)EQPBaseBuffDataType::LocalData) {
+									baseBuffData->QP_Addfloat(n, nowValue);
+								}
+							
 							}
 							
-							baseBuffData_Add->QP_Addfloat(Property->GetFName(), num - num2);
 						}
+						
 
 						//UE_LOG(LogTemp, Log, TEXT("____%s"), *Property->GetFName().ToString());
 					}
@@ -438,24 +458,50 @@ void AQPCharacter::QP_TrunAxis(const FInputActionValue& value) {
 			  UQPData* baseBuffData = QP_GetQPData()->QP_GetUQPData("baseBuffDataSet");
 			  baseBuffData->QP_LoadDataFAES("baseBuffDataSet" + qp_assetData->qp_name.ToString(), UQPGIM_BaseData::qp_staticObject->GetAESKey(FName("baseBuffDataSet_A" + qp_assetData->qp_name.ToString())));
 			  if (baseBuffData->QP_Getbool("qp_isinit")) {
-				  for (TFieldIterator<FProperty> It(uset->GetClass()); It; ++It)
+
+
+				  //-----------------------------
+				  UClass* usetClass = uset->GetClass();
+				  UObject* DefaultObj = usetClass->GetDefaultObject();
+
+				  FProperty* Property;
+				  int DefaultValue = 0;
+				  float num2 = 0;
+				  FName n;
+
+				  FGameplayAttributeData* nowD;
+				  FStructProperty* StructProp;
+				  for (TFieldIterator<FProperty> It(usetClass); It; ++It)
 				  {
-					  FProperty* Property = *It;
 
-					  //FString Name = Property->GetName();
-					  //;
 
-					  //if(Property->GetFName().ToString() == "qp_health")
-					  if (Property->HasMetaData(TEXT("QP_LocalData"))) {
-						  qp_abilitySystemComponent->SetNumericAttributeBase(FGameplayAttribute(Property), baseBuffData->QP_Getfloat(Property->GetFName()));
+					  Property = *It;
+					  StructProp = CastField<FStructProperty>(Property);
+
+					  if (StructProp)
+					  {
+						  if (StructProp->Struct == TBaseStructure<FGameplayAttributeData>::Get())
+						  {
+
+							  DefaultValue = (static_cast<FGameplayAttributeData*>(StructProp->ContainerPtrToValuePtr<void>(DefaultObj)))->GetBaseValue();
+							  nowD = (FGameplayAttributeData*)(StructProp->ContainerPtrToValuePtr<void>(uset));
+							  n = Property->GetFName();
+							  if (DefaultValue & (uint16)EQPBaseBuffDataType::LocalData_Add) {
+
+								  //FGameplayAttribute p(Property);
+								  //float num =;
+								  nowD->SetBaseValue(nowD->GetBaseValue() + baseBuffData_Add->QP_Getfloat(n));
+								  nowD->SetCurrentValue(nowD->GetBaseValue());
+								  //qp_abilitySystemComponent->SetNumericAttributeBase(p, );
+							  }
+							  else if (DefaultValue & (uint16)EQPBaseBuffDataType::LocalData) {
+								  //qp_abilitySystemComponent->SetNumericAttributeBase(FGameplayAttribute(Property), baseBuffData->QP_Getfloat(n));
+								  nowD->SetBaseValue(baseBuffData->QP_Getfloat(n));
+									nowD->SetCurrentValue(nowD->GetBaseValue());
+							  }
+						  } 
 					  }
-					  else if (Property->HasMetaData(TEXT("QP_LocalDataBase"))) {
-						  FGameplayAttribute p(Property);
-						  float num = qp_abilitySystemComponent->GetNumericAttributeBase(p);
-						  qp_abilitySystemComponent->SetNumericAttributeBase(p, num + baseBuffData_Add->QP_Getfloat(Property->GetFName()));
-					  }
-
-					  //UE_LOG(LogTemp, Log, TEXT("____%s"), *Property->GetFName().ToString());
+					  
 				  }
 			  }
 			  baseBuffData->QP_Addbool("qp_isinit", true);

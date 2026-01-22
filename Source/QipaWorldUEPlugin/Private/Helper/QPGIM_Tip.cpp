@@ -23,10 +23,12 @@ void UQPGIM_Tip::Initialize(FSubsystemCollectionBase& Collection)
 
 	Super::Initialize(Collection);
 
-	QP_InitStaticObject();
+	//QP_InitStaticObject();
 
 }
 void UQPGIM_Tip::QP_InitStaticObject() {
+	//UQPUtil::QP_LOG("___________________UQPGIM_Tip_______________");
+
 	UQPGIM_Tip::qp_staticObject = this;
 }
 void UQPGIM_Tip::Deinitialize()

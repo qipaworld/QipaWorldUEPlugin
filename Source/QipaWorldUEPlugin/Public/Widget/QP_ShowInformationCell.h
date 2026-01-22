@@ -21,10 +21,28 @@ public:
 
 	FName qp_dataName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	bool qp_isMax;
+	bool qp_isBind;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	UQPData* qp_data;
 	//void QP_Init(FName n,bool b)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+
+	FText qp_nameText;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+
+	UTexture2D* qp_texture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+
+	float qp_max;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+
+	float qp_min = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+
+	float qp_now;
 };

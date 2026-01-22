@@ -16,4 +16,8 @@ class QIPAWORLDUEPLUGIN_API UQPDataAsset : public UDataAsset
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	FName qp_name;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	//FVector qp_vector;
+
 };

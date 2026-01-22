@@ -8,6 +8,7 @@
 #include "InputAction.h"
 #include "SoundControlBusMix.h"
 #include "DataAsset/QPD_Textures.h"
+#include "DataAsset/QPD_Colors.h"
 
 #include "QPDS_DataAsset.generated.h"
 
@@ -29,6 +30,8 @@ public:
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	TSoftObjectPtr<UQPD_Textures> QP_DefaultTextures;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	TSoftObjectPtr<UQPD_Colors> QP_DefaultColors;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting", meta = ( LongPackageName))
 	FDirectoryPath QP_DefaultCharacterDataPath;
