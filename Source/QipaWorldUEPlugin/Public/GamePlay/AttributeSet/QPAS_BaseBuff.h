@@ -414,8 +414,13 @@ public:
         //-----------------------------------------------
 
         UPROPERTY(BlueprintReadOnly, Category = "QipaWorld|Attributes", meta = (QP_LocalDataBase, QP_ShowInformation))
-    FGameplayAttributeData qp_antitoxic  = float(EQPBaseBuffDataType::LocalData_Add | EQPBaseBuffDataType::ShowInformation | EQPBaseBuffDataType::ShowInformation_1);
+    FGameplayAttributeData qp_poison = float(EQPBaseBuffDataType::LocalData | EQPBaseBuffDataType::ShowInformation | EQPBaseBuffDataType::ShowInformation_1);
+    ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_poison)
+
+        UPROPERTY(BlueprintReadOnly, Category = "QipaWorld|Attributes", meta = (QP_LocalDataBase, QP_ShowInformation))
+    FGameplayAttributeData qp_antitoxic = float(EQPBaseBuffDataType::LocalData_Add | EQPBaseBuffDataType::ShowInformation | EQPBaseBuffDataType::ShowInformation_1);
     ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_antitoxic)
+        
 
         UPROPERTY(BlueprintReadOnly, Category = "QipaWorld|Attributes", meta = (QP_LocalData, QP_ShowInformationNow))
     FGameplayAttributeData qp_urine = float(EQPBaseBuffDataType::LocalData | EQPBaseBuffDataType::ShowInformationNow  | EQPBaseBuffDataType::ShowInformation_1);

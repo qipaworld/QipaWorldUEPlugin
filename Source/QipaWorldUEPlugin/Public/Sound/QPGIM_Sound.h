@@ -55,7 +55,7 @@ public:
 	/**保存声音设置的玩家id*/
 	uint32 qp_UserIndex = 0;
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPSound")
-	USoundControlBusMix* qp_busMix;
+	class USoundControlBusMix* qp_busMix;
 	/** Subsystem 没有BeginPlay，这个必须beginplay里调用,所以在initScene的蓝图里调用了，因为没有world，不能播放声音*/
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPSound")

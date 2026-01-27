@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerState.h"
 #include "QPPlayerState.generated.h"
 
+struct FQPItem;
+class UQPSG_ItemBackpack;
 /**
  * 
  */
@@ -17,4 +19,8 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason)override;
+
+	UQPSG_ItemBackpack * qp_itemBackpackSaveData;
+	TArray<FQPItem> qp_itemFoods;
+	TArray<FQPItem> qp_itemTransforms;
 };

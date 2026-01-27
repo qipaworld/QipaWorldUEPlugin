@@ -2,7 +2,8 @@
 
 
 #include "Actor/QPA_ShowInformation.h"
-
+#include "Character/QPGIM_Character.h"
+#include "Character/QPDA_Character.h"
 
 AQPA_ShowInformation::AQPA_ShowInformation() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -25,12 +26,12 @@ AQPA_ShowInformation::AQPA_ShowInformation() {
 	qp_showRoot = CreateDefaultSubobject<USceneComponent>("qp_showRoot");
 	qp_showRoot->SetupAttachment(RootComponent);
 
-	qp_showStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("qp_showStaticMesh");
-	qp_showStaticMesh->SetupAttachment(qp_showRoot);
+	//qp_showStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("qp_showStaticMesh");
+	//qp_showStaticMesh->SetupAttachment(qp_showRoot);
 
 
-	qp_showSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("qp_showSkeletalMesh");
-	qp_showSkeletalMesh->SetupAttachment(qp_showRoot);
+	//qp_showSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("qp_showSkeletalMesh");
+	//qp_showSkeletalMesh->SetupAttachment(qp_showRoot);
 	
 }
 
@@ -43,16 +44,16 @@ void AQPA_ShowInformation::BeginPlay()
 	
 	//qp_targetVector = qp_showStaticMesh->GetRelativeLocation();
 
-	FVector Min;
-	FVector Max;
+	//FVector Min;
+	//FVector Max;
 
-	qp_showStaticMesh->GetLocalBounds(Min, Max);
+	//qp_showStaticMesh->GetLocalBounds(Min, Max);
 	//UQPUtil::QP_LOG(().ToString());
 
-	qp_targetSize = Max - Min;
+	qp_targetSize = FVector(100,100,100);//Max - Min;
 	qp_data->QP_GetUQPData("ControlData")->qp_dataDelegate.AddUObject(this, &AQPA_ShowInformation::QP_DataChange);
-		qp_sceneCaptureComponent2D->ShowOnlyComponent(qp_showStaticMesh);
-		qp_sceneCaptureComponent2D->ShowOnlyComponent(qp_showSkeletalMesh);
+		//qp_sceneCaptureComponent2D->ShowOnlyComponent(qp_showActor);
+		//qp_sceneCaptureComponent2D->ShowOnlyComponent(qp_showSkeletalMesh);
 
 	/*if (isStatic) {
 		qp_sceneCaptureComponent2D->RemoveShowOnlyComponent(qp_showSkeletalMesh);
@@ -64,38 +65,135 @@ void AQPA_ShowInformation::BeginPlay()
 
 }
 void AQPA_ShowInformation::QP_UpdateStatus() {
-	bool isStatic = true;
-
-	
-	
-	USkeletalMesh* sm = Cast<USkeletalMesh>(qp_data->QP_GetUObject("qp_showMesh"));
-	isStatic = sm !=nullptr;
-	qp_showSkeletalMesh->SetVisibility(isStatic);
-	qp_showSkeletalMesh->SetActive(isStatic);
-	qp_showStaticMesh->SetActive(!isStatic);
-	qp_showStaticMesh->SetVisibility(!isStatic);
-
-	if (sm) {
-		
-		qp_showSkeletalMesh->SetSkeletalMesh(sm);
-
-		FBox Bounds = sm->GetBounds().GetBox();
-		FVector Size = Bounds.GetSize();
-		FVector ov = Bounds.GetCenter();
-		
-		qp_showSkeletalMesh->SetRelativeLocation((- ov));
-		float s = Size.X;
-		if (s < Size.Y) {
-			s = Size.Y;
-		}
-		if (s < Size.Z) {
-			s = Size.Z;
-		}
-		s = qp_targetSize.X / s;
-		qp_showSkeletalMesh->SetWorldScale3D(FVector(s,s,s));
-		
+	//bool isStatic = true;
+	FName n = qp_data->QP_GetFName("showActorName");
+	if (n == qp_showActorName) {
+		return;
 	}
-	else {
+	qp_showActorName = n;
+	qp_sceneCaptureComponent2D->ClearShowOnlyComponents();
+	
+	if (qp_showActor) {
+		qp_showActor->Destroy();
+	}
+	if (qp_data->QP_Getbool("qp_showIsSelf")) {
+
+		FActorSpawnParameters qp_spawnP;
+		qp_spawnP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		
+		qp_showActor = GetWorld()->SpawnActor<AActor>(UQPGIM_Character::qp_staticObject->QP_GetCharacterData(n)->qp_showActor, qp_showRoot->GetComponentTransform(), qp_spawnP);
+
+	}
+	
+
+	
+
+	qp_showActor->GetRootComponent()->AttachToComponent(qp_showRoot,FAttachmentTransformRules::KeepWorldTransform);
+	
+	
+	FVector ActorSize(0, 0, 0);
+	FVector CenterOffset(0, 0, 0);
+
+	FVector MinBox(FLT_MAX, FLT_MAX, FLT_MAX);
+	FVector MaxBox(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	TArray<UPrimitiveComponent*> Comps;
+	qp_showActor->GetComponents<UPrimitiveComponent>(Comps);
+	
+	FTransform CompTransform;
+	for (UPrimitiveComponent* Comp : Comps)
+	{
+		/*if (!MeshComp->IsRegistered())
+			continue;*/
+		qp_sceneCaptureComponent2D->ShowOnlyComponent(Comp);
+
+		FBox LocalBox(ForceInit);
+
+		if (USkeletalMeshComponent* SK = Cast<USkeletalMeshComponent>(Comp))
+		{
+			if (!SK->SkeletalMesh)
+				continue;
+			//UQPUtil::QP_LOG(SK->GetName());
+
+			// 使用 SkeletalMesh 原始 Bounds，忽略动画
+			FBoxSphereBounds MeshBounds = SK->SkeletalMesh->GetBounds();
+			LocalBox = MeshBounds.GetBox();
+			CompTransform = SK->GetComponentTransform();
+
+		}
+		else if (UStaticMeshComponent* SM = Cast<UStaticMeshComponent>(Comp))
+		{
+			if (!SM->GetStaticMesh())
+				continue;
+			//UQPUtil::QP_LOG(SM->GetName());
+
+			FBoxSphereBounds MeshBounds = SM->GetStaticMesh()->GetBounds();
+			LocalBox = MeshBounds.GetBox();
+			CompTransform = SM->GetComponentTransform();
+		}
+
+		
+		LocalBox = LocalBox.TransformBy(CompTransform);
+
+		
+		MinBox.X = FMath::Min(MinBox.X, LocalBox.Min.X);
+		MinBox.Y = FMath::Min(MinBox.Y, LocalBox.Min.Y);
+		MinBox.Z = FMath::Min(MinBox.Z, LocalBox.Min.Z);
+
+		MaxBox.X = FMath::Max(MaxBox.X, LocalBox.Max.X);
+		MaxBox.Y = FMath::Max(MaxBox.Y, LocalBox.Max.Y);
+		MaxBox.Z = FMath::Max(MaxBox.Z, LocalBox.Max.Z);
+	}
+
+	// 计算大小
+	ActorSize = MaxBox - MinBox;
+
+	// 根节点世界位置
+	FVector RootPos = qp_showActor->GetRootComponent() ? qp_showActor->GetRootComponent()->GetComponentLocation() : qp_showActor->GetActorLocation();
+
+	// 模型中心
+	FVector Center = (MinBox + MaxBox) * 0.5f;
+
+	// 偏移 = 模型中心 - 根节点
+	CenterOffset = Center - RootPos;
+	
+
+	
+
+	//FVector Origin;
+	//FVector Extent;
+	//qp_showActor->GetActorBounds(
+	//	/*bOnlyCollidingComponents=*/ false,
+	//	Origin,
+	//	Extent
+	//);
+
+
+
+	//if (qp_showActor) {
+
+		//qp_showSkeletalMesh->SetSkeletalMesh(qp_showActor);
+
+		//FBox Bounds = qp_showActor->GetBounds().GetBox();
+	//FVector Size = ActorSize * 2;
+	UQPUtil::QP_LOG(ActorSize.ToString());
+	UQPUtil::QP_LOG(CenterOffset.ToString());
+	//FVector ov = Bounds.GetCenter();
+	qp_showActor->SetActorRelativeLocation(-CenterOffset);
+	//qp_showSkeletalMesh->SetRelativeLocation((- ov));
+	float s = ActorSize.X;
+	if (s < ActorSize.Y) {
+		s = ActorSize.Y;
+	}
+	if (s < ActorSize.Z) {
+		s = ActorSize.Z;
+	}
+	s = qp_targetSize.X / s;
+	//qp_showActor->
+	qp_showActor->SetActorScale3D(FVector(s,s,s));
+		
+	//}
+	/*else {
 
 		
 
@@ -117,10 +215,10 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 		}
 		s = qp_targetSize.X / s;
 		qp_showStaticMesh->SetWorldScale3D(FVector(s, s, s));
-	}
+	}*/
 	qp_cameraLength = qp_showRoot->GetRelativeLocation().X;
 	qp_r = qp_showRoot->GetRelativeRotation();
-	qp_sceneCaptureComponent2D->CaptureScene();
+	//qp_sceneCaptureComponent2D->CaptureScene();
 }
 //void AQPA_ShowInformation::QP_SetSaveDataName(const FString& n) {
 //	qp_saveName = n;
@@ -142,21 +240,24 @@ void AQPA_ShowInformation::QP_DataChange(UQPData* data) {
 		qp_r.Yaw = qp_r.Yaw - qp_rX * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
 		qp_r.Roll = qp_r.Roll + qp_rY * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
 		qp_showRoot->SetRelativeRotation(qp_r);
-		qp_sceneCaptureComponent2D->CaptureScene();
+		//qp_sceneCaptureComponent2D->CaptureScene();
 
 	}
 	else if (data->QP_IsChange<FName, float>("MouseWheel", EQPDataValueType::FLOAT)) {
 		qp_cameraLength = qp_cameraLength - qp_changeCameraLengthSpeed * data->QP_Getfloat("MouseWheel") * GetWorld()->GetDeltaSeconds();
 		qp_showRoot->SetRelativeLocation(FVector(qp_cameraLength, 0, 0));
 		//qp_springArm->TargetArmLength = qp_springArm->TargetArmLength + ;
-		qp_sceneCaptureComponent2D->CaptureScene();
+		//qp_sceneCaptureComponent2D->CaptureScene();
 	}
-	else if (data->QP_IsChange<FName, bool>("changeMesh", EQPDataValueType::BOOL)) {
+	if (data->QP_IsChange<FName, bool>("qp_isCaptureScene", EQPDataValueType::BOOL)) {
 		//qp_cameraLength = qp_cameraLength - qp_changeCameraLengthSpeed * data->QP_Getfloat("MouseWheel") * GetWorld()->GetDeltaSeconds();
 		//qp_showRoot->SetRelativeLocation(FVector(qp_cameraLength, 0, 0));
 		////qp_springArm->TargetArmLength = qp_springArm->TargetArmLength + ;
 		//qp_sceneCaptureComponent2D->CaptureScene();
-		QP_UpdateStatus();
+		qp_isCaptureScene = data->QP_Getbool("qp_isCaptureScene");
+		if (qp_isCaptureScene) {
+			QP_UpdateStatus();
+		}
 	}
 	
 	
@@ -196,9 +297,12 @@ void AQPA_ShowInformation::Tick(float DeltaTime)
 			qp_r.Yaw = qp_r.Yaw - qp_rX * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
 			qp_r.Roll = qp_r.Roll + qp_rY * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
 			qp_showRoot->SetRelativeRotation(qp_r);
-			qp_sceneCaptureComponent2D->CaptureScene();
+			
 		}
 		
 
+	}
+	if (qp_isCaptureScene) {
+		qp_sceneCaptureComponent2D->CaptureScene();
 	}
 }

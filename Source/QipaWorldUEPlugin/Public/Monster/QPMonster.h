@@ -24,11 +24,12 @@
 #include "GameplayTagContainer.h"
 //#include "Components/StateTreeReference.h"
 //#include "Sound/QP_RandomSoundData.h"
+
 #include "QPMonster.generated.h"
 
 
 
-
+class AQPA_Item;
 UCLASS()
 class QIPAWORLDUEPLUGIN_API AQPMonster : public ACharacter, public IQPI_GetQPData, public IQPI_GetAnimData , public IQPI_AnimNotify, public IQPI_AnimNotifyFootstep, public IAbilitySystemInterface
 {
@@ -134,7 +135,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	bool qp_isPlayFootstepAudio = false;
 
-	
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	TMap<FName, AQPA_Item*> qp_aroundItems;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 	TMap<FName, class UAnimMontage*> qp_montage;
 	

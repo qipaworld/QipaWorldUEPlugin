@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Character/QPCharacter.h"
+#include "DataAsset/QPD_Characters.h"
 
 #include "QPGIM_Character.generated.h"
 
@@ -18,6 +19,10 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Character : public UGameInstanceSubsystem
 public:
 	TMap<FName, ACharacter*> qp_characterMap;
 	static UQPGIM_Character* qp_staticObject;
+
+	TObjectPtr< UQPD_Characters> qp_defaultCharacters;
+
+
 	virtual void QP_InitStaticObject();
 
 	//Slime.Slime'
@@ -52,7 +57,7 @@ public:
 		* @param qp_name - 对象类型。
 		*/
 		UFUNCTION(BlueprintCallable, Category = "QipaWorld|Character")
-		ACharacter* QP_GetNewCharacter(const FName qp_name, FTransform T);
+		ACharacter* QP_GetNewCharacter(const FName qp_name, FTransform T,bool isAdd = true);
 
 		/**把用不到的对象放到这个里面，里面是个数组。
 		* @param key - 对象类型。

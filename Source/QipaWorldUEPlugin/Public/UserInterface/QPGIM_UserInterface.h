@@ -45,6 +45,7 @@ public:
 	virtual void Deinitialize();
 
 	bool qp_autoMouse = true;
+	bool qp_lastAutoMouse = true;
 
 public:
 	/**所有的ui都存这里面*/
@@ -89,7 +90,7 @@ public:
 	UUserWidget* QP_AddUserInterfaceByClass(TSubclassOf<UUserWidget>  widgetClass, const FString& key = "None", bool only = false);
 	/**删除UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
-	void QP_RemoveUserInterface(const FString& key = "None");
+	void QP_RemoveUserInterface(const FString& key = "None",bool autoMouse = true);
 
 	/**删除所有UI*/
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")

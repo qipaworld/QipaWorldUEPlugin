@@ -25,6 +25,10 @@ protected:
 
 	void QP_OnAutoUIKeyPressed();
 	void QP_OnOpenPlayerInformation();
+	void QP_OnOpenBackpack();
+	void QP_OnOpenMap();
+	void QP_OnPickUp();
+	void QP_OnOpenPlayerSkill();
 
 	void QP_SwitchMouseShow();
 
@@ -58,6 +62,29 @@ protected:
 	TObjectPtr<UInputAction> qp_openPlayerInformation = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
 	TSubclassOf<UUserWidget> qp_openPlayerInformationUI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+
+	TObjectPtr<UInputAction> qp_openMap = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+	TSubclassOf<UUserWidget> qp_openMapUI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+
+	TObjectPtr<UInputAction> qp_openPlayerSkill = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+	TSubclassOf<UUserWidget> qp_openPlayerSkillUI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+
+	TObjectPtr<UInputAction> qp_openBackpack = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+	TSubclassOf<UUserWidget> qp_openBackpackUI;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+
+	TObjectPtr<UInputAction> qp_pickUp = nullptr;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+	//TSubclassOf<UUserWidget> qp_pickUpUI;
 
 	//UQPData* qp_savePlayerData;
 	//virtual void QP_LoadData();

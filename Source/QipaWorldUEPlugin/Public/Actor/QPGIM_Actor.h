@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "DataAsset/QPD_Actors.h"
+
 #include "QPGIM_Actor.generated.h"
 
 /**
@@ -23,6 +25,13 @@ public:
 
 	/** Implement this for initialization of instances of the system */
 	virtual void Initialize(FSubsystemCollectionBase& Collection);
+
+	//UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPData")
+	TObjectPtr< UQPD_Actors> qp_defaultActors;
+	AActor* QP_GetDefaultActor(FName n,FTransform t);
+
+	//TObjectPtr< UQPD_Actors> qp_defaultActors;
+	//AActor* QP_GetDefaultActor(FName n);
 
 	/** Implement this for deinitialization of instances of the system */
 	virtual void Deinitialize();
@@ -47,7 +56,7 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
 	//AActor* QP_GetActor(FString key);
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPActor")
-	AActor* QP_PopActor(const FName& key, bool isshow = false);
+	AActor* QP_PopActor(const FName& key, FTransform t, bool isshow = false);
 
 	void QP_BindMapData(class UQPData* data);
 

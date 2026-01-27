@@ -4,7 +4,7 @@
 #include "Actor/QPGIM_Actor.h"
 #include "Map/QPGIM_Map.h"
 #include "Data/QPData.h"
-
+#include "Data/QPGIM_BaseData.h"
 #include "QPUtil.h"
 
 UQPGIM_Actor* UQPGIM_Actor::qp_staticObject = nullptr;
@@ -23,6 +23,20 @@ void UQPGIM_Actor::Initialize(FSubsystemCollectionBase& Collection)
 	UQPGIM_Map::qp_staticObject->QP_GetMapData()->qp_dataDelegate.AddUObject(this, &UQPGIM_Actor::QP_BindMapData);
 	QP_InitStaticObject();
 
+	qp_defaultActors = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultActors.LoadSynchronous();
+	qp_defaultActors->AddToRoot();
+}
+AActor* UQPGIM_Actor::QP_GetDefaultActor(FName n, FTransform t) {
+
+	if (IsValid(qp_defaultActors) && qp_defaultActors->qp_actorMap.Contains(n)) {
+
+		FActorSpawnParameters qp_spawnP;
+		qp_spawnP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		return GetWorld()->SpawnActor<AActor>(qp_defaultActors->qp_actorMap[n], t, qp_spawnP);
+
+	}
+	return nullptr;
 }
 void UQPGIM_Actor::QP_InitStaticObject() {
 	UQPGIM_Actor::qp_staticObject = this;
@@ -56,7 +70,7 @@ void UQPGIM_Actor::QP_AddActor(const FName& key, AActor* actor, bool ishid)
 }
 
 
-AActor* UQPGIM_Actor::QP_PopActor(const FName& key, bool isshow)
+AActor* UQPGIM_Actor::QP_PopActor(const FName& key, FTransform t, bool isshow)
 {
 	AActor* actor = nullptr;
 	if (qp_actorData.Contains(key)) {
@@ -65,7 +79,8 @@ AActor* UQPGIM_Actor::QP_PopActor(const FName& key, bool isshow)
 			if (isshow) {
 				actor->SetActorHiddenInGame(false);
 				actor->SetActorEnableCollision(true);   
-				actor->SetActorTickEnabled(true);        
+				actor->SetActorTickEnabled(true);   
+				actor->SetActorTransform(t);
 			}
 			//actor->SetActorHiddenInGame(false);
 			//actor->RemoveFromRoot();

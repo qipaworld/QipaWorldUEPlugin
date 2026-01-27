@@ -45,4 +45,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 
 	float qp_now;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+
+	bool qp_isShowSelf;
 };

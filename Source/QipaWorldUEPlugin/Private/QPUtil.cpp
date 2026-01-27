@@ -59,7 +59,7 @@ void UQPUtil::QP_UpdateMouse(bool b, APlayerController* controller, UWidget* InW
 		//return;
 		controller = UGameplayStatics::GetPlayerController(UQPGIM_BaseData::qp_staticObject->GetWorld(), 0);
 	}
-	if (!controller) {
+	if (!controller|| controller->bShowMouseCursor == b) {
 		return;
 	}
 	controller->SetShowMouseCursor(b);

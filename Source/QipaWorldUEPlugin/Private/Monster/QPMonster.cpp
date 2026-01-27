@@ -7,7 +7,7 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Interface/QPI_InitAttributeSet.h"
-
+#include "Item/QPA_Item.h"
 #include "Data/QPData.h"
 int AQPMonster::qp_characterDataMaxNum = 1;
 // Sets default values
@@ -173,14 +173,24 @@ void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {
  void AQPMonster::QP_OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
  {
 	 //if ("BP_ChaosJar_116" == GetActorLabel())
-		 //UE_LOG(LogTemp, Warning, TEXT("___!__d_d___%s"), *OtherActor->GetActorLabel());
-	 
+	 //UE_LOG(LogTemp, Warning, TEXT("___!__d_d___%s"), *OtherActor->GetActorLabel());
+	 //UE_LOG(LogTemp, Warning, TEXT("___!__d_d___%s"), *OtherActor->GetFName().ToString());
+	 if (AQPA_Item* i = Cast<AQPA_Item>(OtherActor)) {
+
+		 qp_aroundItems.Add(OtherActor->GetFName(), i);
+	 }
  }
 
  void AQPMonster::QP_OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
  {
+	 FName n = OtherActor->GetFName();
+	 if (qp_aroundItems.Contains(n)) {
+		 qp_aroundItems.Remove(n);
+		 //qp_aroundItems.Add(OtherActor->GetFName(), i);
+	 }
+	 //UE_LOG(LogTemp, Warning, TEXT("___!___d___%s"), *OtherActor->GetActorLabel());
+	 //UE_LOG(LogTemp, Warning, TEXT("___!___d___%s"), *n.ToString());
 	 //if ("BP_ChaosJar_116" == GetActorLabel())
-		 //UE_LOG(LogTemp, Warning, TEXT("___!___d___%s"), *OtherActor->GetActorLabel());
  }
  void AQPMonster::QP_PlayCall() {
 

@@ -128,6 +128,7 @@ void UQPAS_BaseBuff::QPI_InitAttributeSet(AQPMonster* v) {
      //-----------------------------------------------
 
      Initqp_antitoxic(d->qp_antitoxic);
+     Initqp_poison(0);
 
      //-------------------------------------
      Initqp_vitamin(d->qp_vitaminMax);
@@ -379,6 +380,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
     //-----------------------------------------------
 
     float antitoxic__ = Getqp_antitoxic();
+    float poison__ = Getqp_poison();
 
     //-------------------------------------
     float vitamin__ = Getqp_vitamin();
@@ -409,7 +411,17 @@ void UQPAS_BaseBuff::QP_HealthTask() {
 
     oxygen__ += (aroundOxygen__ * healthTask__);
 
-   
+    if (poison__ > 0) {
+
+        poison__ -= (antitoxic__* healthTask__);
+        if (poison__ > 0) {
+            health__ -= (poison__* healthTask__);
+        }
+        else {
+            poison__ = 0;
+        }
+    }
+
     //UQPUtil::QP_LOG_EX("PostAttributeChange %d", water__);
     
     if (aroundHumidity__ < humidity__) {
@@ -651,7 +663,8 @@ void UQPAS_BaseBuff::QP_HealthTask() {
         qp_ASC->SetNumericAttributeBase(Getqp_oxygenAttribute(),oxygen__);
         qp_ASC->SetNumericAttributeBase(Getqp_waterAttribute(),water__);
         qp_ASC->SetNumericAttributeBase(Getqp_urineAttribute(),urine__);
-        qp_ASC->SetNumericAttributeBase(Getqp_mineralAttribute(),mineral__);
+        qp_ASC->SetNumericAttributeBase(Getqp_mineralAttribute(), mineral__); 
+            qp_ASC->SetNumericAttributeBase(Getqp_poisonAttribute(), poison__);
 
     }
 }

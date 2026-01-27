@@ -9,6 +9,10 @@
 #include "SoundControlBusMix.h"
 #include "DataAsset/QPD_Textures.h"
 #include "DataAsset/QPD_Colors.h"
+#include "DataAsset/QPD_Actors.h"
+#include "DataAsset/QPD_Monsters.h"
+#include "DataAsset/QPD_Items.h"
+#include "DataAsset/QPD_Characters.h"
 
 #include "QPDS_DataAsset.generated.h"
 
@@ -33,11 +37,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
 	TSoftObjectPtr<UQPD_Colors> QP_DefaultColors;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	TSoftObjectPtr<UQPD_Actors> QP_DefaultActors;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	TSoftObjectPtr<UQPD_Items> QP_DefaultItems;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	TSoftObjectPtr<UQPD_Monsters> QP_DefaultMonsters;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")
+	TSoftObjectPtr<UQPD_Characters> QP_DefaultCharacters;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting", meta = ( LongPackageName))
 	FDirectoryPath QP_DefaultCharacterDataPath;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting", meta = (LongPackageName))
 	FDirectoryPath QP_DefaultWorldDataPath;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting", meta = (LongPackageName))
+	FDirectoryPath QP_DefaultItemDataPath;
 
 	/*这个是默认的弹出ui动作的key，你可以在动作管理器里加入这个事件，并且绑定按键。他会自动弹出和关闭ui*/
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|defaultSetting")

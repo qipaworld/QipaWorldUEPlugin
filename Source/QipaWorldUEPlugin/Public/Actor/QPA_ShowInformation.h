@@ -30,10 +30,10 @@ public:
 	USceneComponent* qp_showRoot;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPActor")
-	UStaticMeshComponent* qp_showStaticMesh;
+	AActor* qp_showActor = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPActor")
-	USkeletalMeshComponent* qp_showSkeletalMesh;
+	//USkeletalMeshComponent* qp_showSkeletalMesh;
 
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPActor")
@@ -68,4 +68,7 @@ public:
 	FVector qp_targetSize;
 	virtual void Tick(float DeltaTime) override;
 
+	FName qp_showActorName;
+
+	bool qp_isCaptureScene = false;
 };

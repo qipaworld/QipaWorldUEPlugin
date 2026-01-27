@@ -25,8 +25,9 @@ void UQPGIM_Character::Initialize(FSubsystemCollectionBase& Collection)
 	Collection.InitializeDependency(UQPGIM_Map::StaticClass());
 	UQPGIM_Map::qp_staticObject->QP_GetMapData()->qp_dataDelegate.AddUObject(this, &UQPGIM_Character::QP_BindMapData);
 	QP_InitStaticObject();
-
-
+	
+	qp_defaultCharacters = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultCharacters.LoadSynchronous();
+	qp_defaultCharacters->AddToRoot();
 	//QP_LoadSoundData();
 
 	//qp_loadMapName = UQPDS_Default::QP_GET()->QP_DefaultStartMap;
@@ -72,12 +73,12 @@ UQPDA_Character* UQPGIM_Character::QP_GetCharacterData(const FName qp_name) {
 	return  LoadObject<UQPDA_Character>(nullptr, *( (UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultCharacterDataPath.Path) +"/"+ qp_name.ToString() + "." + qp_name.ToString()));
 }
 
-ACharacter* UQPGIM_Character::QP_GetNewCharacter(const FName qp_name, FTransform T) {
-	AActor* a = UQPGIM_Actor::qp_staticObject->QP_PopActor(qp_name);
+ACharacter* UQPGIM_Character::QP_GetNewCharacter(const FName qp_name, FTransform T,bool isAdd) {
+	AActor* a = UQPGIM_Actor::qp_staticObject->QP_PopActor(qp_name,T);
 	ACharacter* c;
 	if (!a) {
 		//qp_character
-		UQPDA_Character* data = QP_GetCharacterData(qp_name);
+		//UQPDA_Character* data = QP_GetCharacterData(qp_name);
 
 		//FTransform qp_spawnT = FTransform(GetActorRotation(), location);
 		FActorSpawnParameters qp_spawnP;
@@ -85,8 +86,8 @@ ACharacter* UQPGIM_Character::QP_GetNewCharacter(const FName qp_name, FTransform
 		//qp_attackSkill->
 		//float qp_skillSpeed = qp_attackSkill.QP_GetMovement()->InitialSpeed;
 		//qp_attackSkill->QP_GetMovement()->InitialSpeed = qp_skillSpeed + GetCharacterMovement()->GetLastUpdateVelocity()->Size();
-
-		c = GetWorld()->SpawnActor<ACharacter>(data->qp_character, T, qp_spawnP);
+		
+		c = GetWorld()->SpawnActor<ACharacter>(qp_defaultCharacters->qp_characterMap[qp_name], T, qp_spawnP);
 		//AQPCharacter* qpc = Cast<AQPCharacter>(c);
 		/*if (qpc) {
 			QP_InitCharacterData(qpc, data);
@@ -104,8 +105,12 @@ ACharacter* UQPGIM_Character::QP_GetNewCharacter(const FName qp_name, FTransform
 	else {
 		c = Cast<ACharacter>(a);
 	}
+	if (isAdd) {
+		if (!qp_characterMap.Contains(qp_name)) {
 
-	qp_characterMap.Add(qp_name, c);
+			qp_characterMap.Add(qp_name, c);
+		}
+	}
 	return c;
 }
 

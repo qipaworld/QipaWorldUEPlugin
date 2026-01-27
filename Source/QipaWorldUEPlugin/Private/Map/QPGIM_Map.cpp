@@ -212,4 +212,10 @@ void UQPGIM_Map::QP_SetSunRotation(float v) {
 	{
 		qp_mapSunTemperature =  1.f - (qp_mapSunTime - 0.25f) / 0.75f;
 	}
+	qp_mapTemperature = qp_worldBaseData->qp_temperatureMin + qp_worldBaseData->qp_temperatureRange * qp_mapSunTemperature;
+	qp_mapData->QP_Addfloat("qp_mapTemperature", qp_mapTemperature);
+	qp_mapData->QP_Addfloat("qp_mapOxygen", qp_worldBaseData->qp_oxygen);
+	qp_mapData->QP_Addfloat("qp_mapHumidity", qp_worldBaseData->qp_humidity);
+	//qp_mapData->QP_Addfloat("qp_mapTemperature", qp_mapTemperature);
+
 }

@@ -84,6 +84,9 @@ public:
 	float qp_mapSunTemperature = 0.5;
 
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPMap")
+	float qp_mapTemperature = 0.5;
+
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPMap")
 	EQPSunType qp_mapSunType = EQPSunType::MORNING;
 
 	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld|QPMap")

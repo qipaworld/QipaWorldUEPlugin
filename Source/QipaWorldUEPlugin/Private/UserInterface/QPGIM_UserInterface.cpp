@@ -166,7 +166,7 @@ UUserWidget* UQPGIM_UserInterface::QP_AddUserInterfaceByClass(TSubclassOf<UUserW
 	return QP_AddUserInterface(widget,key);
 }
 
-void UQPGIM_UserInterface::QP_RemoveUserInterface(const FString& key)
+void UQPGIM_UserInterface::QP_RemoveUserInterface(const FString& key, bool autoMouse)
 {
 	FString realKey = key;
 	if (key == "None") {
@@ -178,7 +178,7 @@ void UQPGIM_UserInterface::QP_RemoveUserInterface(const FString& key)
 		qp_UIDataKey.Remove(realKey);
 		qp_UIData.FindAndRemoveChecked(realKey)->RemoveFromParent();
 		if (qp_UIData.Num() < 1) {
-			if (qp_autoMouse) {
+			if (autoMouse&&qp_autoMouse) {
 				UQPUtil::QP_UpdateMouse( false);
 			}
 			//QP_UpdateMouse(false);
@@ -208,6 +208,7 @@ void UQPGIM_UserInterface::QP_RemoveAllUserInterface()
 }
 
 void UQPGIM_UserInterface::QP_SetAutoMouse(bool b) {
+	qp_lastAutoMouse = qp_autoMouse;
 	qp_autoMouse = b;
 }
 void UQPGIM_UserInterface::QP_AutoPopOrPushByClass(TSubclassOf<UUserWidget>  widgetClass)
@@ -328,8 +329,13 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 	UQPData* inData = UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData();
 	TMap<FName, UQP_ShowInformationCell*> cells;
 	UQP_ShowInformationCell* widget;
-
-	if (AQPMonster* m = Cast<AQPMonster>(inData->QP_GetUObject("dataAsset"))) {
+	bool is_self = inData->QP_Getbool("qp_showIsSelf");
+	if (is_self) {
+		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+		//ACharacter* Character = PC ? : nullptr;
+		
+		AQPMonster* m = Cast<AQPMonster>(PC->GetPawn());
+		inData->QP_AddFName("showActorName", m->qp_assetData->qp_name);
 		if (const UAttributeSet* uset = m->qp_abilitySystemComponent->GetAttributeSet(UQPAS_BaseBuff::StaticClass())) {
 			
 			FString sKey; 
@@ -345,9 +351,9 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 				inData->QP_AddFText("qp_showMeshName", FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", m->qp_assetData->qp_name.ToString()));
 			}
 			//inData->QP_AddFVector("qp_showMeshVector", m->qp_assetData->qp_vector);
-			inData->QP_AddUObject("qp_showMesh", m->GetMesh()->GetSkeletalMeshAsset());
+			//inData->QP_AddUObject("qp_showMesh", m->GetMesh()->GetSkeletalMeshAsset());
 			//inData->QP_Addbool("isStatic", true);
-			inData->QP_GetUQPData("ControlData")->QP_Addbool("changeMesh", true);
+			//inData->QP_GetUQPData("ControlData")->QP_Addbool("changeMesh", true);
 			UClass* usetClass = uset->GetClass();
 			UObject* DefaultObj = usetClass->GetDefaultObject();
 
@@ -374,9 +380,9 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 							if (DefaultValue & exKey) {
 								if (n.ToString().Contains(sKey)) {
 									widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
-
+									widget->qp_data = inData;
 									widget->qp_now = nowValue;
-
+									widget->qp_isShowSelf = is_self;
 									widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", n.ToString());
 
 									cells.Add(n, widget);
@@ -387,6 +393,8 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 						else if (DefaultValue & (uint16)EQPBaseBuffDataType::ShowInformation) {
 
 							widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+							widget->qp_data = inData;
+							widget->qp_isShowSelf = is_self;
 							widget->qp_dataName = n;
 							widget->qp_max = nowValue;
 							widget->qp_now = nowValue;
@@ -413,7 +421,8 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 							}
 							else {
 								widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
-
+								widget->qp_data = inData;
+								widget->qp_isShowSelf = is_self;
 								cells.Add(n, widget);
 							}
 							widget->qp_dataName = n;
@@ -439,7 +448,8 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 							else {
 								widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
 								//widget->qp_dataName = n;
-
+								widget->qp_data = inData;
+								widget->qp_isShowSelf = is_self;
 								cells.Add(newN, widget);
 							}
 							widget->qp_max = nowValue;
@@ -459,7 +469,8 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 							else {
 								widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
 								//widget->qp_dataName = n;
-
+								widget->qp_data = inData;
+								widget->qp_isShowSelf = is_self;
 								cells.Add(newN, widget);
 							}
 							widget->qp_min = nowValue;
@@ -562,12 +573,12 @@ void UQPGIM_UserInterface::QP_AutoPosition(UUserWidget* Widget, UPanelWidget* c,
 		return;
 	}
 
-	APlayerController* PC = Widget->GetOwningPlayer();
+	/*APlayerController* PC = Widget->GetOwningPlayer();
 	if (!PC)
 	{
 		PC = GEngine->GetFirstLocalPlayerController(Widget->GetWorld());
 		if (!PC) return;
-	}
+	}*/
 	
 	
 	FVector2D WidgetSize = c->GetDesiredSize();
@@ -588,13 +599,14 @@ void UQPGIM_UserInterface::QP_AutoPosition(UUserWidget* Widget, UPanelWidget* c,
 	{
 		MousePos.Y = MousePosition.Y  + offset;
 	}
-
-	if (MousePos.X + WidgetSize.X /2 > ViewportSize.X)
+	float xEx = MousePos.X + WidgetSize.X;
+	if (xEx > ViewportSize.X)
 	{
-		MousePos.X = MousePosition.X - offset - WidgetSize.X;
-	}else if (MousePos.X - WidgetSize.X / 2 < 0)
+		
+		MousePos.X = MousePos.X - (xEx - ViewportSize.X) - offset;
+	}else if (MousePos.X < 0)
 	{
-		MousePos.X = MousePosition.X + offset;
+		MousePos.X = offset;
 	}
 	
 

@@ -116,7 +116,20 @@ void AQPPlayerController::SetupInputComponent()
     if (qp_openPlayerInformation) {
         Input->BindAction(qp_openPlayerInformation, ETriggerEvent::Started, this, &AQPPlayerController::QP_OnOpenPlayerInformation);
     }
+    if (qp_openPlayerSkill) {
+        Input->BindAction(qp_openPlayerSkill, ETriggerEvent::Started, this, &AQPPlayerController::QP_OnOpenPlayerSkill);
+    }
+    if (qp_openMap) {
+        Input->BindAction(qp_openMap, ETriggerEvent::Started, this, &AQPPlayerController::QP_OnOpenMap);
+    }
+    if (qp_pickUp) {
+        Input->BindAction(qp_pickUp, ETriggerEvent::Started, this, &AQPPlayerController::QP_OnPickUp);
+    }
+    if (qp_openBackpack) {
+        Input->BindAction(qp_openBackpack, ETriggerEvent::Started, this, &AQPPlayerController::QP_OnOpenBackpack);
+    }
 }
+
 
 void AQPPlayerController::QP_OnAutoUIKeyPressed()
 {
@@ -133,10 +146,30 @@ void AQPPlayerController::QP_OnOpenPlayerInformation() {
         return QP_AddUserInterfaceByClass(w, key);
     }*/
     
-    UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData()->QP_AddUObject("dataAsset", (UObject*)((AQPMonster*)GetPawn()));
+    UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData()->QP_Addbool("qp_showIsSelf", true);
     UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_openPlayerInformationUI,"qp_openPlayerInformationUI");
     //UQPGIM_BaseData::qp_staticObject->QP_GetKeyBoardEventData()->QP_Addbool("autoPushAndPopUI", true, EQPDataBroadcastType::SYNC);
 }
+
+void AQPPlayerController::QP_OnOpenBackpack() {
+    //UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_openBackpackUI, "qp_openBackpackUI");
+
+}
+void AQPPlayerController::QP_OnOpenMap() {
+    //UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_openMapUI, "qp_openMapUI");
+
+}
+void AQPPlayerController::QP_OnPickUp() {
+    //UE_LOG(LogTemp, Warning, TEXT("AQPPlayerController::EndPlay______ 2"));
+
+    //UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_pickUpUI, "qp_openPlayerInformationUI");
+
+}
+void AQPPlayerController::QP_OnOpenPlayerSkill(){
+    //UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_openPlayerSkillUI, "qp_openPlayerSkillUI");
+
+}
+
 void AQPPlayerController::QP_SwitchMouseShow() {
     UQPUtil::QP_SwitchMouseShow(this);
 }
