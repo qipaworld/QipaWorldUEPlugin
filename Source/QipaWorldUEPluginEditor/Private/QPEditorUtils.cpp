@@ -30,11 +30,23 @@
 #include "EditorUtilityLibrary.h"
 #include "Factories/FbxAssetImportData.h"
 #include "Engine/SkeletalMesh.h"
+#include "ObjectTools.h"
 #include "EditorAssetLibrary.h"
 #include "EditorReimportHandler.h"
+#include "Misc/PackageName.h"
 #include "Blueprint/WidgetTree.h"
 #include "Widget/QPTextBlock.h"
-
+#include "ObjectTools.h"
+#include "Misc/ObjectThumbnail.h"
+#include "Engine/Texture2D.h"
+#include "AssetToolsModule.h"
+//#include "AssetRegistryModule.h"
+#include "UObject/Package.h"
+#include "Engine/Texture.h"
+#include "ThumbnailRendering/ThumbnailManager.h"
+#include "Editor.h"
+#include "ImageUtils.h"
+#include "Modules/ModuleManager.h"
 
 
 void UQPEditorUtils::QP_ReplaceTextBlocksWithCustomSubclass()
@@ -133,6 +145,50 @@ void UQPEditorUtils::QP_ReplaceLevelActor() {
 	GEditor->GetEditorWorldContext().World()->MarkPackageDirty();
 
 	//TArray< UObject* > SelectedAssets = UEditorUtilityLibrary::GetSelectedAssets();
+}
+void UQPEditorUtils::QP_ThumbnailToTexture() {
+
+	TArray<UObject*> qp_objs = UEditorUtilityLibrary::GetSelectedAssets();
+
+	for (UObject* SourceAsset : qp_objs)
+	{
+		
+			FObjectThumbnail Thumb;
+			ThumbnailTools::LoadThumbnailFromPackage(SourceAsset, Thumb);
+
+			
+			IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
+			UObject* NewAsset = AssetTools.CreateAsset(SourceAsset->GetName() + "_Thumbnail", FPackageName::GetLongPackagePath(SourceAsset->GetOutermost()->GetName()), UTexture2D::StaticClass(), nullptr);
+
+			UTexture2D* NewTex = Cast<UTexture2D>(NewAsset);
+			if (!NewTex) {
+				return;
+			}
+
+			const int32 Width = Thumb.GetImageWidth();
+			const int32 Height = Thumb.GetImageHeight();
+			const TArray<uint8>& RawData = Thumb.GetUncompressedImageData();
+
+			
+
+			NewTex->Source.Init(
+				Width,
+				Height,
+				1,              
+				1,              
+				TSF_BGRA8,      
+				RawData.GetData() 
+			);
+
+			NewTex->SRGB = true;
+			NewTex->MipGenSettings = TMGS_NoMipmaps;
+			NewTex->CompressionSettings = TC_Default;
+			//NewTex->PostEditChange();
+			NewTex->UpdateResource();
+
+	}
+	
+
 }
 void UQPEditorUtils::QP_ReplaceLevelActorByMeshName(FName n) {
 	UClass* c = (Cast<UBlueprint>(UEditorUtilityLibrary::GetSelectedAssets()[0]))->GeneratedClass;
@@ -284,9 +340,9 @@ UMaterialInstanceConstant* UQPEditorUtils::QP_CreateSetTextureParameterAndApply(
 
 	}
 	// 保存材质实例资产
-	TArray<UObject*> AssetsToSave;
-	AssetsToSave.Add(MIC);
-	UEditorAssetLibrary::SaveLoadedAssets(AssetsToSave, false);
+	//TArray<UObject*> AssetsToSave;
+	//AssetsToSave.Add(MIC);
+	UEditorAssetLibrary::SaveLoadedAsset(MIC, false);
 
 	return MIC;
 

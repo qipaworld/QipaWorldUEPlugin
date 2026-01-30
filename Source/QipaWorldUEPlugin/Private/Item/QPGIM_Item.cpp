@@ -8,6 +8,8 @@
 #include "Actor/QPGIM_Actor.h"
 #include "QPUtil.h"
 #include "Monster/QPMonster.h"
+#include "QPPlayerState.h"
+#include "Kismet/GameplayStatics.h"
 #include "Item/QPA_Item.h"
 UQPGIM_Item* UQPGIM_Item::qp_staticObject = nullptr;
 
@@ -27,7 +29,18 @@ void UQPGIM_Item::Initialize(FSubsystemCollectionBase& Collection)
 
 	qp_defaultItemActors = UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultItems.LoadSynchronous();
 	qp_defaultItemActors->AddToRoot();
+
+	qp_itemQPData = UQPGIM_BaseData::qp_staticObject->QP_GetPlayerItemData();
 }
+UQPData* UQPGIM_Item::QP_GetItemQPData() {
+	return qp_itemQPData;
+}
+
+//const FQPItem& UQPGIM_Item::QP_GetPlayerItemData(int index) {
+//		return 
+//}
+
+
 AActor* UQPGIM_Item::QP_GetDefaultItemActor(FName n,FTransform T) {
 	if (IsValid(qp_defaultItemActors) && qp_defaultItemActors->qp_itemMap.Contains(n)) {
 
@@ -65,7 +78,52 @@ AActor* UQPGIM_Item::QP_GetItemActor(const FName& key, FTransform t, bool isshow
 }
 UQPDA_Item* UQPGIM_Item::QP_GetItemData(const FName& key)
 {
-	return LoadObject<UQPDA_Item>(nullptr, *((UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultItemDataPath.Path) + "/" + key.ToString() + "." + key.ToString()));
+	if (qp_itemDatas.Contains(key)) {
+		return qp_itemDatas[key];
+	}
+	UQPDA_Item* id = LoadObject<UQPDA_Item>(nullptr, *((UQPGIM_BaseData::qp_staticObject->qp_defaultDataAsset->QP_DefaultItemDataPath.Path) + "/" + key.ToString() + "." + key.ToString()));
+	id->AddToRoot();
+	qp_itemDatas.Add(key, id);
+	return id;
+}
+UTexture2D* UQPGIM_Item::QP_GetItemTexture2D(const FName& key) {
+	return QP_GetItemData(key)->qp_showTexture;
+}
+ FQPItem& UQPGIM_Item::QP_GetPlayerItem(int index) {
+	return ((AQPPlayerState*) UGameplayStatics::GetPlayerController(this, 0)->PlayerState)->qp_itemFoods[index];
+
+}
+void UQPGIM_Item::QP_UsePlayerItem(int index) {
+
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+
+	AQPMonster* m = Cast<AQPMonster>(PC->GetPawn());
+
+	//((AQPPlayerState*) PC->PlayerState)->qp_itemFoods[index];
+
+	FQPItem& i =  QP_GetPlayerItem(index);
+	if (i.qp_itemName != "") {
+		qp_itemQPData->QP_Addint32("changeItemIndex", index,EQPDataBroadcastType::SYNC);
+		QP_UseItem(i, m);
+		if (QP_GetItemData(i.qp_itemName)->qp_consume) {
+
+			i.qp_itemName = "_";
+		}
+	}
+}
+bool UQPGIM_Item::QP_AddPlayerItem(FQPItem& item) {
+
+	AQPPlayerState* PlayerState = (AQPPlayerState*)UGameplayStatics::GetPlayerController(this, 0)->PlayerState;
+
+	for (size_t i = 0; i < (PlayerState)->qp_itemFoods.Num(); i++)
+	{
+		if ((PlayerState)->qp_itemFoods[i].qp_itemName == "_") {
+			(PlayerState)->qp_itemFoods[i] = item;
+			qp_itemQPData->QP_Addint32("changeItemIndex", i, EQPDataBroadcastType::SYNC);
+			return true;
+		}
+	}
+	return false;
 }
 //
 //void UQPGIM_Item::QP_RequestAsyncLoad(UClass* InBaseClass, FString key, UQPData* data)
@@ -120,7 +178,29 @@ UQPDA_Item* UQPGIM_Item::QP_GetItemData(const FName& key)
 //
 //	return GE;
 //}
+float UQPGIM_Item::QP_GetPlayerItemDataScale(int index) {
+	
+	return QP_GetPlayerItem(index).QP_GetDataScale();
+}
+int UQPGIM_Item::QP_GetPlayerItemFreshType(int index) {
+	return QP_GetPlayerItem(index).QP_GetFreshType();
 
+}
+FName UQPGIM_Item::QP_GetPlayerItemName(int index) {
+	return QP_GetPlayerItem(index).qp_itemName;
+}
+UTexture2D* UQPGIM_Item::QP_GetPlayerItemTexture2D(int index) {
+	return QP_GetItemTexture2D(QP_GetPlayerItemName(index));
+	//QP_GetPlayerItem(index).get
+}
+bool UQPGIM_Item::QP_IsPlayerItem(int index) {
+	return QP_GetPlayerItemName(index) != "_";
+}
+bool UQPGIM_Item::QP_CheckPlayerItemShelfLife(int index) {
+	//UE_LOG(LogTemp, Warning, TEXT("___!____%d__))))))))"), (index));
+
+	return QP_GetPlayerItem(index).QP_CheckShelfLife();
+}
 UGameplayEffect* UQPGIM_Item::QP_GetItemGE( FQPItem& n){
 	if (n.qp_itemName == "_") {
 		return nullptr;
@@ -141,16 +221,31 @@ UGameplayEffect* UQPGIM_Item::QP_GetItemGE( FQPItem& n){
 		qp_itemEffects.Add(n.qp_itemName, GE);
 	}
 
-	int64 TimestampMs = FDateTime::UtcNow().ToUnixTimestamp() * 1000
-		+ FDateTime::UtcNow().GetMillisecond();
+	//int64 TimestampMs = FDateTime::UtcNow().ToUnixTimestamp() ;
 
 	UQPDA_Item*  itemD = QP_GetItemData(n.qp_itemName);
 	GE->DurationPolicy = itemD->qp_GEType;
 
-	float timeR = 1 - (TimestampMs - n.qp_createTime) / n.qp_datas["qp_shelfLife"];
+	float timeR = n.QP_GetDataScale();
+	int timeT = n.QP_GetFreshType();
+	/*(1 - (TimestampMs - n.qp_createTime) / n.qp_datas["qp_shelfLife"]);
+	if (timeR >= 0.7) {
 
-	if (timeR < 0.3) {
-		n.qp_datas["qp_poison"] = n.qp_datas["qp_poison"] + n.qp_datas["qp_rottenPoison"];
+	}
+	else if (timeR >= 0.3) {
+		timeR = 0.7 - (0.7 - timeR) * 0.5;
+	}
+	else if (timeR > 0) {
+
+		timeR = 0.5 - (0.3 - timeR);
+
+	}*/
+
+	if (timeT == 3) {
+		//timeR = 0.2 * (1 + timeR);
+		
+
+		n.qp_datas["qp_poison"] = (n.qp_datas["qp_poison"] - n.qp_datas["qp_rottenPoison"] * n.QP_GetDataScaleEX());
 	}
 
 	//FName 
@@ -185,10 +280,11 @@ UGameplayEffect* UQPGIM_Item::QP_GetItemGE( FQPItem& n){
 	return GE;
 }
 
-void  UQPGIM_Item::QP_UseItem(TArray<FQPItem>& t, int32 index, AQPMonster* m) {
-	if (t[index].qp_itemName != "_") {
+void  UQPGIM_Item::QP_UseItem(FQPItem& t, AQPMonster* m) {
+	if (t.qp_itemName != "_") {
 
-		m->qp_abilitySystemComponent->ApplyGameplayEffectToSelf(QP_GetItemGE(t[index]), 1.f, m->qp_abilitySystemComponent->MakeEffectContext());
-		t[index].qp_itemName = "_";
+		m->qp_abilitySystemComponent->ApplyGameplayEffectToSelf(QP_GetItemGE(t), 1.f, m->qp_abilitySystemComponent->MakeEffectContext());
+
+		//t[index].qp_itemName = "_";
 	}
 }

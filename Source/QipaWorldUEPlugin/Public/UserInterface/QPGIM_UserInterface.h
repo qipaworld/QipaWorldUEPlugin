@@ -213,6 +213,9 @@ public:
 	void QP_InitShowInformation(UPanelWidget* root,TSubclassOf<UQP_ShowInformationCell>  widgetClass, int startIndex = 0,int cellMax = 13,bool isEx =false);
 
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
+	void QP_InitShowInformationPlayerItem(UPanelWidget* root, TSubclassOf<UQP_ShowInformationCell>  widgetClass, int startIndex = 0, int cellMax = 13, bool isEx = false);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld|QPUserInterface")
 	void QP_AutoPosition(UUserWidget* w, UPanelWidget* c,float offset = 10);
 
 };

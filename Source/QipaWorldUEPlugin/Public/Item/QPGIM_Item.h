@@ -12,6 +12,7 @@
 
 class AQPMonster;
 struct FQPItem;
+class UQPData;
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPGIM_Item : public UGameInstanceSubsystem
 {
@@ -19,6 +20,10 @@ class QIPAWORLDUEPLUGIN_API UQPGIM_Item : public UGameInstanceSubsystem
 public:
 	static UQPGIM_Item* qp_staticObject;
 	virtual void QP_InitStaticObject();
+
+	UPROPERTY(BlueprintReadWrite, Category = "QipaWorld")
+	UQPData* qp_itemQPData;
+
 	/*UFUNCTION(BlueprintCallable,Category = "QipaWorld|Data")
 	void QP_Init();*/
 
@@ -52,9 +57,44 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
 	UQPDA_Item* QP_GetItemData(const FName& n);
 
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	FQPItem& QP_GetPlayerItem(int index);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	void QP_UsePlayerItem(int index);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	bool QP_AddPlayerItem(FQPItem& i);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	UQPData* QP_GetItemQPData();
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	UTexture2D* QP_GetItemTexture2D(const FName& key);
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	float QP_GetPlayerItemDataScale(int index);
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	int QP_GetPlayerItemFreshType(int index);
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	FName QP_GetPlayerItemName(int index);
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	UTexture2D* QP_GetPlayerItemTexture2D(int index);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	bool QP_IsPlayerItem(int index);
+
+	UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	bool QP_CheckPlayerItemShelfLife(int index);
+
+	//UFUNCTION(BlueprintCallable, Category = "QipaWorld")
+	//const FQPItem& QP_GetPlayerItemDataEx(int index)
+		//;
 	UGameplayEffect* QP_GetItemGE(FQPItem& n);
 
-	void QP_UseItem(TArray<FQPItem>& t,int32 index, AQPMonster*m);
+	void QP_UseItem(FQPItem& t, AQPMonster*m);
 
 	TMap<FName, UGameplayEffect*> qp_itemEffects;
+	TMap<FName, UQPDA_Item*> qp_itemDatas;
+
+	
 };

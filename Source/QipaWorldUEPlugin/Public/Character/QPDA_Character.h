@@ -27,8 +27,8 @@ class QIPAWORLDUEPLUGIN_API UQPDA_Character : public UQPDataAsset
 	
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	TSubclassOf<AActor> qp_showActor;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	//TSubclassOf<AActor> qp_showActor;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPSlime")
 	//float qp_runSpeed = 600.0f;

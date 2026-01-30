@@ -22,7 +22,9 @@
 #include "Character/QPDA_Character.h"
 #include "Data/QPGIM_BaseData.h"
 #include "DataAsset/QPDataAsset.h"
+#include "Item/QPGIM_Item.h"
 
+#include "Item/QPA_Item.h"
 #include "QPUtil.h"
 UQPGIM_UserInterface* UQPGIM_UserInterface::qp_staticObject = nullptr;
 
@@ -556,6 +558,95 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 	
 }
 
+
+void UQPGIM_UserInterface::QP_InitShowInformationPlayerItem(UPanelWidget* root, TSubclassOf<UQP_ShowInformationCell>  widgetClass, int startIndex, int cellMax, bool isEx) {
+	//UPanelWidget* dddd;
+	UQPData* inData = UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData();
+	TMap<FName, UQP_ShowInformationCell*> cells;
+	UQP_ShowInformationCell* widget;
+	int index = inData->QP_Getint32("qp_showItemIndex");
+	if (index>=0) {
+		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+		FQPItem& item = UQPGIM_Item::qp_staticObject->QP_GetPlayerItem(index);
+		inData->QP_AddFName("showActorName", item.qp_itemName);
+		UQPUtil::QP_LOG(item.qp_itemName.ToString());
+			inData->QP_AddFText("qp_showMeshName", FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", item.qp_itemName.ToString()));
+				
+			int timeT = item.QP_GetFreshType();
+			float timeR = item.QP_GetDataScale();
+
+				//if (isEx) {
+					for (auto v : item.qp_datas) {
+						
+							widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+							widget->qp_data = inData;
+							widget->qp_dataName = v.Key;
+							widget->qp_now = timeR * v.Value;
+							widget->qp_min = 0;
+							widget->qp_max = v.Value;
+							widget->qp_isShowSelf = false;
+							widget->qp_isBind = true;
+							widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(v.Key);
+							widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", v.Key.ToString());
+							cells.Add(v.Key, widget);
+					
+				
+					}
+					cells["qp_shelfLife"]->qp_now = (item.qp_datas["qp_shelfLife"] * item.QP_GetDataScaleEX()) * timeR;
+				//}
+			if (timeT == 3) {
+				cells["qp_poison"]->qp_now = (item.qp_datas["qp_poison"] - item.qp_datas["qp_rottenPoison"] * item.QP_GetDataScaleEX()) * timeR;
+
+			}
+			
+
+	}
+	else if (UQPDataAsset* DA = Cast<UQPDataAsset>(inData->QP_GetUObject("dataAsset"))) {
+		
+	}
+
+
+
+	UVerticalBox* VB = nullptr;
+	UWidget* w = nullptr;
+	int i = 0;
+	int j = 0;
+	int z = 0;
+	for (auto v2 : cells) {
+
+		if (!VB) {
+
+			while (true)
+			{
+				w = root->GetChildAt(z);
+				if (!w) {
+					break;
+				}
+				z++;
+				VB = Cast<UVerticalBox>(w);
+				if (VB)
+				{
+					++i;
+					if (i > startIndex) {
+						break;
+					}
+					// 这是一个 VerticalBox
+				}
+			}
+			if (!VB) {
+				break;
+			}
+		}
+		VB->AddChildToVerticalBox(v2.Value);
+		j++;
+		if (j >= cellMax) {
+			VB = nullptr;
+			j = 0;
+		}
+
+	}
+
+}
 void UQPGIM_UserInterface::QP_AutoPosition(UUserWidget* Widget, UPanelWidget* c, float offset) {
 
 

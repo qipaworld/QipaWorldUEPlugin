@@ -7,6 +7,7 @@
 #include "GameFramework/GameUserSettings.h"
 #include "Online/QPGI_Online.h"
 #include "Monster/QPMonster.h"
+#include "Item/QPGIM_Item.h"
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -14,8 +15,14 @@
 #include "InputActionValue.h"
 #include "Data/QPGIM_PlayerData.h"
 #include "Data/QPGIM_BaseData.h"
-#include "UserInterface/QPGIM_UserInterface.h"
+#include "Item/QPDA_Item.h"
+#include "Item/QPDA_ItemTransform.h"
+#include "Item/QPDA_ItemFood.h"
+#include "Item/QPA_Item.h"
+#include "Item/QPGIM_Item.h"
 
+#include "UserInterface/QPGIM_UserInterface.h"
+#include "QPPlayerState.h"
 
 void AQPPlayerController::BeginPlay() {
     //UE_LOG(LogTemp, Warning, TEXT("AQPPlayerController::BeginPlaye______ 1"));
@@ -160,6 +167,25 @@ void AQPPlayerController::QP_OnOpenMap() {
 
 }
 void AQPPlayerController::QP_OnPickUp() {
+    AQPMonster* m = ((AQPMonster*)GetPawn());
+    if (m->qp_aroundItems.Num() > 0) {
+        for (auto v: m->qp_aroundItems)
+        {
+            if (UQPGIM_Item::qp_staticObject->QP_AddPlayerItem(v.Value->qp_itemData)) {
+                m->qp_aroundItems.Remove(v.Key);
+                v.Value->Destroy();
+            }
+           /* for (size_t i = 0; i < ((AQPPlayerState*)PlayerState)->qp_itemFoods.Num(); i++)
+            {
+                if (((AQPPlayerState*)PlayerState)->qp_itemFoods[i].qp_itemName == "_") {
+                    ((AQPPlayerState*)PlayerState)->qp_itemFoods[i] = v.Value->qp_itemData;
+                    qp_itemQPData->QP_Addint32("changeItemIndex", index, EQPDataBroadcastType::SYNC);
+                }
+            }*/
+           
+            break;
+        }
+    }
     //UE_LOG(LogTemp, Warning, TEXT("AQPPlayerController::EndPlay______ 2"));
 
     //UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_pickUpUI, "qp_openPlayerInformationUI");

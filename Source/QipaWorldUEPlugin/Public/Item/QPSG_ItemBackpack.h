@@ -18,6 +18,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPHelper")
 	TArray<FQPItem> qp_itemFoods;
-	UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPHelper")
-	TArray<FQPItem> qp_itemTransforms;
+	//UPROPERTY(VisibleAnywhere, Category = "QipaWorld|QPHelper")
+	//TArray<FQPItem> qp_itemTransforms;
 };

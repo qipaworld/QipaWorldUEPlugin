@@ -3,6 +3,7 @@
 
 #include "Actor/QPA_ShowInformation.h"
 #include "Character/QPGIM_Character.h"
+#include "Actor/QPGIM_Actor.h"
 #include "Character/QPDA_Character.h"
 
 AQPA_ShowInformation::AQPA_ShowInformation() {
@@ -76,14 +77,16 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 	if (qp_showActor) {
 		qp_showActor->Destroy();
 	}
-	if (qp_data->QP_Getbool("qp_showIsSelf")) {
+
+	qp_showActor = UQPGIM_Actor::qp_staticObject->QP_GetDefaultActor(qp_showActorName, qp_showRoot->GetComponentTransform());
+	/*if (qp_data->QP_Getbool("qp_showIsSelf")) {
 
 		FActorSpawnParameters qp_spawnP;
 		qp_spawnP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		
 		qp_showActor = GetWorld()->SpawnActor<AActor>(UQPGIM_Character::qp_staticObject->QP_GetCharacterData(n)->qp_showActor, qp_showRoot->GetComponentTransform(), qp_spawnP);
 
-	}
+	}*/
 	
 
 	
@@ -190,7 +193,8 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 	}
 	s = qp_targetSize.X / s;
 	//qp_showActor->
-	qp_showActor->SetActorScale3D(FVector(s,s,s));
+	//qp_showRoot->SetRelativeScale3D
+	qp_showRoot->SetRelativeScale3D(FVector(s,s,s));
 		
 	//}
 	/*else {

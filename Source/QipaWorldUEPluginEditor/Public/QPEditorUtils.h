@@ -25,6 +25,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
 	static void QP_ResetScaleAndReImport(float scale);
+	UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
+	static void QP_ThumbnailToTexture();
 
 	//UFUNCTION(BlueprintCallable, Category = "QPEditorUtils")
 	/*void QP_CreateSetTextureParameterAndApply(

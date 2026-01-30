@@ -2,6 +2,9 @@
 
 
 #include "Item/QPA_Item.h"
+#include "Item/QPGIM_Item.h"
+
+TMap<FName, TMap<FName, float>> AQPA_Item::qp_allItemTypes = TMap<FName, TMap<FName, float>>();
 
 AQPA_Item::AQPA_Item()
 {
@@ -28,6 +31,7 @@ void AQPA_Item::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
 	UMaterialInstanceDynamic* d;
 	for (int32 i = 0; i < qp_mesh->GetNumMaterials(); ++i)
 	{
@@ -49,6 +53,48 @@ void AQPA_Item::BeginPlay()
 	//qp_geometryCollection->MarkRenderStateDirty();
 	
 	//qp_geometryCollection->ForceRecreateRenderState_Concurrent();
+	QP_MakeItemData();
+}
+void AQPA_Item::QP_MakeItemData() {
+	if (!qp_allItemTypes.Contains(qp_itemName)) {
+
+		UQPDA_Item* itemD = UQPGIM_Item::qp_staticObject->QP_GetItemData(qp_itemName);
+		TMap<FName, float> t;
+		for (TFieldIterator<FProperty> It(itemD->GetClass()); It; ++It)
+		{
+			FProperty* AttrProp = *It;
+
+			
+			if (!AttrProp->IsA<FFloatProperty>()) continue;
+
+			FFloatProperty* Obj = CastField<FFloatProperty>(AttrProp);
+
+			//UE_LOG(LogTemp, Warning, TEXT("___!____%s__))))))))"), *AttrProp->GetFName().ToString());
+			t.Add(AttrProp->GetFName(), Obj->GetPropertyValue_InContainer(itemD));
+
+		}
+		qp_allItemTypes.Add(qp_itemName, t);
+	}
+	qp_itemData.qp_itemName = qp_itemName;
+	qp_itemData.qp_createTime = FDateTime::UtcNow().ToUnixTimestamp() ;
+	//fl ; 
+	TMap<FName, float>& t = qp_allItemTypes[qp_itemName];
+	float r = 0;
+	if (t.Contains("qp_range")) {
+		r = t["qp_range"];
+	}
+	float sX = qp_mesh->GetRelativeScale3D().X;
+	sX = sX + sX * FMath::FRandRange(0.f, 1.f);
+	qp_mesh->SetRelativeScale3D(FVector(sX,sX,sX));
+	for (auto v : t) {
+		//UE_LOG(LogTemp, Warning, TEXT("___!____%s__))))))))"), *AttrProp->GetFName().ToString());
+
+		qp_itemData.qp_datas.Add(v.Key, v.Value + v.Value * r * FMath::FRandRange(0.f, 1.f));
+	}
+	if (t.Contains("qp_range")) {
+		//r = t["qp_range"];
+		qp_itemData.qp_datas["qp_range"] = r;
+	}
 }
 void AQPA_Item::QP_OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {

@@ -19,14 +19,21 @@ class QIPAWORLDUEPLUGIN_API UQPDA_Item : public UQPDataAsset
 {
 	GENERATED_BODY()
 	public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	TSubclassOf<AActor> qp_showActor;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	//TSubclassOf<AActor> qp_showActor;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+     TObjectPtr<UTexture2D> qp_showTexture;
+
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
     EGameplayEffectDurationType qp_GEType = EGameplayEffectDurationType::Instant;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
     TSubclassOf<UAttributeSet> qp_attributeSet;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+    bool qp_consume = true;
 
     //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
     //float qp_minin = 10;

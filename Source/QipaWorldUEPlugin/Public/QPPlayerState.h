@@ -22,5 +22,5 @@ public:
 
 	UQPSG_ItemBackpack * qp_itemBackpackSaveData;
 	TArray<FQPItem> qp_itemFoods;
-	TArray<FQPItem> qp_itemTransforms;
+	//TArray<FQPItem> qp_itemTransforms;
 };
