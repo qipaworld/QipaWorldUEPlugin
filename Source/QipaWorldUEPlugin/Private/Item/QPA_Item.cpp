@@ -53,7 +53,6 @@ void AQPA_Item::BeginPlay()
 	//qp_geometryCollection->MarkRenderStateDirty();
 	
 	//qp_geometryCollection->ForceRecreateRenderState_Concurrent();
-	QP_MakeItemData();
 }
 void AQPA_Item::QP_MakeItemData() {
 	if (!qp_allItemTypes.Contains(qp_itemName)) {

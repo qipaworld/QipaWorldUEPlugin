@@ -20,9 +20,11 @@ void AQPPlayerState::BeginPlay() {
         qp_itemFoods.Add(FQPItem());
     }
     int64 TimestampMs = FDateTime::UtcNow().ToUnixTimestamp();
-    for (auto v : qp_itemFoods)
+    for (auto& v : qp_itemFoods)
     {
         v.qp_createTime = TimestampMs - v.qp_lastTime;
+        
+
     }
     //qp_itemTransforms = qp_itemBackpackSaveData->qp_itemTransforms;
 
@@ -32,10 +34,13 @@ void AQPPlayerState::BeginPlay() {
 void  AQPPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason) {
     int64 TimestampMs = FDateTime::UtcNow().ToUnixTimestamp();
 
-    for (auto v: qp_itemFoods)
+    for (auto& v: qp_itemFoods)
     {
         v.qp_lastTime = TimestampMs - v.qp_createTime;
+        
+
     }
+   
      qp_itemBackpackSaveData->qp_itemFoods = qp_itemFoods;
      //qp_itemBackpackSaveData->qp_itemTransforms = qp_itemTransforms;
     //UE_LOG(LogTemp, Warning, TEXT("AQPPlayerState::EndPlay______ 1"));

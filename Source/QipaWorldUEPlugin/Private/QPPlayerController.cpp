@@ -159,7 +159,11 @@ void AQPPlayerController::QP_OnOpenPlayerInformation() {
 }
 
 void AQPPlayerController::QP_OnOpenBackpack() {
-    //UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_openBackpackUI, "qp_openBackpackUI");
+    UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_openBackpackUI, "qp_openBackpackUI");
+
+}
+void AQPPlayerController::QP_OpenItemInformation() {
+    UQPGIM_UserInterface::qp_staticObject->QP_AutoPopOrPushByClassEx(qp_openItemInformationUI, "qp_openItemInformationUI");
 
 }
 void AQPPlayerController::QP_OnOpenMap() {

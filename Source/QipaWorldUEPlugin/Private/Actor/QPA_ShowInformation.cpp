@@ -26,7 +26,7 @@ AQPA_ShowInformation::AQPA_ShowInformation() {
 	
 	qp_showRoot = CreateDefaultSubobject<USceneComponent>("qp_showRoot");
 	qp_showRoot->SetupAttachment(RootComponent);
-
+	
 	//qp_showStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("qp_showStaticMesh");
 	//qp_showStaticMesh->SetupAttachment(qp_showRoot);
 
@@ -52,6 +52,7 @@ void AQPA_ShowInformation::BeginPlay()
 	//UQPUtil::QP_LOG(().ToString());
 
 	qp_targetSize = FVector(100,100,100);//Max - Min;
+	qp_sourceVector = qp_showRoot->GetRelativeLocation();
 	qp_data->QP_GetUQPData("ControlData")->qp_dataDelegate.AddUObject(this, &AQPA_ShowInformation::QP_DataChange);
 		//qp_sceneCaptureComponent2D->ShowOnlyComponent(qp_showActor);
 		//qp_sceneCaptureComponent2D->ShowOnlyComponent(qp_showSkeletalMesh);
@@ -75,6 +76,9 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 	qp_sceneCaptureComponent2D->ClearShowOnlyComponents();
 	
 	if (qp_showActor) {
+		qp_showRoot->SetRelativeScale3D(FVector(1, 1, 1));
+		qp_showRoot->SetRelativeLocation(qp_sourceVector);
+		qp_showRoot->SetRelativeRotation(FRotator(0,0,0));
 		qp_showActor->Destroy();
 	}
 
@@ -179,8 +183,8 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 
 		//FBox Bounds = qp_showActor->GetBounds().GetBox();
 	//FVector Size = ActorSize * 2;
-	UQPUtil::QP_LOG(ActorSize.ToString());
-	UQPUtil::QP_LOG(CenterOffset.ToString());
+	//UQPUtil::QP_LOG(ActorSize.ToString());
+	//UQPUtil::QP_LOG(CenterOffset.ToString());
 	//FVector ov = Bounds.GetCenter();
 	qp_showActor->SetActorRelativeLocation(-CenterOffset);
 	//qp_showSkeletalMesh->SetRelativeLocation((- ov));

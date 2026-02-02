@@ -111,6 +111,10 @@ public:
     FGameplayAttributeData qp_energy = float(EQPBaseBuffDataType::LocalData | EQPBaseBuffDataType::ShowInformationNow | EQPBaseBuffDataType::ShowInformation_1);
     ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_energy)
 
+        UPROPERTY(BlueprintReadOnly, Category = "QipaWorld|Attributes", meta = (QP_LocalData, QP_ShowInformationNow))
+    FGameplayAttributeData qp_energyConsume = float(EQPBaseBuffDataType::LocalData_Add | EQPBaseBuffDataType::ShowInformation_1);
+    ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_energyConsume)
+
         //UPROPERTY(BlueprintReadOnly, Category = "QipaWorld|Attributes")
         //FGameplayAttributeData qp_energyNeedSugar;
         //ATTRIBUTE_ACCESSORS_BASIC(UQPAS_BaseBuff, qp_energyNeedSugar)

@@ -87,14 +87,14 @@ void UQPGI_Online::QP_Init() {
 		
 	
 }
-void UQPGI_Online::QP_ShowStore(bool addToCart) {
-	FString SteamAppID;
+void UQPGI_Online::QP_ShowStore(bool addToCart, FString SteamAppID) {
+	/*FString SteamAppID;
 	GConfig->GetString(
 		TEXT("OnlineSubsystemSteam"),
 		TEXT("SteamAppId"),
 		SteamAppID,
 		GEngineIni
-	);
+	);*/
 	//GConfig->GetString(TEXT("OnlineSubsystem"), TEXT("SteamDevAppId"), PlatformService, GEngineIni);
 	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
 	if (!OnlineSub)

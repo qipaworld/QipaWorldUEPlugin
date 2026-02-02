@@ -32,7 +32,9 @@ struct FQPItem
 
 		//UQPDA_Item* itemD = QP_GetItemData(n.qp_itemName);
 		//GE->DurationPolicy = itemD->qp_GEType;
-
+		if (!qp_datas.Contains("qp_shelfLife")) {
+			return 1;
+		}
 		float timeR = (1 - (TimestampMs - qp_createTime) / qp_datas["qp_shelfLife"]);
 		if (timeR >= 0.7) {
 
@@ -40,7 +42,7 @@ struct FQPItem
 		else if (timeR >= 0.3) {
 			timeR = 0.7 - (0.7 - timeR) * 0.5;
 		}
-		else if (timeR > 0) {
+		else if (timeR >= 0) {
 
 			timeR = 0.5 - (0.3 - timeR);
 
@@ -66,7 +68,9 @@ struct FQPItem
 		//GE->DurationPolicy = itemD->qp_GEType;
 		//UE_LOG(LogTemp, Warning, TEXT("___!____%d__))))))))"), (TimestampMs - qp_createTime));
 		//UE_LOG(LogTemp, Warning, TEXT("___!____%f__))))))))"), (qp_datas["qp_shelfLife"]));
-
+		if (!qp_datas.Contains("qp_shelfLife")) {
+			return 0;
+		}
 		float timeR = (1 - (TimestampMs - qp_createTime) / qp_datas["qp_shelfLife"]);
 		if (timeR >= 0.7) {
 			return 0;
@@ -74,7 +78,7 @@ struct FQPItem
 		else if (timeR >= 0.3) {
 			return 1;
 		}
-		else if (timeR > 0) {
+		else if (timeR >= 0) {
 
 			return 2;
 		}
@@ -88,7 +92,8 @@ struct FQPItem
 		 /*if (qp_itemName == "_") {
 			 return false;
 		 }*/
-		
+		 //UE_LOG(LogTemp, Warning, TEXT("___!____66dfsdf66666__))))))))"));
+
 		 if (qp_datas.Contains("qp_shelfLife")) {
 
 			 bool b = (FDateTime::UtcNow().ToUnixTimestamp() - qp_createTime) < qp_datas["qp_shelfLife"] * 1.5;
@@ -104,7 +109,7 @@ struct FQPItem
 		 }
 		 //UE_LOG(LogTemp, Warning, TEXT("___!____6666666__))))))))"));
 
-		 return false;
+		 return true;
 
 	 }
     //float Rate = 1.f;

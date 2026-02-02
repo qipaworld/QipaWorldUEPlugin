@@ -23,6 +23,9 @@
 #include "Data/QPGIM_PlayerData.h"
 #include "GamePlay/AttributeSet/QPAS_BaseBuff.h"
 #include "Notify/QPGIM_AnimNotifyData.h"
+#include "Item/QPA_Item.h"
+#include "QPPlayerController.h"
+#include "UserInterface/QPGIM_UserInterface.h"
 
 // Sets default values
 
@@ -749,14 +752,89 @@ void AQPCharacter::QP_ReReset() {
 
 
  }
+ void AQPCharacter::QP_ShowMouseLeftStart() {
+	
+		AQPPlayerController* PC = (AQPPlayerController*)Controller;
 
+		 FHitResult Hit;
+		 PC->GetHitResultUnderCursor(
+			 ECollisionChannel::ECC_Visibility,
+			 false,
+			 Hit
+		 );
+		 //-----------------------------------------
+		 // 关键：用鼠标反投影
+		 //FVector WorldPos;
+		 //FVector WorldDir;
+		 //PC->DeprojectMousePositionToWorld(WorldPos, WorldDir);
+
+		 //// UE 内部就是这么干的
+		 //const FVector Start = WorldPos;
+		 //const FVector End = Start + WorldDir * 100000.f;
+
+		 //// 画线
+		 //DrawDebugLine(
+			// GetWorld(),
+			// Start,
+			// Hit.bBlockingHit ? Hit.ImpactPoint : End,
+			// Hit.bBlockingHit ? FColor::Green : FColor::Red,
+			// false,
+			// 2.f,
+			// 0,
+			// 1.f
+		 //);
+
+		 //// 画命中点
+		 //if (Hit.bBlockingHit)
+		 //{
+			// DrawDebugPoint(
+			//	 GetWorld(),
+			//	 Hit.ImpactPoint,
+			//	 12.f,
+			//	 FColor::Blue,
+			//	 false,
+			//	 2.f
+			// );
+		 //}
+		 //------------------------------------------
+		 if (!Hit.bBlockingHit) return;
+
+		 AActor* HitActor = Hit.GetActor();
+		 //UQPUtil::QP_LOG(HitActor->GetName());
+
+		 if (!HitActor) return;
+
+		 if (AQPA_Item* item = Cast<AQPA_Item>(HitActor)) {
+			 //UQPUtil::QP_LOG();
+
+			 UQPData* inData = UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData();
+			 //TMap<FName, UQP_ShowInformationCell*> cells;
+			 //UQP_ShowInformationCell* widget;
+			  inData->QP_Addint32("qp_showItemIndex",-1);
+			  inData->QP_AddUObject("dataAsset", item);
+			 PC->QP_OpenItemInformation();
+			 //UQPGIM_UserInterface::qp_staticObject->add
+		 }
+		 /*if (HitActor->Implements<UQP_PickupInterface>())
+		 {
+			 IQP_PickupInterface::Execute_OnPickup(HitActor, GetPawn());
+		 }*/
+	 //}
+ }
 
  void AQPCharacter::QP_MouseLeftStart()
  {
-	 qp_characterData->QP_AddFString("characterAttack", "start");
-	 QP_PlayAnim("characterAttack");
+	 AQPPlayerController* PC = (AQPPlayerController*)Controller;
+	 if (PC->bShowMouseCursor) {
+		 QP_ShowMouseLeftStart();
+	 }
+	 else {
 
-	 qp_isAttacking = true;
+		 qp_characterData->QP_AddFString("characterAttack", "start");
+		 QP_PlayAnim("characterAttack");
+
+		 qp_isAttacking = true;
+	 }
  }
 
  void AQPCharacter::QP_MouseLeftEnd()

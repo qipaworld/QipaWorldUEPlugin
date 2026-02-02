@@ -34,7 +34,7 @@ public:
 	virtual void BeginPlay() override;
 
 	//自动销毁的时候会调用这个。
-	virtual void QP_End();
+	//virtual void QP_End();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

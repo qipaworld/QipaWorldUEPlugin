@@ -64,7 +64,7 @@ public:
 
 	float qp_autoSpeed = 100;
 	bool qp_isMouseMove = false;
-	//FVector qp_targetVector;
+	FVector qp_sourceVector;
 	FVector qp_targetSize;
 	virtual void Tick(float DeltaTime) override;
 

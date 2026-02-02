@@ -19,7 +19,7 @@ class QIPAWORLDUEPLUGIN_API AQPPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	
-protected:
+
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
 
@@ -83,6 +83,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
 
 	TObjectPtr<UInputAction> qp_pickUp = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
+
+	TSubclassOf<UUserWidget> qp_openItemInformationUI = nullptr;
+
+	void QP_OpenItemInformation();
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|UI")
 	//TSubclassOf<UUserWidget> qp_pickUpUI;
 

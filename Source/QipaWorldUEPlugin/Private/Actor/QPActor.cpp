@@ -21,12 +21,12 @@ void AQPActor::BeginPlay()
 		SetLifeSpan(qp_autoDestroy);
 	}
 }
-void AQPActor::QP_End() {
+//void AQPActor::QP_End() {
 	/*if (qp_isAutoDestroy) {
 		Destroy();
 	}
 	qp_isAutoDestroy = false;*/
-}
+//}
 // Called every frame
 void AQPActor::Tick(float DeltaTime)
 {

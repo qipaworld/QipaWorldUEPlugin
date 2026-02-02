@@ -99,7 +99,7 @@ void UQPAS_BaseBuff::QPI_InitAttributeSet(AQPMonster* v) {
 
      //----------------------------------------------------------------
      Initqp_energy(d->qp_energyMax);
-     //Initqp_energyNeedSugar(d->qp_energyNeedSugar);
+     Initqp_energyConsume(d->qp_energyConsume);
      Initqp_energyMax(d->qp_energyMax);
      Initqp_energyRecharge(d->qp_energyRecharge);
      //Initqp_energyToTemperature(d->qp_energyToTemperature);
@@ -354,6 +354,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
 
 
     float energy__ = Getqp_energy();
+    float energyConsume__ = Getqp_energyConsume() * healthTask__;
     //float energyNeedSugar__ = Getqp_energyNeedSugar();
     float energyMax__ = Getqp_energyMax();
     float energyRecharge__ = Getqp_energyRecharge() * healthTask__;
@@ -405,7 +406,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
    
     water__ -= waterConsume__;
     
-    
+    energy__ -= energyConsume__;
 
     urine__ += waterConsume__;
 

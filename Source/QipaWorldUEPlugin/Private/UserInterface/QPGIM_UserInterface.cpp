@@ -569,9 +569,10 @@ void UQPGIM_UserInterface::QP_InitShowInformationPlayerItem(UPanelWidget* root, 
 		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 		FQPItem& item = UQPGIM_Item::qp_staticObject->QP_GetPlayerItem(index);
 		inData->QP_AddFName("showActorName", item.qp_itemName);
-		UQPUtil::QP_LOG(item.qp_itemName.ToString());
-			inData->QP_AddFText("qp_showMeshName", FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", item.qp_itemName.ToString()));
-				
+		//UQPUtil::QP_LOG(item.qp_itemName.ToString());
+		FText showName = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", item.qp_itemName.ToString());
+		inData->QP_AddFText("qp_showMeshName", showName);
+
 			int timeT = item.QP_GetFreshType();
 			float timeR = item.QP_GetDataScale();
 
@@ -592,17 +593,78 @@ void UQPGIM_UserInterface::QP_InitShowInformationPlayerItem(UPanelWidget* root, 
 					
 				
 					}
-					cells["qp_shelfLife"]->qp_now = (item.qp_datas["qp_shelfLife"] * item.QP_GetDataScaleEX()) * timeR;
-				//}
-			if (timeT == 3) {
-				cells["qp_poison"]->qp_now = (item.qp_datas["qp_poison"] - item.qp_datas["qp_rottenPoison"] * item.QP_GetDataScaleEX()) * timeR;
+					if (cells.Contains("qp_shelfLife")) 
+					{
 
-			}
+						cells["qp_shelfLife"]->qp_now = (item.qp_datas["qp_shelfLife"] * item.QP_GetDataScaleEX()) * timeR;
+				//}
+						
+						FText t = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", FString::Printf(TEXT("fresh_%d"), timeT));
+
+							
+						inData->QP_AddFText("qp_showMeshName", FText::Format(FText::FromString(TEXT("{0} {1} {2}")), showName, FText::FromString(TEXT(" - ")), t));
+
+						/*switch (timeT)
+						{
+						case 0: {
+							break;
+						}
+						case 1: {
+							break;
+						}
+						case 2: {
+							break;
+						}
+						case 3: {
+							break;
+						}
+						default:
+							break;
+						}
+						if (timeT == 0) {
+
+						}else if*/
+						if (timeT == 3) 
+						{
+							cells["qp_poison"]->qp_now = (item.qp_datas["qp_poison"] - item.qp_datas["qp_rottenPoison"] * item.QP_GetDataScaleEX())*2;
+							cells["qp_poison"]->qp_max = item.qp_datas["qp_rottenPoison"] + item.qp_datas["qp_poison"];
+						}
+					}
 			
 
 	}
-	else if (UQPDataAsset* DA = Cast<UQPDataAsset>(inData->QP_GetUObject("dataAsset"))) {
-		
+	else if (AQPA_Item* DA = Cast<AQPA_Item>(inData->QP_GetUObject("dataAsset"))) {
+		FQPItem& item = DA->qp_itemData;
+		inData->QP_AddFName("showActorName", item.qp_itemName);
+		UQPUtil::QP_LOG(item.qp_itemName.ToString());
+		inData->QP_AddFText("qp_showMeshName", FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", item.qp_itemName.ToString()));
+
+		int timeT = item.QP_GetFreshType();
+		float timeR = item.QP_GetDataScale();
+
+		//if (isEx) {
+		for (auto v : item.qp_datas) {
+
+			widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+			widget->qp_data = inData;
+			widget->qp_dataName = v.Key;
+			widget->qp_now = timeR * v.Value;
+			widget->qp_min = 0;
+			widget->qp_max = v.Value;
+			widget->qp_isShowSelf = false;
+			widget->qp_isBind = true;
+			widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(v.Key);
+			widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", v.Key.ToString());
+			cells.Add(v.Key, widget);
+
+
+		}
+		cells["qp_shelfLife"]->qp_now = (item.qp_datas["qp_shelfLife"] * item.QP_GetDataScaleEX()) * timeR;
+		//}
+		if (timeT == 3) {
+			cells["qp_poison"]->qp_now = (item.qp_datas["qp_poison"] - item.qp_datas["qp_rottenPoison"] * item.QP_GetDataScaleEX()) * timeR;
+
+		}
 	}
 
 

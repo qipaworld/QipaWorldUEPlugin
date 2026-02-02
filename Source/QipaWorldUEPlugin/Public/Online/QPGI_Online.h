@@ -83,5 +83,5 @@ public:
 	void QP_QueryAllData();
 
 	UFUNCTION(BlueprintCallable)
-	void QP_ShowStore(bool addToCart);
+	void QP_ShowStore(bool addToCart, FString appId);
 };

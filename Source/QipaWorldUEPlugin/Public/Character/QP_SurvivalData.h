@@ -140,6 +140,9 @@ class QIPAWORLDUEPLUGIN_API UQP_SurvivalData : public UQPDA_Character
 	//-----------Energy----------
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+	float qp_energyConsume = 2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	float qp_energyMax = 100;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")

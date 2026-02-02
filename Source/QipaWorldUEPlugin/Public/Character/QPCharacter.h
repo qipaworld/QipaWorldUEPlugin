@@ -239,6 +239,8 @@ public:
 	virtual void QP_FixedCameraStart();
 	virtual void QP_FixedCameraEnd();
 
+	virtual void QP_ShowMouseLeftStart();
+
 	//按下鼠标左键
 	virtual void QP_MouseLeftStart();
 	//松开鼠标左键

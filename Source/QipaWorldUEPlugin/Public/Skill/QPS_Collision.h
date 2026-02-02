@@ -37,7 +37,7 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
-	virtual void QP_End() override;
+	virtual void QP_End();
 
 public:
 	// Called every frame

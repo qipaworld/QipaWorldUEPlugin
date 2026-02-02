@@ -245,7 +245,7 @@ UGameplayEffect* UQPGIM_Item::QP_GetItemGE( FQPItem& n){
 		//timeR = 0.2 * (1 + timeR);
 		
 
-		n.qp_datas["qp_poison"] = (n.qp_datas["qp_poison"] - n.qp_datas["qp_rottenPoison"] * n.QP_GetDataScaleEX());
+		n.qp_datas["qp_poison"] = (n.qp_datas["qp_poison"] - n.qp_datas["qp_rottenPoison"] * n.QP_GetDataScaleEX())/ timeR * 2;
 	}
 
 	//FName 
