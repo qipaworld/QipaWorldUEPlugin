@@ -138,6 +138,11 @@ void AQPA_Item::Tick(float DeltaTime)
 			v->SetScalarParameterValue("qp_emissive", qp_emissive);
 		}
 	}
+	if (qp_itemData.qp_itemName != "_") {
+		if (qp_itemData.QP_GetDataScaleEX() < -0.5) {
+			Destroy();
+		}
+	}
 	/*if(qp_emissive> qp_emissiveMin)
 	{
 		for (auto v : qp_materials)

@@ -20,7 +20,9 @@
 //#include "AssetRegistryModule.h"
 //#include "EditorUtilitySubsystem.h"
 //#include "Editor.h"
-
+#include "NiagaraComponent.h"
+#include "NiagaraDataInterfaceSkeletalMesh.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Data/QPGIM_BaseData.h"
 DEFINE_LOG_CATEGORY(LOGQipaWorld);
 
@@ -178,7 +180,7 @@ void UQPUtil::QP_LOG(const FString& Message, const FColor& Color, float Duration
 	//FPlatformMisc::LowLevelOutputDebugString(*Message);
 }
 
-FString UQPUtil::MakeRandomString(int32 Length)
+FString UQPUtil::QP_MakeRandomString(int32 Length)
 {
 	FString Result;
 	const FString Charset = TEXT("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&*()_+=-[]}{';/?.>,<|");
@@ -189,4 +191,39 @@ FString UQPUtil::MakeRandomString(int32 Length)
 		Result.AppendChar(Charset[Index]);
 	}
 	return Result;
+}
+
+void UQPUtil::QP_UpdateNS_SkeletalMesh(UNiagaraComponent* qp_skillNiagara, USkeletalMeshComponent* MeshComp, const FString& name) {
+
+	//UNiagaraFunctionLibrary::OverrideSystemUserVariableSkeletalMeshComponent()
+	if (!qp_skillNiagara || !MeshComp)
+		return;
+
+	// 找到 Niagara System 里 Skeletal Mesh Data Interface
+	// 假设你的 Data Interface 名字叫 "SkeletalMeshDI"
+	//TArray<UNiagaraDataInterface*> DataInterfaces;
+	//qp_skillNiagara->GetDataInterfaces(DataInterfaces);
+	//UNiagaraDataInterfaceSkeletalMesh* SkeletalMeshDI = Cast<UNiagaraDataInterfaceSkeletalMesh>(qp_skillNiagara->GetDataInterface(name));
+	//SkeletalMeshDI->mesh
+	//if (SkeletalMeshDI)
+	//{
+	//	SkeletalMeshDI->SetSkeletalMesh(MeshComp); // NewSkeletalMesh 是你想切换的 USkeletalMesh* 资产
+	//	NiagaraComp->MarkRenderStateDirty(); // 刷新渲染
+	//}
+	//for (UNiagaraDataInterface* DI : DataInterfaces)
+	//{
+	//	UNiagaraDataInterfaceSkeletalMesh* SkeletalDI = Cast<UNiagaraDataInterfaceSkeletalMesh>(DI);
+	//	if (SkeletalDI)
+	//	{
+	//		// 设置采样的 Skeletal Mesh Component
+	//		SkeletalDI->SetSkeletalMeshComponent(MeshComp);
+	//	}
+	//}
+
+	//
+	//UNiagaraDataInterfaceSkeletalMesh* DInterface = ...; 
+	//qp_skillNiagara->SetSkeletalMesh(m);   
+}
+void UQPUtil::QP_UpdateNS_StaticMesh(UNiagaraComponent* qp_skillNiagara, UStaticMeshComponent* m, const FString& name) {
+
 }

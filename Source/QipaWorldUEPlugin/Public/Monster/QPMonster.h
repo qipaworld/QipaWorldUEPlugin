@@ -18,7 +18,8 @@
 #include "Monster/QPCharacterMovementComponent.h"
 //#include "Character/QPDA_Character.h"
 #include "AbilitySystemComponent.h"
-
+//#include "GameplayCueNotify_Actor.h"
+#include "GameplayCueNotify_Actor.h"
 #include "AbilitySystemInterface.h"
 #include "GamePlay/Tags/QPTags.h"
 #include "GameplayTagContainer.h"
@@ -143,6 +144,9 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
 	class UAbilitySystemComponent* qp_abilitySystemComponent;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
+	//TArray<TSubclassOf<AGameplayCueNotify_Actor>> qp_cues;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|Abilities")
 	TArray<TSubclassOf<class UGameplayAbility>> qp_preloadedAbilities;

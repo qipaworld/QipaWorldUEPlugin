@@ -14,7 +14,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LOGQipaWorld, Log, All);
 
 
 
-
+class UNiagaraComponent;
 
 UCLASS()
 class QIPAWORLDUEPLUGIN_API UQPUtil : public UBlueprintFunctionLibrary
@@ -58,8 +58,14 @@ public:
 	static  FKey QP_GetKeyForAxis( FName AxisName, float ScaleSign, bool bExactMatch);
 	UFUNCTION(BlueprintCallable, Category = "QPUtil")
 
-	static FString MakeRandomString(int32 Length);
+	static FString QP_MakeRandomString(int32 Length);
 
+
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+
+	static void QP_UpdateNS_SkeletalMesh(UNiagaraComponent* qp_skillNiagara, USkeletalMeshComponent* m, const FString& name);
+	UFUNCTION(BlueprintCallable, Category = "QPUtil")
+	static void QP_UpdateNS_StaticMesh(UNiagaraComponent* qp_skillNiagara, UStaticMeshComponent* m ,const FString& name);
 
 	template<typename T>
 	static void QP_LOG_EX(const FString& m,const T& Value)

@@ -9,6 +9,8 @@
 #include "Character/QP_SurvivalData.h"
 #include "Map/QPGIM_Map.h"
 #include "Data/QPGIM_PlayerData.h"
+#include "GamePlay/Tags/QPTags.h"
+
 #include "GameplayEffectExtension.h"
 
 //UQPAS_BaseBuff::UQPAS_BaseBuff(){
@@ -413,13 +415,28 @@ void UQPAS_BaseBuff::QP_HealthTask() {
     oxygen__ += (aroundOxygen__ * healthTask__);
 
     if (poison__ > 0) {
-
+        if (!qp_isShowPoisoning) {
+            qp_isShowPoisoning = true;
+            FGameplayCueParameters Params;
+            //Params.Location = m->GetActorLocation();
+            //FGameplayTag tag = QPTags::QPCue::UseFood;
+            qp_ASC->AddGameplayCue(QPTags::QPCue::Poisoning, Params);
+            //qp_ASC->ExecuteGameplayCue(QPTags::QPCue::UseFood, Params);
+            //qp_ASC->ExecuteGameplayCue();
+        }
+        //qp_ASC->IsGameplayCueActive(QPTags::QPCue::Poisoning);
         poison__ -= (antitoxic__* healthTask__);
         if (poison__ > 0) {
             health__ -= (poison__* healthTask__);
         }
         else {
             poison__ = 0;
+        }
+    }
+    else {
+        if (qp_isShowPoisoning) {
+            qp_ASC->RemoveGameplayCue(QPTags::QPCue::Poisoning);
+            qp_isShowPoisoning = false;
         }
     }
 
@@ -653,6 +670,8 @@ void UQPAS_BaseBuff::QP_HealthTask() {
     if (qp_ASC)
     {
         //qp_ASC->ForceReplication();
+        
+
         qp_ASC->SetNumericAttributeBase(Getqp_excrementAttribute(), excrement__);
         qp_ASC->SetNumericAttributeBase(Getqp_healthAttribute(),health__);
         qp_ASC->SetNumericAttributeBase(Getqp_sugarAttribute(),sugar__);
@@ -665,7 +684,7 @@ void UQPAS_BaseBuff::QP_HealthTask() {
         qp_ASC->SetNumericAttributeBase(Getqp_waterAttribute(),water__);
         qp_ASC->SetNumericAttributeBase(Getqp_urineAttribute(),urine__);
         qp_ASC->SetNumericAttributeBase(Getqp_mineralAttribute(), mineral__); 
-            qp_ASC->SetNumericAttributeBase(Getqp_poisonAttribute(), poison__);
+        qp_ASC->SetNumericAttributeBase(Getqp_poisonAttribute(), poison__);
 
     }
 }

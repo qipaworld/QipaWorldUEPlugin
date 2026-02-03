@@ -279,7 +279,7 @@ FString UQPGIM_BaseData::GetAESKey(FName key) {
 	if (d->QP_GetFString(key).IsEmpty()) {
 		d->QP_LoadData(key.ToString());
 		if (d->QP_GetFString(key).IsEmpty()) {
-			d->QP_AddFString(key, UQPUtil::MakeRandomString(32));
+			d->QP_AddFString(key, UQPUtil::QP_MakeRandomString(32));
 			d->QP_SaveData(key.ToString());
 		}
 	}

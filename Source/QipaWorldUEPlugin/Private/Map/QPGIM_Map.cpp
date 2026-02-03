@@ -125,7 +125,9 @@ UQPWorldData* UQPGIM_Map::QP_GetMapWorldData() {
 	}
 	return qp_worldBaseData;
 }
-
+//bool UQPGIM_Map::QP_CanSpawnItemActor(FName n) {
+//
+//}
 void UQPGIM_Map::QP_SetSunRotation(float v) {
 	qp_mapSunTime = v;
 	//qp_mapTimeEx = (1.0f - FMath::Abs(qp_mapTime - 0.5f) * 2.0f);
@@ -212,6 +214,7 @@ void UQPGIM_Map::QP_SetSunRotation(float v) {
 	{
 		qp_mapSunTemperature =  1.f - (qp_mapSunTime - 0.25f) / 0.75f;
 	}
+	//QP_GetMapWorldData();
 	qp_mapTemperature = qp_worldBaseData->qp_temperatureMin + qp_worldBaseData->qp_temperatureRange * qp_mapSunTemperature;
 	qp_mapData->QP_Addfloat("qp_mapTemperature", qp_mapTemperature);
 	qp_mapData->QP_Addfloat("qp_mapOxygen", qp_worldBaseData->qp_oxygen);

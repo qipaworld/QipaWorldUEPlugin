@@ -23,7 +23,7 @@
 void AQP_AutoSpawn::BeginPlay() {
 	Super::BeginPlay();
 	qp_navSys = UNavigationSystemV1::GetCurrent(GetWorld());
-	qp_spawnTime = qp_spawnTimeMin + qp_spawnTimeRange* FMath::FRandRange(0.f, 1.f);
+	qp_spawnTime = 10* FMath::FRandRange(0.f, 1.f);
 
 	//DrawDebugSphere(
 	//	GetWorld(),

@@ -95,8 +95,7 @@ void AQPMonster::BeginPlay()
 			;
 			if (IQPI_InitAttributeSet* di = Cast<IQPI_InitAttributeSet>(NewSet)) {
 				di->QPI_InitAttributeSet(this);
-				//di->QP_GetQPData()->QP_GetUQPData(UQPGIM_AnimNotify::QP_DATA_BASE_NAME)->QP_Addbool(qp_animNotifyName,true);
-				//return true;
+				
 			}
 
 			qp_abilitySystemComponent->AddAttributeSetSubobject(NewSet);

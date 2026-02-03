@@ -474,6 +474,8 @@ public:
         class UQPData* qp_localPlayerData_Status;
         class AQPMonster* qp_monster;
 
+        bool qp_isShowPoisoning = false;
+
 
         //static TMap<FName, EQPBaseBuffDataType> qp_dataTypes;
 };

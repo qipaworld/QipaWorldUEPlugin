@@ -331,12 +331,15 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 	UQPData* inData = UQPGIM_BaseData::qp_staticObject->QP_GetShowInformationData();
 	TMap<FName, UQP_ShowInformationCell*> cells;
 	UQP_ShowInformationCell* widget;
-	bool is_self = inData->QP_Getbool("qp_showIsSelf");
-	if (is_self) {
-		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+	//bool is_self = inData->QP_Getbool("qp_showIsSelf");
+	//if (is_self) {
+		//APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 		//ACharacter* Character = PC ? : nullptr;
-		
-		AQPMonster* m = Cast<AQPMonster>(PC->GetPawn());
+		AQPMonster* m = Cast<AQPMonster>(inData->QP_GetUObject("dataAsset"));
+		if (!m) {
+			return;
+		}
+		bool isBind = m->GetController()->IsLocalPlayerController();
 		inData->QP_AddFName("showActorName", m->qp_assetData->qp_name);
 		if (const UAttributeSet* uset = m->qp_abilitySystemComponent->GetAttributeSet(UQPAS_BaseBuff::StaticClass())) {
 			
@@ -382,9 +385,10 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 							if (DefaultValue & exKey) {
 								if (n.ToString().Contains(sKey)) {
 									widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+									widget->qp_showMonster = m;
 									widget->qp_data = inData;
 									widget->qp_now = nowValue;
-									widget->qp_isShowSelf = is_self;
+									//widget->qp_isShowSelf = is_self;
 									widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", n.ToString());
 
 									cells.Add(n, widget);
@@ -395,8 +399,10 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 						else if (DefaultValue & (uint16)EQPBaseBuffDataType::ShowInformation) {
 
 							widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+							widget->qp_showMonster = m;
+
 							widget->qp_data = inData;
-							widget->qp_isShowSelf = is_self;
+							//widget->qp_isShowSelf = is_self;
 							widget->qp_dataName = n;
 							widget->qp_max = nowValue;
 							widget->qp_now = nowValue;
@@ -423,12 +429,14 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 							}
 							else {
 								widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+								widget->qp_showMonster = m;
+
 								widget->qp_data = inData;
-								widget->qp_isShowSelf = is_self;
+								//widget->qp_isShowSelf = is_self;
 								cells.Add(n, widget);
 							}
 							widget->qp_dataName = n;
-							widget->qp_isBind = true;
+							widget->qp_isBind = isBind;
 							widget->qp_now = nowValue;
 							widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(n);
 							widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", n.ToString());
@@ -449,9 +457,11 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 							}
 							else {
 								widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+								widget->qp_showMonster = m;
+
 								//widget->qp_dataName = n;
 								widget->qp_data = inData;
-								widget->qp_isShowSelf = is_self;
+								//widget->qp_isShowSelf = is_self;
 								cells.Add(newN, widget);
 							}
 							widget->qp_max = nowValue;
@@ -470,9 +480,11 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 							}
 							else {
 								widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+								widget->qp_showMonster = m;
+
 								//widget->qp_dataName = n;
 								widget->qp_data = inData;
-								widget->qp_isShowSelf = is_self;
+								//widget->qp_isShowSelf = is_self;
 								cells.Add(newN, widget);
 							}
 							widget->qp_min = nowValue;
@@ -490,8 +502,8 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 			//baseBuffData_Add->QP_SaveDataFAES("baseBuffDataSet_Add" + qp_assetData->qp_name.ToString(), UQPGIM_BaseData::qp_staticObject->GetAESKey(FName("baseBuffDataSet_Add_A" + qp_assetData->qp_name.ToString())));
 			//baseBuffData->QP_SaveDataFAES("baseBuffDataSet" + qp_assetData->qp_name.ToString(), UQPGIM_BaseData::qp_staticObject->GetAESKey(FName("baseBuffDataSet_A" + qp_assetData->qp_name.ToString())));
 		}
-	}
-	else if (UQPDataAsset* DA = Cast<UQPDataAsset>(inData->QP_GetUObject("dataAsset"))) {
+	//}
+	//else if (UQPDataAsset* DA = Cast<UQPDataAsset>(inData->QP_GetUObject("dataAsset"))) {
 		//inData->QP_Addbool("isStatic", false);
 		
 		//for (TFieldIterator<FProperty> It(DA->GetClass()); It; ++It)
@@ -513,7 +525,7 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 
 		//	//UE_LOG(LogTemp, Log, TEXT("____%s"), *Property->GetFName().ToString());
 		//}
-	}
+	//}
 
 	
 	
@@ -585,8 +597,8 @@ void UQPGIM_UserInterface::QP_InitShowInformationPlayerItem(UPanelWidget* root, 
 							widget->qp_now = timeR * v.Value;
 							widget->qp_min = 0;
 							widget->qp_max = v.Value;
-							widget->qp_isShowSelf = false;
-							widget->qp_isBind = true;
+							//widget->qp_isShowSelf = false;
+							//widget->qp_isBind = isBind;
 							widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(v.Key);
 							widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", v.Key.ToString());
 							cells.Add(v.Key, widget);
@@ -651,8 +663,8 @@ void UQPGIM_UserInterface::QP_InitShowInformationPlayerItem(UPanelWidget* root, 
 			widget->qp_now = timeR * v.Value;
 			widget->qp_min = 0;
 			widget->qp_max = v.Value;
-			widget->qp_isShowSelf = false;
-			widget->qp_isBind = true;
+			//widget->qp_isShowSelf = false;
+			//widget->qp_isBind = true;
 			widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(v.Key);
 			widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", v.Key.ToString());
 			cells.Add(v.Key, widget);

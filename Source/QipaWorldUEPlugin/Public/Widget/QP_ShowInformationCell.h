@@ -8,6 +8,7 @@
 
 #include "QP_ShowInformationCell.generated.h"
 
+class AQPMonster;
 /**
  * 
  */
@@ -21,7 +22,7 @@ public:
 
 	FName qp_dataName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-	bool qp_isBind;
+	bool qp_isBind = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	UQPData* qp_data;
@@ -48,5 +49,5 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 
-	bool qp_isShowSelf;
+	AQPMonster*  qp_showMonster;
 };

@@ -143,6 +143,8 @@ public:
 	UQPWorldData* QP_GetMapWorldData();
 	// v = 0 - 1
 	void QP_SetSunRotation(float v);
+
+	//bool QP_CanSpawnItemActor(FName n);
 private:
 	
 

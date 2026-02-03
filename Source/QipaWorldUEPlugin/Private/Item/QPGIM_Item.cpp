@@ -10,6 +10,7 @@
 #include "Monster/QPMonster.h"
 #include "QPPlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "GamePlay/Tags/QPTags.h"
 #include "Item/QPA_Item.h"
 UQPGIM_Item* UQPGIM_Item::qp_staticObject = nullptr;
 
@@ -102,13 +103,13 @@ void UQPGIM_Item::QP_UsePlayerItem(int index) {
 	//((AQPPlayerState*) PC->PlayerState)->qp_itemFoods[index];
 
 	FQPItem& i =  QP_GetPlayerItem(index);
-	if (i.qp_itemName != "") {
-		qp_itemQPData->QP_Addint32("changeItemIndex", index,EQPDataBroadcastType::SYNC);
+	if (i.qp_itemName != "_") {
 		QP_UseItem(i, m);
 		if (QP_GetItemData(i.qp_itemName)->qp_consume) {
 
 			i.qp_itemName = "_";
 		}
+		qp_itemQPData->QP_Addint32("changeItemIndex", index,EQPDataBroadcastType::SYNC);
 	}
 }
 bool UQPGIM_Item::QP_AddPlayerItem(FQPItem& item) {
@@ -280,10 +281,98 @@ UGameplayEffect* UQPGIM_Item::QP_GetItemGE( FQPItem& n){
 	return GE;
 }
 
-void  UQPGIM_Item::QP_UseItem(FQPItem& t, AQPMonster* m) {
-	if (t.qp_itemName != "_") {
+void  UQPGIM_Item::QP_UseItem(FQPItem& n, AQPMonster* m) {
+	if (n.qp_itemName != "_") {
 
-		m->qp_abilitySystemComponent->ApplyGameplayEffectToSelf(QP_GetItemGE(t), 1.f, m->qp_abilitySystemComponent->MakeEffectContext());
+		//m->qp_abilitySystemComponent->ApplyGameplayEffectToSelf(QP_GetItemGE(t), 1.f, m->qp_abilitySystemComponent->MakeEffectContext());
+
+
+
+		/*if (n.qp_itemName == "_") {
+			return nullptr;
+		}*/
+		//UGameplayEffect* GE;
+		//if (qp_itemEffects.Contains(n.qp_itemName)) {
+		//	GE = qp_itemEffects[n.qp_itemName];
+		//	/*FGameplayModifierInfo& Mod = GE->Modifiers.AddDefaulted_GetRef();
+		//	Mod.Attribute = FGameplayAttribute(AttrProp);
+		//	Mod.ModifierOp = EGameplayModOp::AddBase;
+		//	Mod.ModifierMagnitude = FScalableFloat(Value);*/
+
+		//	//return;
+		//}
+		//else {
+		//	GE = NewObject<UGameplayEffect>(nullptr);
+		//	GE->AddToRoot();
+		//	qp_itemEffects.Add(n.qp_itemName, GE);
+		//}
+
+		//int64 TimestampMs = FDateTime::UtcNow().ToUnixTimestamp() ;
+
+		UQPDA_Item* itemD = QP_GetItemData(n.qp_itemName);
+		//GE->DurationPolicy = itemD->qp_GEType;
+
+		float timeR = n.QP_GetDataScale();
+		int timeT = n.QP_GetFreshType();
+		/*(1 - (TimestampMs - n.qp_createTime) / n.qp_datas["qp_shelfLife"]);
+		if (timeR >= 0.7) {
+
+		}
+		else if (timeR >= 0.3) {
+			timeR = 0.7 - (0.7 - timeR) * 0.5;
+		}
+		else if (timeR > 0) {
+
+			timeR = 0.5 - (0.3 - timeR);
+
+		}*/
+
+		if (timeT == 3) {
+			//timeR = 0.2 * (1 + timeR);
+
+
+			n.qp_datas["qp_poison"] = (n.qp_datas["qp_poison"] - n.qp_datas["qp_rottenPoison"] * n.QP_GetDataScaleEX()) / timeR * 2;
+		}
+
+		//FName 
+		for (TFieldIterator<FProperty> It(itemD->qp_attributeSet); It; ++It)
+		{
+			FProperty* AttrProp = *It;
+
+			// 只处理 AttributeSet 的属性
+			if (!AttrProp->IsA<FStructProperty>()) continue;
+
+			FStructProperty* StructProp = CastField<FStructProperty>(AttrProp);
+			if (StructProp->Struct != FGameplayAttributeData::StaticStruct()) continue;
+
+			// 数据类里找同名属性
+			if (!n.qp_datas.Contains(AttrProp->GetFName())) {
+				continue;
+			}
+			//FProperty* DataProp = itemD->GetClass()->FindPropertyByName(AttrProp->GetFName());
+			//if (!DataProp) continue;
+			//if(n.qp_datas.Contains())
+
+			//if( n.qp)
+			//float Value = 0.f;
+			//DataProp->CopyCompleteValue(&Value, DataProp->ContainerPtrToValuePtr<void>(itemD));
+			m->qp_abilitySystemComponent->ApplyModToAttribute(
+				FGameplayAttribute(AttrProp),
+				EGameplayModOp::AddBase,
+				n.qp_datas[AttrProp->GetFName()] * timeR
+			);
+			/*FGameplayModifierInfo& Mod = GE->Modifiers.AddDefaulted_GetRef();
+			Mod.Attribute = FGameplayAttribute(AttrProp);
+			Mod.ModifierOp = EGameplayModOp::AddBase;
+			Mod.ModifierMagnitude = FScalableFloat(n.qp_datas[AttrProp->GetFName()] * timeR);*/
+		}
+		FGameplayCueParameters Params;
+		Params.Location = m->GetActorLocation();
+		//FGameplayTag tag = QPTags::QPCue::UseFood;
+			m->qp_abilitySystemComponent->ExecuteGameplayCue(QPTags::QPCue::UseFood, Params);
+		//m->qp_abilitySystemComponent->ExecuteGameplayCue()
+		//m->qp_abilitySystemComponent->ExecuteGameplayCue(FGameplayTag::RequestGameplayTag("QPTags.QPAbilites.UseFood"), Params);
+
 
 		//t[index].qp_itemName = "_";
 	}
