@@ -590,7 +590,16 @@ void UQPGIM_UserInterface::QP_InitShowInformationPlayerItem(UPanelWidget* root, 
 
 				//if (isEx) {
 					for (auto v : item.qp_datas) {
-						
+						if (v.Key == "qp_range" ||
+							v.Key == "qp_outWaterProportion" ||
+							v.Key == "qp_outVitaminProportion" ||
+							v.Key == "qp_outMineralProportion" ||
+							v.Key == "qp_outSugarProportion" ||
+							v.Key == "qp_outProteinProportion" ||
+							v.Key == "qp_outFatProportion" ||
+							v.Key == "qp_outPoisonProportion" ) {
+							continue;
+						}
 							widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
 							widget->qp_data = inData;
 							widget->qp_dataName = v.Key;
@@ -656,7 +665,16 @@ void UQPGIM_UserInterface::QP_InitShowInformationPlayerItem(UPanelWidget* root, 
 
 		//if (isEx) {
 		for (auto v : item.qp_datas) {
-
+			if (v.Key == "qp_range" ||
+				v.Key == "qp_outWaterProportion" ||
+				v.Key == "qp_outVitaminProportion" ||
+				v.Key == "qp_outMineralProportion" ||
+				v.Key == "qp_outSugarProportion" ||
+				v.Key == "qp_outProteinProportion" ||
+				v.Key == "qp_outFatProportion" ||
+				v.Key == "qp_outPoisonProportion") {
+				continue;
+			}
 			widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
 			widget->qp_data = inData;
 			widget->qp_dataName = v.Key;

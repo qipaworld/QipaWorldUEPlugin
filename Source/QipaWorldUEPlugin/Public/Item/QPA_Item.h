@@ -132,8 +132,8 @@ public:
 	UStaticMeshComponent* qp_mesh;
 
 	TArray<class UMaterialInstanceDynamic*> qp_materials;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
-	USphereComponent* qp_sphereTrigger;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
+	//USphereComponent* qp_sphereTrigger;
 	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
@@ -161,4 +161,7 @@ public:
 	 virtual void QP_OnTriggerOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	 void QP_MakeItemData();
+	 UFUNCTION()
+	 virtual void QP_OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
+		 UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

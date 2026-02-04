@@ -3,10 +3,14 @@
 
 #include "Monster/QPMonster.h"
 #include "Data/QPGIM_Data.h"
+#include "Item/QPDA_ItemUrine.h"
+#include "Item/QPDA_ItemExcrement.h"
 #include "UObject/UnrealType.h"
-
+#include "Item/QPGIM_Item.h"
 #include "Components/CapsuleComponent.h"
 #include "Interface/QPI_InitAttributeSet.h"
+#include "GamePlay/AttributeSet/QPAS_BaseBuff.h"
+
 #include "Item/QPA_Item.h"
 #include "Data/QPData.h"
 int AQPMonster::qp_characterDataMaxNum = 1;
@@ -31,6 +35,19 @@ AQPMonster::AQPMonster(const FObjectInitializer& ObjectInitializer)
 
 	qp_underWaterPoint = CreateDefaultSubobject<USceneComponent>("qp_underWaterPoint");
 	qp_underWaterPoint->SetupAttachment(RootComponent);
+
+
+	qp_urinePoint = CreateDefaultSubobject<USceneComponent>("qp_urinePoint");
+	qp_urinePoint->SetupAttachment(RootComponent);
+
+	qp_excrementPoint = CreateDefaultSubobject<USceneComponent>("qp_excrementPoint");
+	qp_excrementPoint->SetupAttachment(RootComponent);
+
+
+
+	
+
+
 
 	qp_playRandomSound = CreateDefaultSubobject<UQPC_PlayRandomSound>("qp_playRandomSound");
 	//qp_playRandomSound->qp_footstepAudio = qp_footstepAudio;
@@ -193,6 +210,74 @@ void AQPMonster::EndPlay(const EEndPlayReason::Type EndPlayReason) {
  }
  void AQPMonster::QP_PlayCall() {
 
+ }
+
+ void  AQPMonster::QP_OutUrine() {
+
+
+	 if (UQPAS_BaseBuff* uset = (UQPAS_BaseBuff*)(qp_abilitySystemComponent->GetAttributeSet(UQPAS_BaseBuff::StaticClass()))) {
+
+
+		 FActorSpawnParameters qp_spawnP;
+		 qp_spawnP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		 AQPA_Item* item = GetWorld()->SpawnActor<AQPA_Item>(qp_urineItem, qp_urinePoint->GetComponentLocation(), FRotator(0, 0, 0), qp_spawnP);
+
+		 UQPDA_ItemUrine* itemD = (UQPDA_ItemUrine*)(UQPGIM_Item::qp_staticObject->QP_GetItemData(item->qp_itemName));
+		 
+		 item->qp_itemData.qp_itemName = item->qp_itemName;
+		 item->qp_itemData.qp_createTime = FDateTime::UtcNow().ToUnixTimestamp();
+
+		 item->qp_itemData.qp_datas.Add("qp_water",itemD->qp_outWaterProportion * uset->Getqp_water());
+		 item->qp_itemData.qp_datas.Add("qp_poison",itemD->qp_outPoisonProportion * uset->Getqp_poison());
+		 item->qp_itemData.qp_datas.Add("qp_vitamin",itemD->qp_outVitaminProportion * uset->Getqp_vitamin());
+		 item->qp_itemData.qp_datas.Add("qp_mineral",itemD->qp_outMineralProportion * uset->Getqp_mineral());
+		 item->qp_itemData.qp_datas.Add("qp_sugar",itemD->qp_outSugarProportion * uset->Getqp_sugar());
+		 item->qp_itemData.qp_datas.Add("qp_protein",itemD->qp_outProteinProportion * uset->Getqp_protein());
+		 item->qp_itemData.qp_datas.Add("qp_fat",itemD->qp_outFatProportion * uset->Getqp_fat());
+
+		 item->qp_itemData.qp_datas.Add("qp_shelfLife",itemD->qp_shelfLife + itemD->qp_shelfLife * itemD->qp_range * FMath::FRandRange(0.f, 1.f));
+		 item->qp_itemData.qp_datas.Add("qp_rottenPoison",itemD->qp_rottenPoison + itemD->qp_rottenPoison * itemD->qp_range * FMath::FRandRange(0.f, 1.f));
+		 
+		 float sX = item->qp_mesh->GetRelativeScale3D().X;
+		 sX = sX + sX * FMath::FRandRange(0.f, 1.f);
+		 item->qp_mesh->SetRelativeScale3D(FVector(sX, sX, sX));
+
+		 item->qp_mesh->SetSimulatePhysics(true);
+	 }
+
+ }
+ void  AQPMonster::QP_OutExcrement() {
+	
+
+	 if (UQPAS_BaseBuff* uset = (UQPAS_BaseBuff*)(qp_abilitySystemComponent->GetAttributeSet(UQPAS_BaseBuff::StaticClass()))) {
+
+
+		 FActorSpawnParameters qp_spawnP;
+		 qp_spawnP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		 AQPA_Item* item = GetWorld()->SpawnActor<AQPA_Item>(qp_excrementItem, qp_excrementPoint->GetComponentLocation(), FRotator(0, 0, 0), qp_spawnP);
+
+		 UQPDA_ItemExcrement* itemD = (UQPDA_ItemExcrement*)(UQPGIM_Item::qp_staticObject->QP_GetItemData(item->qp_itemName));
+
+		 item->qp_itemData.qp_itemName = item->qp_itemName;
+		 item->qp_itemData.qp_createTime = FDateTime::UtcNow().ToUnixTimestamp();
+
+		 item->qp_itemData.qp_datas.Add("qp_water",itemD->qp_outWaterProportion * uset->Getqp_water());
+		 item->qp_itemData.qp_datas.Add("qp_poison",itemD->qp_outPoisonProportion * uset->Getqp_poison());
+		 item->qp_itemData.qp_datas.Add("qp_vitamin",itemD->qp_outVitaminProportion * uset->Getqp_vitamin());
+		 item->qp_itemData.qp_datas.Add("qp_mineral",itemD->qp_outMineralProportion * uset->Getqp_mineral());
+		 item->qp_itemData.qp_datas.Add("qp_sugar",itemD->qp_outSugarProportion * uset->Getqp_sugar());
+		 item->qp_itemData.qp_datas.Add("qp_protein",itemD->qp_outProteinProportion * uset->Getqp_protein());
+		 item->qp_itemData.qp_datas.Add("qp_fat",itemD->qp_outFatProportion * uset->Getqp_fat());
+
+		 item->qp_itemData.qp_datas.Add("qp_shelfLife",itemD->qp_shelfLife + itemD->qp_shelfLife * itemD->qp_range * FMath::FRandRange(0.f, 1.f));
+		 item->qp_itemData.qp_datas.Add("qp_rottenPoison",itemD->qp_rottenPoison + itemD->qp_rottenPoison * itemD->qp_range * FMath::FRandRange(0.f, 1.f));
+		 item->qp_itemData.qp_datas.Add("qp_excrement",itemD->qp_excrement + itemD->qp_excrement * itemD->qp_range * FMath::FRandRange(0.f, 1.f));
+
+		 float sX = item->qp_mesh->GetRelativeScale3D().X;
+		 sX = sX + sX * FMath::FRandRange(0.f, 1.f);
+		 item->qp_mesh->SetRelativeScale3D(FVector(sX, sX, sX));
+		 item->qp_mesh->SetSimulatePhysics(true);
+	 }
  }
 //void AQPMonster::QP_ChangeSaveData() {
 //

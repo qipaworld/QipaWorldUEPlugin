@@ -637,6 +637,15 @@ void UQPAS_BaseBuff::QP_HealthTask() {
     //qp_urine.SetCurrentValue(urine__);
     //qp_excrement.SetCurrentValue(excrement__);
     //qp_mineral.SetCurrentValue(mineral__);
+
+    if (urine__ >= urineMax__) {
+        urine__ = 0;
+        qp_monster->QP_OutUrine();
+    }
+    if (excrement__ >= excrementMax__) {
+        excrement__ = 0;
+        qp_monster->QP_OutExcrement();
+    }
     if (qp_monster->Controller&&qp_monster->Controller->IsLocalPlayerController()) {
         qp_localPlayerData_Status->QP_Addfloat("qp_excrement", excrement__/ excrementMax__);
         qp_localPlayerData_Status->QP_Addfloat("qp_health", health__ / healthMax__);

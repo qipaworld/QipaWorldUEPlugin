@@ -7,6 +7,7 @@
 #include "QPActor.generated.h"
 
 class USceneComponent;
+class AQP_AutoSpawn;
 /**
  * 所有QPActor的基类
  */
@@ -33,10 +34,13 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	//自动销毁的时候会调用这个。
 	//virtual void QP_End();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	AQP_AutoSpawn* qp_spawnActor = nullptr;
 
 };

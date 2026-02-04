@@ -16,6 +16,6 @@ class QIPAWORLDUEPLUGIN_API AQP_AutoSpawnItem : public AQP_AutoSpawn
 	
 	
 public:
-	virtual AActor* QP_Spawn() override;
+	virtual AQPActor* QP_Spawn() override;
 	
 };

@@ -22,6 +22,11 @@ public:
 	//FVector v
 
 	UPROPERTY(EditAnywhere, Category = "QipaWorld")
+	float qp_maxNum = 10;
+	//UPROPERTY(EditAnywhere, Category = "QipaWorld")
+	float qp_actorNum = 0;
+
+	UPROPERTY(EditAnywhere, Category = "QipaWorld")
 	float qp_radius = 500;
 
 	UPROPERTY(EditAnywhere, Category = "QipaWorld")
@@ -33,14 +38,14 @@ public:
 	float qp_spawnTime = 0;
 
 	UPROPERTY(EditAnywhere, Category = "QipaWorld")
-	TSubclassOf<AActor> qp_spawnActor;
+	TSubclassOf<AQPActor> qp_spawnActor;
 
 	virtual void BeginPlay() override;
 
 	
 	virtual void Tick(float DeltaTime) override;
 	
-	virtual AActor* QP_Spawn();
+	virtual AQPActor* QP_Spawn();
 
 	 AQP_AutoSpawn();
 #if WITH_EDITOR

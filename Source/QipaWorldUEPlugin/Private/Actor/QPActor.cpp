@@ -2,6 +2,7 @@
 
 
 #include "Actor/QPActor.h"
+#include "Actor/QP_AutoSpawn.h"
 // Sets default values
 AQPActor::AQPActor()
 {
@@ -19,6 +20,14 @@ void AQPActor::BeginPlay()
 	if (qp_autoDestroy!=0) {
 		//SetLifeSpan(qp_autoDestroy);
 		SetLifeSpan(qp_autoDestroy);
+	}
+}
+
+void AQPActor::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	
+	Super::EndPlay(EndPlayReason);
+	if (qp_spawnActor) {
+		qp_spawnActor->qp_actorNum--;
 	}
 }
 //void AQPActor::QP_End() {

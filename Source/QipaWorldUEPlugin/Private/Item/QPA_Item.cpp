@@ -15,14 +15,14 @@ AQPA_Item::AQPA_Item()
 	//RootComponent = qp_geometryCollection;
 	//qp_fadeMaterials = CreateDefaultSubobject<UQPC_FadeMaterials>(TEXT("qp_fadeMaterials"));
 	qp_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("qp_mesh"));
-	qp_sphereTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("qp_sphereTrigger"));
-	qp_sphereTrigger->SetupAttachment(RootComponent);
+	//qp_sphereTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("qp_sphereTrigger"));
 
 
 	//UE_LOG(LogTemp, Warning, TEXT("___!______%d"), qp_fadeMaterials->qp_materials.Num());
 	//qp_fadeMaterials->qp_mesh = qp_mesh;
 	qp_mesh->SetupAttachment(RootComponent);
 	
+	//qp_sphereTrigger->SetupAttachment(qp_mesh);
 
 }
 
@@ -41,9 +41,9 @@ void AQPA_Item::BeginPlay()
 		d->SetVectorParameterValue("qp_color", qp_color);
 		qp_materials.Add(d);
 	}
-	//qp_mesh->OnComponentHit.AddDynamic(this, &AQPA_Item::QP_OnHit);
-	qp_sphereTrigger->OnComponentBeginOverlap.AddDynamic(this, &AQPA_Item::QP_OnTriggerOverlapBegin);
-	qp_sphereTrigger->OnComponentEndOverlap.AddDynamic(this, &AQPA_Item::QP_OnTriggerOverlapEnd);
+	qp_mesh->OnComponentHit.AddDynamic(this, &AQPA_Item::QP_OnHit);
+	qp_mesh->OnComponentBeginOverlap.AddDynamic(this, &AQPA_Item::QP_OnTriggerOverlapBegin);
+	qp_mesh->OnComponentEndOverlap.AddDynamic(this, &AQPA_Item::QP_OnTriggerOverlapEnd);
 	//if (qp_autoSimulatePhysics) {
 		//SetActorTickEnabled(false);
 		//qp_fadeMaterials->SetComponentTickEnabled(false);
@@ -166,6 +166,45 @@ void AQPA_Item::Tick(float DeltaTime)
 		
 	//}
 	
+}
+
+void AQPA_Item::QP_OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	qp_mesh->SetSimulatePhysics(false);
+	//UE_LOG(LogTemp, Warning, TEXT("___!______%d"), qp_geometryCollection->GetNumMaterials());
+	//FVector Location = CollisionInfo.ContactLocation;
+
+	//if (CollisionInfo.AccumulatedImpulse.Size() > 10.0f)
+	//{
+		//UGameplayStatics::PlaySoundAtLocation(this, ImpactSoundCue, Location);
+	//}
+	//UE_LOG(LogTemp, Warning, TEXT("___2_"));
+	//float velocity = ;
+	//UE_LOG(LogTemp, Warning, TEXT("___%f_"), velocity);
+	//UE_LOG(LogTemp, Warning, TEXT("___!______"));
+	/*if (qp_delayTime >= 0) {
+		return;
+	}*/
+	/*if ("BP_ChaosJar_116" == GetActorLabel())
+		UE_LOG(LogTemp, Warning, TEXT("___!___d___%s"), *GetActorLabel());*/
+	//if ((NormalImpulse.Size()) > qp_fadeInMinVelocity) {
+
+	//	qp_showedTime = qp_showTime;
+	//	/*if (qp_fadeMaterials->qp_showType == EQPFadeType::SHOW || qp_fadeMaterials->qp_showType == EQPFadeType::FADE_IN) {
+	//		return;
+	//	}*/
+
+	//	qp_fadeMaterials->QP_FadeIn(qp_fadeInTime);
+	//	//qp_isShow = true;
+	//	/*if("BP_ChaosJar_116" == GetActorLabel())
+	//	UE_LOG(LogTemp, Warning, TEXT("___!______%s"),*GetActorLabel());*/
+
+	//	//qp_autoDestroy = qp_delayDestroy;
+	//	//qp_playRandomSound->QP_SetVolume(velocity / qp_maxSpeed * (1 - qp_minVolume) + qp_minVolume);
+	//	//qp_playRandomSound->QP_Play(CollisionInfo.OtherComponent->GetOwner());
+
+	//}
 }
 ////void AQPA_Item::QP_OnBroken(const FChaosBreakEvent& BreakEvent)
 ////{

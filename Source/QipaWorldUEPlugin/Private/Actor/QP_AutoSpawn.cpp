@@ -47,11 +47,15 @@ void AQP_AutoSpawn::Tick(float DeltaTime) {
 
 }
 
-AActor* AQP_AutoSpawn::QP_Spawn() {
+AQPActor* AQP_AutoSpawn::QP_Spawn() {
 	//UNavigationSystemV1* NavSys = 
 	/*if (!qp_target) {
 		return false;
 	}*/
+	if (qp_actorNum >= qp_maxNum) {
+		return nullptr;
+	}
+	++qp_actorNum;
 	if (qp_navSys)
 	{
 
@@ -66,7 +70,11 @@ AActor* AQP_AutoSpawn::QP_Spawn() {
 			FActorSpawnParameters qp_spawnP;
 			qp_spawnP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			//GetWorld()->SpawnActor<AActor>()
-			return GetWorld()->SpawnActor<AActor>(qp_spawnActor, Result.Location,FRotator(0,0,0), qp_spawnP);
+			AQPActor* a = GetWorld()->SpawnActor<AQPActor>(qp_spawnActor, Result.Location, FRotator(0, 0, 0), qp_spawnP);
+			if (a) {
+				a->qp_spawnActor = this;
+			}
+			return a;
 			
 			// 你可以用这个 RandomLocation 来移动
 			//MoveToLocation(RandomLocation); // 示例

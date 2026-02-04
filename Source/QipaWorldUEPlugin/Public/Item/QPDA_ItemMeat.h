@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 //#include "Item/QPItem.h"
 //#include "Skill/QP_SkillData.h"
-#include "Item/QPDA_ItemFood.h"
+//#include "Item/QPDA_ItemFood.h"
+#include "Item/QPDA_ItemVegetable.h"
 
 #include "QPDA_ItemMeat.generated.h"
 
@@ -13,7 +14,7 @@
  * 
  */
 UCLASS()
-class QIPAWORLDUEPLUGIN_API UQPDA_ItemMeat : public UQPDA_ItemFood
+class QIPAWORLDUEPLUGIN_API UQPDA_ItemMeat : public UQPDA_ItemVegetable
 {
 	GENERATED_BODY()
 	public:
@@ -23,11 +24,11 @@ class QIPAWORLDUEPLUGIN_API UQPDA_ItemMeat : public UQPDA_ItemFood
         UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
         float qp_fat = 0;
 
-        UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-        float qp_vitamin = 0;
+        //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+        //float qp_vitamin = 0;
 
-        UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-        float qp_mineral = 0;
+        //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+        //float qp_mineral = 0;
 	/*UPROPERTY(BlueprintReadOnly, Category = "QipaWorld|Attributes", meta = (QP_LocalData, QP_ShowInformationNow, QP_ShowInformationHealth))
     float qp_health = 0;
 

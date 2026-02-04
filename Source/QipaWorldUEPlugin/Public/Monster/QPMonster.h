@@ -145,8 +145,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
 	class UAbilitySystemComponent* qp_abilitySystemComponent;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
-	//TArray<TSubclassOf<AGameplayCueNotify_Actor>> qp_cues;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	TSubclassOf<AQPA_Item> qp_urineItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+	TSubclassOf<AQPA_Item> qp_excrementItem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|Abilities")
 	TArray<TSubclassOf<class UGameplayAbility>> qp_preloadedAbilities;
@@ -201,6 +204,10 @@ public:
 	//UFUNCTION(BlueprintCallable)
 	//virtual void QP_PlayHitSound(AActor* a);
 
+	virtual void QP_OutUrine();
+	virtual void QP_OutExcrement();
+
+
 	virtual void QP_PlayFootstepAudio();
 	UFUNCTION(BlueprintCallable)
 	virtual void QP_PlayAnim(FName name, FName StartSectionName = NAME_None);
@@ -227,6 +234,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
 	TObjectPtr<USceneComponent> qp_underWaterPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
+	TObjectPtr<USceneComponent> qp_urinePoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "QipaWorld|QPCharacter")
+	TObjectPtr<USceneComponent> qp_excrementPoint;
 
 	//EQPFootstepType qp_waterFootstep = EQPFootstepType::WATER;
 	//TObjectPtr<UCapsuleComponent> qp_capsuleComponent;
