@@ -30,6 +30,12 @@ public:
 	USceneComponent* qp_showRoot;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPActor")
+	USceneComponent* qp_rollRoot;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPActor")
+	USceneComponent* qp_yawRoot;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPActor")
 	AActor* qp_showActor = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPActor")
@@ -57,9 +63,12 @@ public:
 	float qp_rotationSpeed = 20.0f;
 
 	float qp_cameraLength;
-	FRotator qp_r;
+	//FRotator qp_r;
+	//float qp_
 	float qp_rX;
 	float qp_rY;
+	float qp_rX_Last;
+	float qp_rY_Last;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPActor")
 
 	float qp_autoSpeed = 100;

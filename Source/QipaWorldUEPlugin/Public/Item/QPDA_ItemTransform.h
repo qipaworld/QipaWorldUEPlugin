@@ -17,6 +17,8 @@ class QIPAWORLDUEPLUGIN_API UQPDA_ItemTransform : public UQPDA_Item
 {
 	GENERATED_BODY()
 	public:
+        UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "QipaWorld", meta = (QP_LocalDataBase, QP_ShowInformation, QP_ShowInformationHealth))
+        FName qp_transformName;
 	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
 	TSubclassOf<AActor> qp_showActor;
 

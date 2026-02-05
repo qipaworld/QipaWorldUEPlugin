@@ -118,8 +118,10 @@ bool UQPGIM_Item::QP_AddPlayerItem(FQPItem& item) {
 
 	for (size_t i = 0; i < (PlayerState)->qp_itemFoods.Num(); i++)
 	{
+		
 		if ((PlayerState)->qp_itemFoods[i].qp_itemName == "_") {
 			(PlayerState)->qp_itemFoods[i] = item;
+			
 			qp_itemQPData->QP_Addint32("changeItemIndex", i, EQPDataBroadcastType::SYNC);
 			return true;
 		}

@@ -56,7 +56,9 @@ struct FQPItem
 	}
 	 float QP_GetDataScaleEX() const {
 		
-
+		 if (!qp_datas.Contains("qp_shelfLife")) {
+			 return 1;
+		 }
 		return (1 - (FDateTime::UtcNow().ToUnixTimestamp() - qp_createTime) / qp_datas["qp_shelfLife"]);
 		
 	 }

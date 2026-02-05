@@ -27,6 +27,13 @@ AQPA_ShowInformation::AQPA_ShowInformation() {
 	qp_showRoot = CreateDefaultSubobject<USceneComponent>("qp_showRoot");
 	qp_showRoot->SetupAttachment(RootComponent);
 	
+
+	qp_rollRoot = CreateDefaultSubobject<USceneComponent>("qp_rollRoot");
+	qp_rollRoot->SetupAttachment(qp_showRoot);
+
+	qp_yawRoot = CreateDefaultSubobject<USceneComponent>("qp_yawRoot");
+	qp_yawRoot->SetupAttachment(qp_rollRoot);
+
 	//qp_showStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("qp_showStaticMesh");
 	//qp_showStaticMesh->SetupAttachment(qp_showRoot);
 
@@ -78,11 +85,12 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 	if (qp_showActor) {
 		qp_showRoot->SetRelativeScale3D(FVector(1, 1, 1));
 		qp_showRoot->SetRelativeLocation(qp_sourceVector);
-		qp_showRoot->SetRelativeRotation(FRotator(0,0,0));
+		qp_rollRoot->SetRelativeRotation(FRotator(0,0,0));
+		qp_yawRoot->SetRelativeRotation(FRotator(0, 0, 0));
 		qp_showActor->Destroy();
 	}
 
-	qp_showActor = UQPGIM_Actor::qp_staticObject->QP_GetDefaultActor(qp_showActorName, qp_showRoot->GetComponentTransform());
+	qp_showActor = UQPGIM_Actor::qp_staticObject->QP_GetDefaultActor(qp_showActorName, qp_yawRoot->GetComponentTransform());
 	/*if (qp_data->QP_Getbool("qp_showIsSelf")) {
 
 		FActorSpawnParameters qp_spawnP;
@@ -95,7 +103,7 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 
 	
 
-	qp_showActor->GetRootComponent()->AttachToComponent(qp_showRoot,FAttachmentTransformRules::KeepWorldTransform);
+	qp_showActor->GetRootComponent()->AttachToComponent(qp_yawRoot,FAttachmentTransformRules::KeepWorldTransform);
 	
 	
 	FVector ActorSize(0, 0, 0);
@@ -138,7 +146,9 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 			LocalBox = MeshBounds.GetBox();
 			CompTransform = SM->GetComponentTransform();
 		}
-
+		else {
+			continue;
+		}
 		
 		LocalBox = LocalBox.TransformBy(CompTransform);
 
@@ -186,7 +196,7 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 	//UQPUtil::QP_LOG(ActorSize.ToString());
 	//UQPUtil::QP_LOG(CenterOffset.ToString());
 	//FVector ov = Bounds.GetCenter();
-	qp_showActor->SetActorRelativeLocation(-CenterOffset);
+	//qp_showActor->SetActorRelativeLocation(-CenterOffset);
 	//qp_showSkeletalMesh->SetRelativeLocation((- ov));
 	float s = ActorSize.X;
 	if (s < ActorSize.Y) {
@@ -225,7 +235,10 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 		qp_showStaticMesh->SetWorldScale3D(FVector(s, s, s));
 	}*/
 	qp_cameraLength = qp_showRoot->GetRelativeLocation().X;
-	qp_r = qp_showRoot->GetRelativeRotation();
+	//FRotator qp_r = qp_showRoot->GetRelativeRotation();
+	//qp_Roll_Last =
+	qp_rX_Last = 0;
+	qp_rY_Last = 0;
 	//qp_sceneCaptureComponent2D->CaptureScene();
 }
 //void AQPA_ShowInformation::QP_SetSaveDataName(const FString& n) {
@@ -245,9 +258,14 @@ void AQPA_ShowInformation::QP_DataChange(UQPData* data) {
 	if (data->QP_IsChange<FName, float>("mouseMoveX", EQPDataValueType::FLOAT)) {
 		qp_rX = data->QP_Getfloat("mouseMoveX");
 		qp_rY = data->QP_Getfloat("mouseMoveY");
-		qp_r.Yaw = qp_r.Yaw - qp_rX * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
-		qp_r.Roll = qp_r.Roll + qp_rY * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
-		qp_showRoot->SetRelativeRotation(qp_r);
+		//qp_rX_Last = qp_rX_Last - qp_rX * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
+		qp_rY_Last = qp_rY_Last + qp_rY * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
+
+
+		qp_rollRoot->SetRelativeRotation(FRotator(qp_rY_Last, 0, 0));
+		qp_yawRoot->AddWorldRotation(FRotator(0, -qp_rX * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed, 0));
+		
+		//SetRelativeRotation
 		//qp_sceneCaptureComponent2D->CaptureScene();
 
 	}
@@ -267,8 +285,8 @@ void AQPA_ShowInformation::QP_DataChange(UQPData* data) {
 			QP_UpdateStatus();
 		}
 	}
-	
-	
+
+
 }
 
 void AQPA_ShowInformation::Tick(float DeltaTime)
@@ -288,7 +306,7 @@ void AQPA_ShowInformation::Tick(float DeltaTime)
 					qp_rX = 0;
 				}
 			}
-				
+
 
 			if (qp_rY > 0) {
 				qp_rY = qp_rY - qp_autoSpeed * DeltaTime;
@@ -302,10 +320,13 @@ void AQPA_ShowInformation::Tick(float DeltaTime)
 					qp_rY = 0;
 				}
 			}
-			qp_r.Yaw = qp_r.Yaw - qp_rX * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
-			qp_r.Roll = qp_r.Roll + qp_rY * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
-			qp_showRoot->SetRelativeRotation(qp_r);
-			
+			//qp_rX_Last = qp_rX_Last - qp_rX * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
+			qp_rY_Last = qp_rY_Last + qp_rY * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed;
+			//qp_showRoot->SetRelativeRotation(qp_r);
+			//qp_showActor->SetActorRelativeRotation(FRotator(0, qp_rX_Last, qp_rY_Last));//SetRelativeRotation
+			qp_rollRoot->SetRelativeRotation(FRotator(qp_rY_Last, 0, 0));
+			qp_yawRoot->AddWorldRotation(FRotator(0, -qp_rX * GetWorld()->GetDeltaSeconds() * qp_rotationSpeed, 0));
+
 		}
 		
 

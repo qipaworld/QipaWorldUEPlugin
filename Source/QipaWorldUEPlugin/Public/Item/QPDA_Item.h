@@ -35,8 +35,8 @@ class QIPAWORLDUEPLUGIN_API UQPDA_Item : public UQPDataAsset
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
     bool qp_consume = true;
 
-    //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
-    //float qp_minin = 10;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld")
+    float qp_itemTypeF = 0;
    
 
     

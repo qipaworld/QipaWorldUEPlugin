@@ -23,6 +23,7 @@
 #include "Data/QPGIM_BaseData.h"
 #include "DataAsset/QPDataAsset.h"
 #include "Item/QPGIM_Item.h"
+#include "Item/QPDA_ItemTransform.h"
 
 #include "Item/QPA_Item.h"
 #include "QPUtil.h"
@@ -580,6 +581,7 @@ void UQPGIM_UserInterface::QP_InitShowInformationPlayerItem(UPanelWidget* root, 
 	if (index>=0) {
 		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 		FQPItem& item = UQPGIM_Item::qp_staticObject->QP_GetPlayerItem(index);
+		
 		inData->QP_AddFName("showActorName", item.qp_itemName);
 		//UQPUtil::QP_LOG(item.qp_itemName.ToString());
 		FText showName = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", item.qp_itemName.ToString());
@@ -587,33 +589,38 @@ void UQPGIM_UserInterface::QP_InitShowInformationPlayerItem(UPanelWidget* root, 
 
 			int timeT = item.QP_GetFreshType();
 			float timeR = item.QP_GetDataScale();
-
-				//if (isEx) {
-					for (auto v : item.qp_datas) {
-						if (v.Key == "qp_range" ||
-							v.Key == "qp_outWaterProportion" ||
-							v.Key == "qp_outVitaminProportion" ||
-							v.Key == "qp_outMineralProportion" ||
-							v.Key == "qp_outSugarProportion" ||
-							v.Key == "qp_outProteinProportion" ||
-							v.Key == "qp_outFatProportion" ||
-							v.Key == "qp_outPoisonProportion" ) {
-							continue;
-						}
-							widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
-							widget->qp_data = inData;
-							widget->qp_dataName = v.Key;
-							widget->qp_now = timeR * v.Value;
-							widget->qp_min = 0;
-							widget->qp_max = v.Value;
-							//widget->qp_isShowSelf = false;
-							//widget->qp_isBind = isBind;
-							widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(v.Key);
-							widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", v.Key.ToString());
-							cells.Add(v.Key, widget);
-					
-				
+			/*bool isFor = true;
+			if (item.qp_datas.Contains("qp_itemTypeF")) {
+				isFor = item.qp_datas["qp_itemTypeF"] != 1;
+			}*/
+			if (!Cast<UQPDA_ItemTransform>(UQPGIM_Item::qp_staticObject->QP_GetItemData(item.qp_itemName))) {
+				for (auto v : item.qp_datas) {
+					if (v.Key == "qp_range" ||
+						v.Key == "qp_outWaterProportion" ||
+						v.Key == "qp_outVitaminProportion" ||
+						v.Key == "qp_outMineralProportion" ||
+						v.Key == "qp_outSugarProportion" ||
+						v.Key == "qp_outProteinProportion" ||
+						v.Key == "qp_outFatProportion" ||
+						v.Key == "qp_itemTypeF" ||
+						v.Key == "qp_outPoisonProportion") {
+						continue;
 					}
+					widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+					widget->qp_data = inData;
+					widget->qp_dataName = v.Key;
+					widget->qp_now = timeR * v.Value;
+					widget->qp_min = 0;
+					widget->qp_max = v.Value;
+					//widget->qp_isShowSelf = false;
+					//widget->qp_isBind = isBind;
+					widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(v.Key);
+					widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", v.Key.ToString());
+					cells.Add(v.Key, widget);
+
+
+				}
+			}
 					if (cells.Contains("qp_shelfLife")) 
 					{
 
@@ -663,37 +670,42 @@ void UQPGIM_UserInterface::QP_InitShowInformationPlayerItem(UPanelWidget* root, 
 		int timeT = item.QP_GetFreshType();
 		float timeR = item.QP_GetDataScale();
 
-		//if (isEx) {
-		for (auto v : item.qp_datas) {
-			if (v.Key == "qp_range" ||
-				v.Key == "qp_outWaterProportion" ||
-				v.Key == "qp_outVitaminProportion" ||
-				v.Key == "qp_outMineralProportion" ||
-				v.Key == "qp_outSugarProportion" ||
-				v.Key == "qp_outProteinProportion" ||
-				v.Key == "qp_outFatProportion" ||
-				v.Key == "qp_outPoisonProportion") {
-				continue;
+		if (!Cast<UQPDA_ItemTransform>(UQPGIM_Item::qp_staticObject->QP_GetItemData(item.qp_itemName))) {
+			for (auto v : item.qp_datas) {
+				if (v.Key == "qp_range" ||
+					v.Key == "qp_outWaterProportion" ||
+					v.Key == "qp_outVitaminProportion" ||
+					v.Key == "qp_outMineralProportion" ||
+					v.Key == "qp_outSugarProportion" ||
+					v.Key == "qp_outProteinProportion" ||
+					v.Key == "qp_outFatProportion" ||
+					v.Key == "qp_itemTypeF" ||
+					v.Key == "qp_outPoisonProportion") {
+					continue;
+				}
+				widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
+				widget->qp_data = inData;
+				widget->qp_dataName = v.Key;
+				widget->qp_now = timeR * v.Value;
+				widget->qp_min = 0;
+				widget->qp_max = v.Value;
+				//widget->qp_isShowSelf = false;
+				//widget->qp_isBind = true;
+				widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(v.Key);
+				widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", v.Key.ToString());
+				cells.Add(v.Key, widget);
+
+
 			}
-			widget = CreateWidget<UQP_ShowInformationCell>(GetWorld(), widgetClass);
-			widget->qp_data = inData;
-			widget->qp_dataName = v.Key;
-			widget->qp_now = timeR * v.Value;
-			widget->qp_min = 0;
-			widget->qp_max = v.Value;
-			//widget->qp_isShowSelf = false;
-			//widget->qp_isBind = true;
-			widget->qp_texture = UQPGIM_BaseData::qp_staticObject->QP_GetTexture(v.Key);
-			widget->qp_nameText = FText::FromStringTable("/Game/QipaWorld3D/LocalizationKey/DST_QP_ShowInformation.DST_QP_ShowInformation", v.Key.ToString());
-			cells.Add(v.Key, widget);
-
-
 		}
-		cells["qp_shelfLife"]->qp_now = (item.qp_datas["qp_shelfLife"] * item.QP_GetDataScaleEX()) * timeR;
-		//}
-		if (timeT == 3) {
-			cells["qp_poison"]->qp_now = (item.qp_datas["qp_poison"] - item.qp_datas["qp_rottenPoison"] * item.QP_GetDataScaleEX()) * timeR;
+		if (cells.Contains("qp_shelfLife")) {
 
+			cells["qp_shelfLife"]->qp_now = (item.qp_datas["qp_shelfLife"] * item.QP_GetDataScaleEX()) * timeR;
+			//}
+			if (timeT == 3) {
+				cells["qp_poison"]->qp_now = (item.qp_datas["qp_poison"] - item.qp_datas["qp_rottenPoison"] * item.QP_GetDataScaleEX()) * timeR;
+
+			}
 		}
 	}
 

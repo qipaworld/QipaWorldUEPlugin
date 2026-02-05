@@ -53,6 +53,7 @@ void AQPA_Item::BeginPlay()
 	//qp_geometryCollection->MarkRenderStateDirty();
 	
 	//qp_geometryCollection->ForceRecreateRenderState_Concurrent();
+	qp_itemData.qp_itemName = qp_itemName;
 }
 void AQPA_Item::QP_MakeItemData() {
 	if (!qp_allItemTypes.Contains(qp_itemName)) {
@@ -74,7 +75,7 @@ void AQPA_Item::QP_MakeItemData() {
 		}
 		qp_allItemTypes.Add(qp_itemName, t);
 	}
-	qp_itemData.qp_itemName = qp_itemName;
+	
 	qp_itemData.qp_createTime = FDateTime::UtcNow().ToUnixTimestamp() ;
 	//fl ; 
 	TMap<FName, float>& t = qp_allItemTypes[qp_itemName];
