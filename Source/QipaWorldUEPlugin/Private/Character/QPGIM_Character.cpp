@@ -74,9 +74,9 @@ UQPDA_Character* UQPGIM_Character::QP_GetCharacterData(const FName qp_name) {
 }
 
 ACharacter* UQPGIM_Character::QP_GetNewCharacter(const FName qp_name, FTransform T,bool isAdd) {
-	AActor* a = UQPGIM_Actor::qp_staticObject->QP_PopActor(qp_name,T);
+	//AActor* a = UQPGIM_Actor::qp_staticObject->QP_PopActor(qp_name,T);
 	ACharacter* c;
-	if (!a) {
+	//if (!a) {
 		//qp_character
 		//UQPDA_Character* data = QP_GetCharacterData(qp_name);
 
@@ -101,10 +101,10 @@ ACharacter* UQPGIM_Character::QP_GetNewCharacter(const FName qp_name, FTransform
 		}*/
 
 
-	}
+	/*}
 	else {
 		c = Cast<ACharacter>(a);
-	}
+	}*/
 	if (isAdd) {
 		if (!qp_characterMap.Contains(qp_name)) {
 
@@ -116,13 +116,15 @@ ACharacter* UQPGIM_Character::QP_GetNewCharacter(const FName qp_name, FTransform
 
 
 void UQPGIM_Character::QP_CollectCharacter(const FName key, ACharacter* character) {
-	UQPGIM_Actor::qp_staticObject->QP_AddActor(key, character, true);
+	//UQPGIM_Actor::qp_staticObject->QP_AddActor(key, character, true);
+	character->Destroy();
 	qp_characterMap.Remove(key);
 
 }
 
 ACharacter* UQPGIM_Character::QP_ChangeMainCharacter(const FName collkey, ACharacter* character, const FName qp_name, FTransform T) {
-	UQPGIM_Actor::qp_staticObject->QP_AddActor(collkey, character,true);
+	//UQPGIM_Actor::qp_staticObject->QP_AddActor(collkey, character,true);
+	character->Destroy();
 	return QP_GetNewCharacter(qp_name, T);
 }
 

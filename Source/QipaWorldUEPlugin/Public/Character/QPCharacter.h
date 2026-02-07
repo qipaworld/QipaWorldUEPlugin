@@ -12,7 +12,7 @@
 #include "Component/QPSComponent.h"
 #include "Data/QPGIM_BaseData.h"
 //#include "InputAction.h"
-
+#include "Components/SkeletalMeshComponent.h"
 #include "Animation/QPC_MaterialAutoRestore.h"
 #include "Monster/QPMonster.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -94,11 +94,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
 
 	TObjectPtr<UInputAction> qp_MoveUPInputAction;
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 
-	//bool qp_isPlayer = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+
+	UNiagaraComponent* qp_transFormNS;
 	
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+
+	UNiagaraComponent* qp_transFormNS_Down;
 	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
@@ -131,7 +134,9 @@ public:
 	TObjectPtr<UInputAction> qp_switchMouseShowInputAction;
 	
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter|input")
 
+	TObjectPtr<UInputAction> qp_changeSlimeInputAction;
 
 
 
@@ -149,8 +154,8 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		//bool  qp_unchangeMovementMode = false;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
-		FName qp_changeCharacterName;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
+		//FName qp_changeCharacterName;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QipaWorld|QPCharacter")
 		bool qp_unchangeMovementMode = true;
 	
@@ -231,7 +236,9 @@ public:
 	virtual void QP_SneakStart();
 	virtual void QP_SneakEnd();
 
-	virtual void QP_ChangeCharacter();
+	virtual void QP_SwitchCharacter();
+
+	virtual void QP_ChangeSlime();
 
 	//相机固定与自由的切换
 	virtual void QP_FixedCamera();
@@ -286,4 +293,8 @@ public:
 
 	bool qp_forceAddLocalBuff = false;
 	void QP_AddLocalBuff();
+
+	void QP_PlayTrasformNs();
+
+	//bool qp_isPlayTransformNS = false;
 };

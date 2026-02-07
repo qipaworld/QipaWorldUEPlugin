@@ -34,6 +34,7 @@ void UQPC_PlayMontage::QP_PlayEvent(UQPData* data) {
 						//只能让character播放蒙太奇
 						if (ensure(qp_character)) {
 							//if (data->QP_IsChange<FName, FName>("startSectionName", EQPDataValueType::FNAME)) {
+							//UQPUtil::QP_LOG(data->QP_GetFName("startSectionName").ToString());
 								qp_character->PlayAnimMontage(*m, 1.0f, data->QP_GetFName("startSectionName"));
 								//UE_LOG(LogTemp, Warning, TEXT("___!___d___ddsdf"));
 							/*}

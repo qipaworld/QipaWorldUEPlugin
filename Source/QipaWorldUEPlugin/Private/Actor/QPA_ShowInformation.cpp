@@ -86,7 +86,7 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 		qp_showRoot->SetRelativeScale3D(FVector(1, 1, 1));
 		qp_showRoot->SetRelativeLocation(qp_sourceVector);
 		qp_rollRoot->SetRelativeRotation(FRotator(0,0,0));
-		qp_yawRoot->SetRelativeRotation(FRotator(0, 0, 0));
+		qp_yawRoot->SetWorldRotation(FRotator(0, 0, 0));
 		qp_showActor->Destroy();
 	}
 
@@ -166,13 +166,13 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 	ActorSize = MaxBox - MinBox;
 
 	// 根节点世界位置
-	FVector RootPos = qp_showActor->GetRootComponent() ? qp_showActor->GetRootComponent()->GetComponentLocation() : qp_showActor->GetActorLocation();
+	//FVector RootPos = qp_showActor->GetRootComponent() ? qp_showActor->GetRootComponent()->GetComponentLocation() : qp_showActor->GetActorLocation();
 
 	// 模型中心
-	FVector Center = (MinBox + MaxBox) * 0.5f;
+	//FVector Center = (MinBox + MaxBox) * 0.5f;
 
 	// 偏移 = 模型中心 - 根节点
-	CenterOffset = Center - RootPos;
+	//CenterOffset = Center - RootPos;
 	
 
 	

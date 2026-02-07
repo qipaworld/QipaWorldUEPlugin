@@ -51,17 +51,18 @@ void UQPGIM_Monster::Deinitialize()
 
 void UQPGIM_Monster::QP_AddMonster(const FName& key, AActor* actor, bool ishid)
 {
-	UQPGIM_Actor::qp_staticObject->QP_AddActor(key,actor,ishid);
+	actor->Destroy();
+	//UQPGIM_Actor::qp_staticObject->QP_AddActor(key,actor,ishid);
 }
 
 
 AActor* UQPGIM_Monster::QP_GetMonster(const FName& key, FTransform t, bool isshow)
 {
-	AActor* actor = UQPGIM_Actor::qp_staticObject->QP_PopActor(key,t,isshow);
+	/*AActor* actor = UQPGIM_Actor::qp_staticObject->QP_PopActor(key,t,isshow);
 	if (!actor) {
 		actor = QP_GetDefaultMonster(key,t);
-	}
-	return actor;
+	}*/
+	return QP_GetDefaultMonster(key, t);
 }
 UQPDA_Character* UQPGIM_Monster::QP_GetMonsterData(const FName& key)
 {

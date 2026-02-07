@@ -41,10 +41,11 @@ void  AQPPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 
     }
    
-     qp_itemBackpackSaveData->qp_itemFoods = qp_itemFoods;
-     //qp_itemBackpackSaveData->qp_itemTransforms = qp_itemTransforms;
-    //UE_LOG(LogTemp, Warning, TEXT("AQPPlayerState::EndPlay______ 1"));
-    qp_itemBackpackSaveData->QP_Save();
+    QP_SaveItems();
     Super::EndPlay(EndPlayReason);
-    //UE_LOG(LogTemp, Warning, TEXT("AQPPlayerState::EndPlay______ 2"));
+}
+void AQPPlayerState::QP_SaveItems() {
+    qp_itemBackpackSaveData->qp_itemFoods = qp_itemFoods;
+
+    qp_itemBackpackSaveData->QP_Save();
 }

@@ -72,7 +72,7 @@ void UQPC_MaterialAutoRestore::TickComponent(float DeltaTime,enum ELevelTick Tic
 	if (qp_isDissolveMat && qp_matAmount >= 1) {
 		if (qp_materials.Num() > 0) {
 			qp_isDissolveMat = false;
-			for (int32 i = 0; i < qp_mesh->GetNumMaterials(); ++i)
+			for (int32 i = 0; i < qp_materials.Num(); ++i)
 			{
 				qp_mesh->SetMaterial(i, qp_materials[i]);
 			}

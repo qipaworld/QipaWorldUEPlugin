@@ -80,6 +80,7 @@ AActor* UQPGIM_Actor::QP_PopActor(const FName& key, FTransform t, bool isshow)
 				actor->SetActorHiddenInGame(false);
 				actor->SetActorEnableCollision(true);   
 				actor->SetActorTickEnabled(true);   
+				//actor->ReregisterAllComponents();
 				actor->SetActorTransform(t);
 			}
 			//actor->SetActorHiddenInGame(false);

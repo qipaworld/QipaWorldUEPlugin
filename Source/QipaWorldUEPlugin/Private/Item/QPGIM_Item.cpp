@@ -10,6 +10,12 @@
 #include "Monster/QPMonster.h"
 #include "QPPlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Item/QPDA_ItemTransform.h"
+#include "Character/QPGIM_Character.h"
+#include "Character/QPCharacter.h"
+#include "Data/QPGIM_PlayerData.h"
+#include "Character/QPDA_Character.h"
+#include "Components/CapsuleComponent.h"
 #include "GamePlay/Tags/QPTags.h"
 #include "Item/QPA_Item.h"
 UQPGIM_Item* UQPGIM_Item::qp_staticObject = nullptr;
@@ -65,17 +71,18 @@ void UQPGIM_Item::Deinitialize()
 
 void UQPGIM_Item::QP_AddItemActor(const FName& key, AActor* actor, bool ishid)
 {
-	UQPGIM_Actor::qp_staticObject->QP_AddActor(key,actor,ishid);
+	actor->Destroy();
+	//UQPGIM_Actor::qp_staticObject->QP_AddActor(key,actor,ishid);
 }
 
 
 AActor* UQPGIM_Item::QP_GetItemActor(const FName& key, FTransform t, bool isshow)
 {
-	AActor* actor = UQPGIM_Actor::qp_staticObject->QP_PopActor(key,t,isshow);
-	if (!actor) {
-		actor = QP_GetDefaultItemActor(key,t);
-	}
-	return actor;
+	//AActor* actor = UQPGIM_Actor::qp_staticObject->QP_PopActor(key,t,isshow);
+	//if (!actor) {
+		//actor = QP_GetDefaultItemActor(key,t);
+	//}
+	return QP_GetDefaultItemActor(key, t);
 }
 UQPDA_Item* UQPGIM_Item::QP_GetItemData(const FName& key)
 {
@@ -123,6 +130,7 @@ bool UQPGIM_Item::QP_AddPlayerItem(FQPItem& item) {
 			(PlayerState)->qp_itemFoods[i] = item;
 			
 			qp_itemQPData->QP_Addint32("changeItemIndex", i, EQPDataBroadcastType::SYNC);
+			PlayerState->QP_SaveItems();
 			return true;
 		}
 	}
@@ -312,6 +320,61 @@ void  UQPGIM_Item::QP_UseItem(FQPItem& n, AQPMonster* m) {
 		//int64 TimestampMs = FDateTime::UtcNow().ToUnixTimestamp() ;
 
 		UQPDA_Item* itemD = QP_GetItemData(n.qp_itemName);
+
+		if (UQPDA_ItemTransform* itemA = Cast<UQPDA_ItemTransform>(itemD)) {
+
+			//APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+
+			//AQPCharacter* m = Cast<AQPCharacter>(PC->GetPawn());
+			if (m->qp_assetData->qp_name == itemA->qp_transformName)
+			{
+				return;
+			}
+			//----------------------------------
+
+			
+
+			//// 2. Spawn 新角色（禁用碰撞修正）
+			//FActorSpawnParameters Params;
+			//Params.SpawnCollisionHandlingOverride =
+			//	ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			//FTransform(m->GetActorRotation(), FeetLocation)
+
+			//
+
+			//// 4. 用新 Capsule 半高还原 Z
+			//
+
+			//// 5. Possess
+			//
+
+			//// 6. 再启用移动
+			//NewChar->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+
+			//----------------------------------
+
+			float OldHalf = m->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+			FVector FeetLocation = m->GetActorLocation() - FVector(0, 0, OldHalf);
+
+			AQPCharacter* nA =(AQPCharacter*) UQPGIM_Character::qp_staticObject->QP_GetNewCharacter(itemA->qp_transformName, FTransform(m->GetActorRotation(), FeetLocation), true);
+
+
+			float NewHalf = nA->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+			nA->SetActorLocation(FeetLocation + FVector(0, 0, NewHalf+200));
+			//UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_AddFTransform("Transform", FTransform(m->GetActorRotation(), FeetLocation+ FVector(0, 0, NewHalf + 200)));
+			UQPGIM_Character::qp_staticObject->QP_Possess(m->GetController(), itemA->qp_transformName, true, false, true);
+			nA->SetActorLocation(FeetLocation + FVector(0, 0, NewHalf));
+
+			nA->QP_PlayTrasformNs();
+			UQPGIM_Character::qp_staticObject->QP_CollectCharacter(m->qp_assetData->qp_name, m);
+			nA->qp_materialAutoRestore->QP_SetMatAmount(0.6);
+			
+			nA->GetController()->SetControlRotation(UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetFRotator("ControllerRotation"));
+			;
+
+			return;
+		}
 		//GE->DurationPolicy = itemD->qp_GEType;
 
 		float timeR = n.QP_GetDataScale();

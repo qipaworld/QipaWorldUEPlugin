@@ -25,6 +25,8 @@
 #include "Notify/QPGIM_AnimNotifyData.h"
 #include "Item/QPA_Item.h"
 #include "QPPlayerController.h"
+#include "Components/CapsuleComponent.h"
+
 #include "UserInterface/QPGIM_UserInterface.h"
 
 // Sets default values
@@ -47,6 +49,14 @@ AQPCharacter::AQPCharacter(const FObjectInitializer& ObjectInitializer)
 	qp_springArm->SetupAttachment(RootComponent);
 	qp_camera->SetupAttachment(qp_springArm);
 	
+
+	qp_transFormNS = CreateDefaultSubobject<UNiagaraComponent>("qp_transFormNS");
+
+	qp_transFormNS->SetupAttachment(RootComponent);
+
+	qp_transFormNS_Down = CreateDefaultSubobject<UNiagaraComponent>("qp_transFormNS_Down");
+
+	qp_transFormNS_Down->SetupAttachment(RootComponent);
 	//qp_attackAnim->SetupAttachment(RootComponent);
 	//qp_restoreNg = CreateDefaultSubobject<UNiagaraComponent>("qp_restoreNg");
 	//qp_restoreNg->SetupAttachment(RootComponent);
@@ -57,6 +67,13 @@ AQPCharacter::AQPCharacter(const FObjectInitializer& ObjectInitializer)
 	
 
 
+}
+void AQPCharacter::QP_PlayTrasformNs() {
+	//UNiagaraFunctionLibrary::OverrideSystemUserVariableSkeletalMeshComponent(qp_transFormNS,"qp_SMesh",m);
+	UNiagaraFunctionLibrary::OverrideSystemUserVariableSkeletalMeshComponent(qp_transFormNS, "qp_SMeshTarget", GetMesh());
+	qp_transFormNS->Activate();
+	qp_transFormNS_Down->Activate();
+	//qp_isPlayTransformNS = true;
 }
 void AQPCharacter::PreInitializeComponents() {
 	Super::PreInitializeComponents();
@@ -100,8 +117,13 @@ void AQPCharacter::BeginPlay()
 	//qp_characterData->QP_GetUQPData(UQPGIM_AnimNotifyData::QP_DATA_BASE_NAME)->qp_dataDelegate.AddUObject(this, &AQPCharacter::QP_AnimNotifyEvent);
 	
 	QP_AddLocalBuff();
+	//UNiagaraFunctionLibrary::OverrideSystemUserVariableSkeletalMeshComponent(qp_transFormNS, "qp_SMeshTarget", GetMesh());
 
-	
+	//if (qp_isPlayTransformNS) {
+	//	//qp_transFormNS->Activate();
+	//	
+
+	//}
 
 	/*if (qp_isPlayer) {
 		qp_springArm->SetVisibility(false, true);
@@ -235,12 +257,17 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	}
 	if (qp_changeCharacterInputAction) {
 
-		Input->BindAction(qp_changeCharacterInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_ChangeCharacter);
+		Input->BindAction(qp_changeCharacterInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_SwitchCharacter);
 	}
 	if (qp_switchMouseShowInputAction) {
 
 		Input->BindAction(qp_switchMouseShowInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_SwitchMouseShow);
 	}
+	if (qp_changeSlimeInputAction) {
+
+		Input->BindAction(qp_changeSlimeInputAction, ETriggerEvent::Started, this, &AQPCharacter::QP_ChangeSlime);
+	}
+	
 	//PlayerInputComponent->BindAction(qp_run, IE_Pressed, this, &AQPCharacter::QP_Run);
 	//PlayerInputComponent->BindAction(qp_sneak, IE_Released, this, &AQPCharacter::QP_Sneak);
 	//PlayerInputComponent->BindAction(qp_attack, IE_Pressed, this, &AQPCharacter::QP_MouseLeftStart);
@@ -264,10 +291,36 @@ void AQPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		
 		
 }
-//void AQPCharacter::QP_InitQPData() {
-//	
-//	
-//}
+void AQPCharacter::QP_ChangeSlime() {
+
+	//APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+
+	//AQPCharacter* m = Cast<AQPCharacter>(PC->GetPawn());
+	if (qp_assetData->qp_name == "Slime" || qp_assetData->qp_name == "FlySlime") {
+		return;
+	}
+
+	float OldHalf = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+	FVector FeetLocation = GetActorLocation() - FVector(0, 0, OldHalf);
+
+	AQPCharacter* nA = (AQPCharacter*)UQPGIM_Character::qp_staticObject->QP_GetNewCharacter("Slime", GetActorTransform(), true);
+
+
+	float NewHalf = nA->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+
+	UQPGIM_Character::qp_staticObject->QP_Possess(GetController(), "Slime");
+
+	nA->SetActorLocation(FeetLocation + FVector(0, 0, NewHalf));
+
+	nA->QP_PlayTrasformNs();
+	nA->qp_materialAutoRestore->QP_SetMatAmount(0.6);
+
+	nA->GetController()->SetControlRotation(UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetFRotator("ControllerRotation"));
+	;
+	UQPGIM_Character::qp_staticObject->QP_CollectCharacter(qp_assetData->qp_name, this);
+
+	
+}
 void AQPCharacter::QP_SwitchMouseShow() {
 	UQPUtil::QP_SwitchMouseShow(Cast<APlayerController>(Controller));
 }
@@ -317,7 +370,11 @@ void AQPCharacter::QP_TrunAxis(const FInputActionValue& value) {
 			  //UQPUtil::QP_LOG(GetControlRotation().ToString());
 			  UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_AddFTransform("Transform", GetActorTransform());
 			  UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Addfloat("TargetArmLength", qp_springArm->TargetArmLength);
-			  
+			  //UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_AddFRotator("TargetControlRotation", GetControlRotation());
+			  UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_AddFRotator("ControllerRotation", GetControlRotation());
+
+			  //UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_AddFRotator("ControllerRotation", GetControlRotation());
+
 			  //}
 
 			  
@@ -426,6 +483,10 @@ void AQPCharacter::QP_TrunAxis(const FInputActionValue& value) {
 					  /*Subsystem->AddMappingContext(DefaultMappingContext, 0);*/
 				  }
 			   }
+			  if (qp_assetData->qp_name != "FlySlime") {
+				UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerData()->QP_AddFName("qp_nowPlayerCharacterName", qp_assetData->qp_name);
+			  }
+
 				if (UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Getbool("qp_autoTransform")) 
 				{
 					SetActorTransform(UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetFTransform("Transform"));
@@ -434,6 +495,11 @@ void AQPCharacter::QP_TrunAxis(const FInputActionValue& value) {
 				{
 					qp_springArm->TargetArmLength = UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Getfloat("TargetArmLength");
 				}
+				/*if (UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Getbool("qp_autoControllerRotation")) {
+					NewController->SetControlRotation(UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetFRotator("ControllerRotation"));
+				}
+
+				UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Addbool("qp_autoControllerRotation", true);*/
 				UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Addbool("qp_autoTargetArmLength", true);
 				UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Addbool("qp_autoTransform", true);
 				//UQPUtil::QP_LOG(UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_GetFTransform("Transform").ToString() + "_________________");
@@ -733,7 +799,7 @@ void AQPCharacter::QP_ReReset() {
 	 Jump();
 	 //bPressedJump = true;
 	 qp_characterData->QP_AddFString("characterJump", "start");
-	 QP_PlayAnim("characterJump");
+	 QP_PlayAnim("characterJump", "start");
 
  }
  void AQPCharacter::QP_JumpEnd()
@@ -846,7 +912,7 @@ void AQPCharacter::QP_ReReset() {
 	 qp_isAttacking = false;
  }
 
- void AQPCharacter::QP_ChangeCharacter()
+ void AQPCharacter::QP_SwitchCharacter()
  {
 	 //qp_isFixedCameraLast = qp_isFixedCamera;
 
@@ -855,7 +921,8 @@ void AQPCharacter::QP_ReReset() {
 
 	 //UQPGIM_Character::qp_staticObject->QP_GetCharacter("FlySlime")->AutoPossessPlayer = EAutoReceiveInput::Type::Player0;
 	 UQPGIM_PlayerData::qp_staticObject->QP_GetLocalPlayerSaveData()->QP_Addbool("qp_autoTransform", false);
-	 UQPGIM_Character::qp_staticObject->QP_Possess(GetController(), qp_changeCharacterName, qp_unchangeMovementMode);
+
+	 UQPGIM_Character::qp_staticObject->QP_Possess(GetController(), "FlySlime" , qp_unchangeMovementMode);
 	 //->Possess(QP_GetCharacter());
  //GetController()->Possess(UQPGIM_Character::qp_staticObject->QP_GetCharacter("FlySlime"));
  //GetController()->SetPawn(UQPGIM_Character::qp_staticObject->QP_GetCharacter("FlySlime"));
