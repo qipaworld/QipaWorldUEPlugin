@@ -345,7 +345,7 @@ void UQPGIM_UserInterface::QP_InitShowInformation(UPanelWidget* root, TSubclassO
 		if (const UAttributeSet* uset = m->qp_abilitySystemComponent->GetAttributeSet(UQPAS_BaseBuff::StaticClass())) {
 			
 			FString sKey; 
-			int32 exKey; 
+			int32 exKey = 0; 
 			
 			if (isEx) {
 				sKey = inData->QP_GetFString("qp_showExKey");

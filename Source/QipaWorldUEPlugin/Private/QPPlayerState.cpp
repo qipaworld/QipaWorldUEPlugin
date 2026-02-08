@@ -49,3 +49,9 @@ void AQPPlayerState::QP_SaveItems() {
 
     qp_itemBackpackSaveData->QP_Save();
 }
+void AQPPlayerState::QP_AsyncItems() {
+    qp_itemBackpackSaveData->qp_itemFoods = qp_itemFoods;
+
+    qp_itemBackpackSaveData->QP_AsyncSave();
+}
+

@@ -24,5 +24,6 @@ public:
 	TArray<FQPItem> qp_itemFoods;
 
 	void QP_SaveItems();
+	void QP_AsyncItems();
 	//TArray<FQPItem> qp_itemTransforms;
 };

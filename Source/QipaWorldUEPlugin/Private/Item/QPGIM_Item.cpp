@@ -130,7 +130,7 @@ bool UQPGIM_Item::QP_AddPlayerItem(FQPItem& item) {
 			(PlayerState)->qp_itemFoods[i] = item;
 			
 			qp_itemQPData->QP_Addint32("changeItemIndex", i, EQPDataBroadcastType::SYNC);
-			PlayerState->QP_SaveItems();
+			PlayerState->QP_AsyncItems();
 			return true;
 		}
 	}

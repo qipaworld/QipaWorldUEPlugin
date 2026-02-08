@@ -126,12 +126,12 @@ void AQPA_ShowInformation::QP_UpdateStatus() {
 
 		if (USkeletalMeshComponent* SK = Cast<USkeletalMeshComponent>(Comp))
 		{
-			if (!SK->SkeletalMesh)
+			if (!SK->GetSkinnedAsset())
 				continue;
 			//UQPUtil::QP_LOG(SK->GetName());
 
 			// 使用 SkeletalMesh 原始 Bounds，忽略动画
-			FBoxSphereBounds MeshBounds = SK->SkeletalMesh->GetBounds();
+			FBoxSphereBounds MeshBounds = SK->GetSkinnedAsset()->GetBounds();
 			LocalBox = MeshBounds.GetBox();
 			CompTransform = SK->GetComponentTransform();
 
